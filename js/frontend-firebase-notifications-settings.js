@@ -1,21 +1,46 @@
-(function($){
+(async function($){
 
-	if(typeof AndroidNotifications === typeof undefined) return;
+	const isAndroid = (typeof AndroidNotifications !== typeof undefined);
+	const isiOS = (typeof iOSNotifications !== typeof undefined);
 
+	if(!isAndroid && !isiOS) return;
+
+	const AppNotifications = {
+		isNotificationsEnabled: async ()=>{
+			if(isiOS) return iOSNotifications.isNotificationsEnabled();
+			return AndroidNotifications.isNotificationsActive();
+		},
+		setNotificationsEnabled: async (setEnabled)=>{
+			if(isiOS) return iOSNotifications.setNotificationsEnabled(setEnabled === true);
+			return AndroidNotifications.setNotifications(setEnabled === true);
+		},
+		subscribe: async (topic)=>{
+			if(isiOS) return iOSNotifications.subscribe(topic);
+			return AndroidNotifications.subscribeTo(topic);
+		},
+		unsubscribe: async (topic)=>{
+			if(isiOS) return iOSNotifications.unsubscribe(topic);
+			return AndroidNotifications.unsubscribeFrom(topic);
+		},
+		isSubscribed: async (topic)=>{
+			if(isiOS) return iOSNotifications.isSubscribed(topic);
+			return AndroidNotifications.isSubscriptionActive(topic);
+		}
+	};
 
 
 	const $global = $("[data-firebase-notifications-active]");
-	$global.prop("checked", (AndroidNotifications.isNotificationsActive())? "checked": "")
+	$global.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "")
 	$global.on("change", function(e){
-		AndroidNotifications.setNotifications($(this).is(":checked"));
+		AppNotifications.setNotificationsEnabled($(this).is(":checked"));
 	});
 
 	const $topics = $("[data-firebase-notifications-topic]");
-	$topics.each(function(){
+	$topics.each(async function(){
 		const $el = $(this);
 		$el.prop(
 			"checked",
-			(AndroidNotifications.isSubscriptionActive(getTopic($el)))
+			(await AppNotifications.isSubscribed(getTopic($el)))
 				?"checked":""
 		);
 	});
@@ -23,9 +48,9 @@
 		const $el = $(this);
 		const topic = getTopic($el);
 		if($el.is(":checked")){
-			AndroidNotifications.subscribeTo(topic);
+			AppNotifications.subscribe(topic);
 		} else {
-			AndroidNotifications.unsubscribeFrom(topic);
+			AppNotifications.unsubscribe(topic);
 		}
 
 	});
@@ -33,6 +58,5 @@
 	function getTopic($el) {
 		return $el.attr("data-firebase-notifications-topic");
 	}
-
 
 })(jQuery);
