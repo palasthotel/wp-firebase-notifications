@@ -165,7 +165,7 @@ class Database {
 			 key (title),
 			 key (topic),
 			 key (sent),
-			 key(created),
+			 key(created)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
 
 		dbDelta( "CREATE TABLE IF NOT EXISTS $this->tablename_posts (
