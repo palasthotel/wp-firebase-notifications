@@ -9,6 +9,8 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use PHPUnit\Runner\Exception;
+
 /**
  * @property string action_send
  * @property string action_topics_list
@@ -60,18 +62,44 @@ class Ajax {
 	 */
 	public function send(){
 
-		$topic = sanitize_text_field($_POST["topic"]);
-		$title = sanitize_text_field($_POST["title"]);
-		$message = sanitize_textarea_field($_POST["message"]);
+		// TODO: make it configuratable
+		if(!current_user_can('publish_posts')) wp_send_json_error("No access");
 
-		$result = $this->plugin->cloudMessagingApi->send($topic,$message, $title);
-		wp_send_json_success($result);
+		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
+
+		$topic = sanitize_text_field($_REQUEST["topic"]);
+		$title = sanitize_text_field($_REQUEST["title"]);
+		$body = sanitize_textarea_field($_REQUEST["body"]);
+		$payload = $_REQUEST["payload"];
+
+		if(empty($payload)) wp_send_json_error("missing payloads");
+
+		$sanitizedPayload = array();
+		foreach ($payload as $key => $value){
+			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field($value);
+		}
+
+		if(empty($topic) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
+
+		$message = Message::build($topic, $title, $body, $payload);
+
+		$message = $this->plugin->database->add($message);
+		if(!$message) wp_send_json_error("Could not save notification");
+
+		try{
+			$result = $this->plugin->cloudMessagingApi->send($message);
+			$message->result = $result;
+			$success = $this->plugin->database->setSent( $message->id, $result);
+
+			if($success){
+				wp_send_json_success($message);
+			} else {
+				wp_send_json_error("Firebase Service connection not working. Check the settings.");
+			}
+		} catch (\Exception $e){
+			wp_send_json_error($e->getMessage());
+		}
+
 	}
 
-	/**
-	 * list topics
-	 */
-	public function topics_list(){
-		wp_send_json_success();
-	}
 }

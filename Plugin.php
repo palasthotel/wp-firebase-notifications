@@ -24,6 +24,9 @@ namespace Palasthotel\FirebaseNotifications;
  * @property Topics topics
  * @property Ajax ajax
  * @property CloudMessagingApi cloudMessagingApi
+ * @property Database database
+ * @property ToolsPage toolsPage
+ * @property Settings settings
  */
 class Plugin {
 
@@ -33,6 +36,12 @@ class Plugin {
 	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend";
 
 	const FILTER_TOPICS = "firebase_notifications_topics";
+	const FILTER_MESSAGE = "firebase_notifications_message";
+
+	const ACTION_MESSAGE_ADD = "firebase_notifications_message_add";
+	const ACTION_MESSAGE_SENT = "firebase_notifications_message_sent";
+
+	const OPTION_CONFIG = "_firebase_notifications_config_json";
 
 	/**
 	 * Plugin constructor.
@@ -44,22 +53,27 @@ class Plugin {
 		require_once dirname( __FILE__ ) . "/vendor/autoload.php";
 
 		$this->cloudMessagingApi = new CloudMessagingApi($this);
+		$this->database = new Database();
 		$this->ajax = new Ajax($this);
 		$this->notificationsSettingsThemeTemplate = new NotificationsSettingsThemeTemplate($this);
 		$this->metaBox = new MetaBox($this);
 		$this->topics = new Topics($this);
+		$this->toolsPage = new ToolsPage($this);
+		$this->settings = new Settings($this);
 
 		/**
 		 * on activate or deactivate plugin
 		 */
 		register_activation_hook( __FILE__, array( $this, "activation" ) );
 		register_deactivation_hook( __FILE__, array( $this, "deactivation" ) );
+
 	}
 
 	/**
 	 * on plugin activation
 	 */
 	function activation() {
+		$this->database->create();
 		$this->notificationsSettingsThemeTemplate->add_endpoint();
 		flush_rewrite_rules();
 	}

@@ -1,0 +1,72 @@
+$highlight-color: #0073aa;
+$bg-light: #f9f9f9;
+$font-light: #72777c;
+
+.firebase-notifications__list{
+
+
+}
+
+
+.firebase-notifications__item{
+
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+
+
+
+	.firebase-notifications__item--title{
+		font-size: 1.1rem;
+		margin-bottom: 12px;
+	}
+	.firebase-notifications__item--body{
+		margin-bottom: 16px;
+	}
+
+	.firebase-notifications__item--footer{
+		display: flex;
+		justify-content: space-between;
+		color: $font-light;
+	}
+	.firebase-notifications__item--created,
+	.firebase-notifications__item--sent{
+		flex-grow: 1;
+	}
+	.firebase-notifications__item--topic{
+		flex-grow: 3;
+	}
+
+	.firebase-notifications__item--topic-wrapper{
+		background-color: $highlight-color;
+		padding: 2px 6px;
+		border-radius: 2px;
+		display: inline-block;
+		color: white;
+		margin-bottom: 4px;
+	}
+
+	.firebase-notifications__item--show-communication{
+		color: $highlight-color;
+		flex-grow: 1;
+	}
+	.firebase-notifications__item--communication{
+		//display: none;
+		overflow-x: scroll;
+		background: $bg-light;
+		margin: 0 -2em -1em;
+		padding: 0.7em 2em 0.7em;
+	}
+	.firebase-notifications__item--payload,
+	.firebase-notifications__item--result{
+		padding: 5px 15px;
+	}
+	.firebase-notifications__item--payload-label,
+	.firebase-notifications__item--result-label{
+		font-style: italic;
+	}
+	.firebase-notifications__item--payload{
+		border-bottom: 1px solid darken($bg-light, 10%);
+		margin-bottom: 8px;
+	}
+}

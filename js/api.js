@@ -5,15 +5,23 @@
 		ajax_url
 	} = api;
 
-	api.send = (title, message, topic = null) => {
-		return post(actions.send, {title, message, topic})
-			.then(console.log)
-			.catch(console.error);
+	api.send = async (topic, title, body, payload = {} ) => {
+		if(isEmpty(topic) || isEmpty(title) || isEmpty(body)){
+			throw "Missing arguments...";
+		}
+
+		console.log(topic, title, body);
+		console.log(payload);
+
+		return post(actions.send, {title, body, topic, payload});
 	};
 
-	api.topics = {
-		list: post(actions.topics_list),
-	};
+	function isEmpty(arg) {
+		return isUndefined(arg) || arg === "";
+	}
+	function isUndefined(arg){
+		return (typeof arg === typeof undefined)
+	}
 
 	/**
 	 *

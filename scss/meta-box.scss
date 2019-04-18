@@ -1,0 +1,67 @@
+#firebase-notifications-meta-box{
+
+	.is-loading,
+	.error-display,
+	.result-display{
+		margin-top: 1em;
+		display: none;
+	}
+
+	&.is-sending{
+
+		.is-loading{
+			display: block;
+			&:after{
+				margin-left: 4px;
+				font-style: italic;
+				content:".";
+				animation-name: loading;
+				animation-duration: .6s;
+				animation-iteration-count: infinite;
+				animation-direction: normal;
+			}
+		}
+
+		#firebase-notifications-submit{
+			display: none;
+		}
+
+	}
+	&.was-sent{
+		.result-display{
+			display: block;
+		}
+		#firebase-notifications-submit{
+			display: none;
+		}
+	}
+	&.has-error{
+
+		.error-display{
+			display: block;
+			&:before{
+				content:"🚨 ";
+			}
+		}
+
+		#firebase-notifications-submit{
+			display: none;
+		}
+	}
+
+}
+
+@keyframes loading {
+	0% {
+		content: "…";
+	}
+	30% {
+		content: "⋰";
+	}
+	60% {
+		content: "⋮"
+	}
+	100%{
+		content: "⋱"
+	}
+}
