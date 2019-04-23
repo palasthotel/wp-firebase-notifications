@@ -2,13 +2,21 @@
 get_header();
 ?>
 	<div>
-		<label>
+
+
+		<label data-firebase-notifications-global>
 			<input
 					type="checkbox"
 					data-firebase-notifications-active
 			/> Activate notifications.
 		</label>
+
+		<div data-firebase-notifications-global>
+			<a href="#" data-firebase-notifications-link>Notification settings.</a>
+		</div>
+
 		<hr />
+
 		<?php
 		$topics = firebase_notifications_get_topics();
 		foreach ($topics as $topic){

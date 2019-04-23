@@ -28,12 +28,27 @@
 		}
 	};
 
+	// global android activate notifications
+	const $globalAndroid = $("[data-firebase-notifications-active]");
+	if(isAndroid){
+		$globalAndroid.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "")
+		$globalAndroid.on("change", function(e){
+			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
+		});
+	} else {
+		$globalAndroid.closest("[data-firebase-notifications-global]").remove();
+	}
 
-	const $global = $("[data-firebase-notifications-active]");
-	$global.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "")
-	$global.on("change", function(e){
-		AppNotifications.setNotificationsEnabled($(this).is(":checked"));
-	});
+	// ios notification settings link
+	const $globaliOS = $("[data-firebase-notifications-link]");
+	if(isiOS){
+		setTimeout(async ()=>{
+			const url = await iOSNotifications.getSettingsURL();
+			if(url != null) $globaliOS.attr("href", url);
+		}, 1000);
+	} else {
+		$globaliOS.closest("[data-firebase-notifications-global]").remove();
+	}
 
 	const $topics = $("[data-firebase-notifications-topic]");
 	$topics.each(async function(){
