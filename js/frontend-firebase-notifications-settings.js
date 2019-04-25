@@ -24,6 +24,7 @@
 		},
 		isSubscribed: async (topic)=>{
 			if(isiOS) return iOSNotifications.isSubscribed(topic);
+
 			return AndroidNotifications.isSubscriptionActive(topic);
 		}
 	};
@@ -31,7 +32,7 @@
 	// global android activate notifications
 	const $globalAndroid = $("[data-firebase-notifications-active]");
 	if(isAndroid){
-		$globalAndroid.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "")
+		$globalAndroid.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
 		$globalAndroid.on("change", function(e){
 			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
 		});
@@ -42,7 +43,7 @@
 	// ios notification settings link
 	const $globaliOS = $("[data-firebase-notifications-link]");
 	if(isiOS){
-		setTimeout(async ()=>{
+		setInterval(async ()=>{
 			const url = await iOSNotifications.getSettingsURL();
 			if(url != null) $globaliOS.attr("href", url);
 		}, 1000);
@@ -64,6 +65,7 @@
 		const topic = getTopic($el);
 		if($el.is(":checked")){
 			AppNotifications.subscribe(topic);
+			if(isAndroid) $globalAndroid.prop("checked", "checked").trigger("change");
 		} else {
 			AppNotifications.unsubscribe(topic);
 		}
