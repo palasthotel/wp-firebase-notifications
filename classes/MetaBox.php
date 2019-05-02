@@ -31,11 +31,9 @@ class MetaBox {
 	public function add_meta_box() {
 		add_meta_box(
 			Plugin::DOMAIN . '-meta-box',
-			__( 'Firebase Notification', Plugin::DOMAIN ),
+			__( 'Firebase Notifications', Plugin::DOMAIN ),
 			array( $this, 'render' ),
-			'post',
-			"side",
-			"high"
+			'post'
 		);
 	}
 
