@@ -8,24 +8,23 @@
 	const AppNotifications = {
 		isNotificationsEnabled: async ()=>{
 			if(isiOS) return iOSNotifications.isNotificationsEnabled();
-			return AndroidNotifications.isNotificationsActive();
+			return AndroidNotifications.isNotificationsEnabled();
 		},
 		setNotificationsEnabled: async (setEnabled)=>{
 			if(isiOS) return iOSNotifications.setNotificationsEnabled(setEnabled === true);
-			return AndroidNotifications.setNotifications(setEnabled === true);
+			return AndroidNotifications.setNotificationsEnabled(setEnabled === true);
 		},
 		subscribe: async (topic)=>{
 			if(isiOS) return iOSNotifications.subscribe(topic);
-			return AndroidNotifications.subscribeTo(topic);
+			return AndroidNotifications.subscribe(topic);
 		},
 		unsubscribe: async (topic)=>{
 			if(isiOS) return iOSNotifications.unsubscribe(topic);
-			return AndroidNotifications.unsubscribeFrom(topic);
+			return AndroidNotifications.unsubscribe(topic);
 		},
 		isSubscribed: async (topic)=>{
 			if(isiOS) return iOSNotifications.isSubscribed(topic);
-
-			return AndroidNotifications.isSubscriptionActive(topic);
+			return AndroidNotifications.isSubscribed(topic);
 		}
 	};
 
