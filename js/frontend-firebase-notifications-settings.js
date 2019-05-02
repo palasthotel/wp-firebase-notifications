@@ -1,6 +1,6 @@
 (async function($){
 
-	const isAndroid = (typeof AndroidNotifications !== typeof undefined);
+	const isAndroid = (typeof AndroidAppSubscriptions !== typeof undefined);
 	const isiOS = (typeof iOSNotifications !== typeof undefined);
 
 	if(!isAndroid && !isiOS) return;
@@ -8,23 +8,23 @@
 	const AppNotifications = {
 		isNotificationsEnabled: async ()=>{
 			if(isiOS) return iOSNotifications.isNotificationsEnabled();
-			return AndroidNotifications.isNotificationsEnabled();
+			return AndroidAppSubscriptions.isNotificationsEnabled();
 		},
 		setNotificationsEnabled: async (setEnabled)=>{
 			if(isiOS) return iOSNotifications.setNotificationsEnabled(setEnabled === true);
-			return AndroidNotifications.setNotificationsEnabled(setEnabled === true);
+			return AndroidAppSubscriptions.setNotificationsEnabled(setEnabled === true);
 		},
 		subscribe: async (topic)=>{
 			if(isiOS) return iOSNotifications.subscribe(topic);
-			return AndroidNotifications.subscribe(topic);
+			return AndroidAppSubscriptions.subscribe(topic);
 		},
 		unsubscribe: async (topic)=>{
 			if(isiOS) return iOSNotifications.unsubscribe(topic);
-			return AndroidNotifications.unsubscribe(topic);
+			return AndroidAppSubscriptions.unsubscribe(topic);
 		},
 		isSubscribed: async (topic)=>{
 			if(isiOS) return iOSNotifications.isSubscribed(topic);
-			return AndroidNotifications.isSubscribed(topic);
+			return AndroidAppSubscriptions.isSubscribed(topic);
 		}
 	};
 
