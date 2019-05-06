@@ -27,6 +27,16 @@ class ToolsPage {
 	}
 
 	/**
+	 * @param null|int $post_id
+	 *
+	 * @return string
+	 */
+	public function getUrl($post_id = null){
+		$post = ($post_id)? "&post_id=$post_id": "";
+		return admin_url("/tools.php?page=firebase-notifications-tools$post");
+	}
+
+	/**
 	 * add menu item
 	 */
 	public function admin_menu() {
@@ -71,11 +81,15 @@ class ToolsPage {
 		$date_format = get_option( 'date_format' );
 		$time_format = get_option( 'time_format' );
 		$format = "$date_format $time_format";
+		$post_id = (isset($_GET["post_id"]))? intval($_GET["post_id"]): null;
 		?>
 		<ul class="firebase-notifications__list">
 			<?php
 			$notifications = $this->plugin->database->getAll(0, 10);
 			foreach ($notifications as $item){
+				if( $post_id != null && ( !isset($item->payload->post_id) || $item->payload->post_id != $post_id ) ){
+					continue;
+				}
 				$readableCreated = date_i18n($format, strtotime($item->sent));
 				$readableSent = (empty($item->sent))?
 					__(" 🚨 Not sent", Plugin::DOMAIN)
