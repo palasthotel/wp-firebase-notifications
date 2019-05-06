@@ -22,6 +22,7 @@ class Settings {
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;
 		add_action('admin_init', array($this,'custom_settings'));
+		add_filter('plugin_action_links_' . $plugin->basename, array($this, 'add_action_links'));
 	}
 
 	/**
@@ -31,7 +32,9 @@ class Settings {
 		add_settings_section(
 			'firebase-notifications-settings', // ID
 			'Firebase Notifications', // Section title
-			'__return_false', // Callback for your function
+			function(){
+				echo "<span id='".Plugin::DOMAIN."'></span>";
+			}, // Callback for your function
 			'writing' // Location (Settings > Permalinks)
 		);
 
@@ -125,5 +128,17 @@ class Settings {
 		?>
 
 		<?php
+	}
+
+	/**
+	 * action link to settings on plugins list page
+	 * @param $links
+	 *
+	 * @return array
+	 */
+	public function add_action_links($links){
+		return array_merge($links, array(
+			'<a href="'.admin_url('options-writing.php#'.Plugin::DOMAIN).'">Settings</a>'
+		));
 	}
 }

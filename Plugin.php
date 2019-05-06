@@ -3,7 +3,7 @@
  * Plugin Name: Firebase Notifications
  * Plugin URI: https://github.com/palasthotel/grid-wordpress
  * Description: We will see...
- * Version: 0.2
+ * Version: 0.3
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 5.0
@@ -27,6 +27,7 @@ namespace Palasthotel\FirebaseNotifications;
  * @property Database database
  * @property ToolsPage toolsPage
  * @property Settings settings
+ * @property string basename
  */
 class Plugin {
 
@@ -49,6 +50,7 @@ class Plugin {
 	private function __construct() {
 		$this->path = plugin_dir_path(__FILE__);
 		$this->url  = plugin_dir_url(__FILE__);
+		$this->basename = plugin_basename(__FILE__);
 
 		require_once dirname( __FILE__ ) . "/vendor/autoload.php";
 
