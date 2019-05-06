@@ -106,7 +106,7 @@ class Database {
 			array($this, "mapMessage"),
 			$this->wpdb->get_results(
 				$this->wpdb->prepare(
-					"SELECT * FROM $this->tablename_posts as p LEFT JOIN $this->tablename as m ON (p.message_id = m.id) WHERE p.post_id = %d", $post_id
+					"SELECT * FROM $this->tablename_posts as p LEFT JOIN $this->tablename as m ON (p.message_id = m.id) WHERE p.post_id = %d ORDER BY created DESC", $post_id
 				)
 			)
 		);
