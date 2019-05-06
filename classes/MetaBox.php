@@ -63,8 +63,6 @@ class MetaBox {
 				),
 			)
 		);
-		$messages = $this->plugin->database->getPostMessages($post->ID);
-		echo "<p>Found ".count($messages)." for post.</p>"
 		?>
 		<div class="components-base-control">
 			<div class="components-base-control__field">
@@ -92,22 +90,47 @@ class MetaBox {
 		$topics = $this->plugin->topics->getTopics();
 		if ( count( $topics ) ) {
 			echo "<div class='components-base-control__field'>";
-			echo "<div class='components-panel__row'>";
-			echo '<label class="components-base-control__label" for="firebase-notifications__topic">Topic:</label>';
-			echo '<select id="firebase-notifications__topic">';
-			foreach ( $topics as $topic ) {
-				echo '<option value="' . $topic->id . '">' . $topic->name . '</option>';
-			}
-			echo '</select>';
+				echo '<label class="components-base-control__label" for="firebase-notifications__topic">Topic: </label>';
+				echo '<select id="firebase-notifications__topic">';
+				foreach ( $topics as $topic ) {
+					echo '<option value="' . $topic->id . '">' . $topic->name . '</option>';
+				}
+				echo '</select>';
 			echo '</div>';
-			echo '</div>';
+
+			echo "<p>";
+				submit_button( "Send", "primary", "firebase-notifications-submit", false );
+				echo "<span class='is-loading'> Sending message</span>";
+				echo "<span class='result-display'> ✅ Message has been sent!</span>";
+				echo "<span class='error-display'> 🚨 Error.</span>";
+			echo "</p>";
+
 		} else {
 			echo "<p>" . __( 'There are no topics defined', Plugin::DOMAIN ) . "</p>";
 		}
-		echo "<p class='is-loading'>Sending message</p>";
-		echo "<p class='result-display'>✅ Message has been sent!</p>";
-		echo "<p class='error-display'>🚨 Error.</p>";
-		submit_button( "Send", "primary", "firebase-notifications-submit" );
+
+
+		// history
+		$messages = $this->plugin->database->getPostMessages($post->ID);
+		$count = count($messages);
+		if($count > 0 ){
+			echo "<h3>".__("History", Plugin::DOMAIN)."</h3>";
+			echo "<ul class='firebase-notifications__history'>";
+			foreach ($messages as $index => $msg){
+				if($index >= 3) break;
+				?>
+				<li class="firebase-notifications__history--item">
+					<strong class="history-item__title"><?php echo $msg->title; ?></strong>
+					<span class="history-item__date"><?php echo  $msg->created; ?></span>
+				</li>
+				<?php
+			}
+			echo "</ul>";
+		}
+		if($count > 3){
+			$url = $this->plugin->toolsPage->getUrl($post->ID);
+			echo "<p><a href='$url'>Show complete history of $count items.</a></p>";
+		}
 
 	}
 
