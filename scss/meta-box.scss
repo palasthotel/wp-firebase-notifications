@@ -3,8 +3,11 @@
 	.is-loading,
 	.error-display,
 	.result-display{
-		margin-top: 1em;
 		display: none;
+	}
+	.is-loading,
+	.result-display{
+		margin-top: 1em;
 	}
 
 	&.is-sending{
@@ -38,14 +41,35 @@
 	&.has-error{
 
 		.error-display{
-			display: block;
+			margin-left: 8px;
+			display: inline-block;
 			&:before{
-				content:"🚨 ";
+				content:"🚨";
 			}
 		}
 
 		#firebase-notifications-submit{
-			display: none;
+			//display: none;
+		}
+	}
+
+	.firebase-notifications__history{
+		li{
+			margin: 0;
+			padding: 5px;
+		}
+		li:nth-child(odd){
+			background-color: #efefef;
+		}
+	}
+	.firebase-notifications__history--item{
+		display: flex;
+		justify-content: space-between;
+		.history-item__title{
+
+		}
+		.history-item__date{
+
 		}
 	}
 

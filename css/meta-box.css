@@ -1,5 +1,7 @@
 @charset "UTF-8";
-#firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .error-display, #firebase-notifications-meta-box .result-display { margin-top: 1em; display: none; }
+#firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .error-display, #firebase-notifications-meta-box .result-display { display: none; }
+
+#firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .result-display { margin-top: 1em; }
 
 #firebase-notifications-meta-box.is-sending .is-loading { display: block; }
 
@@ -11,11 +13,15 @@
 
 #firebase-notifications-meta-box.was-sent #firebase-notifications-submit { display: none; }
 
-#firebase-notifications-meta-box.has-error .error-display { display: block; }
+#firebase-notifications-meta-box.has-error .error-display { margin-left: 8px; display: inline-block; }
 
-#firebase-notifications-meta-box.has-error .error-display:before { content: "🚨 "; }
+#firebase-notifications-meta-box.has-error .error-display:before { content: "🚨"; }
 
-#firebase-notifications-meta-box.has-error #firebase-notifications-submit { display: none; }
+#firebase-notifications-meta-box .firebase-notifications__history li { margin: 0; padding: 5px; }
+
+#firebase-notifications-meta-box .firebase-notifications__history li:nth-child(odd) { background-color: #efefef; }
+
+#firebase-notifications-meta-box .firebase-notifications__history--item { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; -ms-flex-pack: justify; justify-content: space-between; }
 
 @-webkit-keyframes loading { 0% { content: "…"; }
   30% { content: "⋰"; }

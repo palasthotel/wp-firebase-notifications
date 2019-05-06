@@ -6,36 +6,56 @@
 		let hasError = false;
 
 		const $box = $("#firebase-notifications-meta-box");
-		const $title = $("#firebase-notifications__title");
-		const $message = $("#firebase-notifications__body");
-		const $topic = $("#firebase-notifications__topic");
+		const $title = $("#firebase-notifications__title").on("keyup", resetNormalState);
+		const $message = $("#firebase-notifications__body").on("keyup", resetNormalState);
+		const $topic = $("#firebase-notifications__topic").on("change", resetNormalState);
 		const $error = $box.find(".error-display");
+		
+		function resetNormalState() {
+			$box.removeClass("has-error");
+		}
+
+		function showError(errorMessage){
+			$box.removeClass("is-sending").addClass("has-error");
+			$error.text(errorMessage);
+		}
 
 		$box.on("click", "input[type=submit]", function(e){
 			e.preventDefault();
+
+			const title = $title.val();
+			const body = $message.val();
+			const topic = $topic.val();
+
+			if(title.length === 0){
+				showError("Give me a message title, please.");
+				return;
+			}
+			if(body.length === 0){
+				showError("Type some body content.");
+				return;
+			}
+			if(topic.length === 0){
+				showError("Select a topic.");
+				return;
+			}
 
 			if(isSending || hasError) return;
 			isSending = true;
 
 			$box.addClass("is-sending");
 
-			const title = $title.val();
-			const body = $message.val();
-			const topic = $topic.val();
-
 			api.send( topic, title, body, metaBox.payload )
 				.then((response)=>{
 					isSending = false;
 					$box.removeClass("is-sending");
 					if(!response.success){
-						$box.addClass("has-error");
-						$error.text(response.data);
+						showError(response.data);
 						hasError = true;
 						return;
 					}
 					if(typeof response.data !== typeof {}){
-						$box.addClass("has-error");
-						$error.text("I dont understand the returned value");
+						showError("I dont understand the returned value");
 						hasError = true;
 						return;
 					}
@@ -49,8 +69,7 @@
 					isSending = false;
 					hasError = true;
 					console.error(error);
-					$box.removeClass("is-sending").addClass("has-error");
-					$error.text(error.statusText);
+					showError(error.textStatus);
 				});
 
 		});
