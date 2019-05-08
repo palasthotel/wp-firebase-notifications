@@ -68,8 +68,8 @@ class Ajax {
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
 		$topic = sanitize_text_field($_REQUEST["topic"]);
-		$title = sanitize_text_field($_REQUEST["title"]);
-		$body = sanitize_textarea_field($_REQUEST["body"]);
+		$title = sanitize_text_field(stripslashes($_REQUEST["title"]));
+		$body = sanitize_textarea_field(stripslashes($_REQUEST["body"]));
 		$payload = $_REQUEST["payload"];
 
 		if(empty($payload)) wp_send_json_error("missing payloads");
