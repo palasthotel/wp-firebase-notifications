@@ -3,11 +3,11 @@
  * Plugin Name: Firebase Notifications
  * Plugin URI: https://github.com/palasthotel/grid-wordpress
  * Description: We will see...
- * Version: 0.3
+ * Version: 0.4
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 5.0
- * Tested up to: 5.1.1
+ * Tested up to: 5.2
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  *
  * @copyright Copyright (c) 2019, Palasthotel
