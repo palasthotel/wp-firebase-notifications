@@ -8,9 +8,9 @@
 
 .firebase-notifications__item .firebase-notifications__item--created, .firebase-notifications__item .firebase-notifications__item--sent { -webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1; }
 
-.firebase-notifications__item .firebase-notifications__item--topic { -webkit-box-flex: 3; -webkit-flex-grow: 3; -ms-flex-positive: 3; flex-grow: 3; }
+.firebase-notifications__item .firebase-notifications__item--conditions { -webkit-box-flex: 3; -webkit-flex-grow: 3; -ms-flex-positive: 3; flex-grow: 3; }
 
-.firebase-notifications__item .firebase-notifications__item--topic-wrapper { background-color: #0073aa; padding: 2px 6px; border-radius: 2px; display: inline-block; color: white; margin-bottom: 4px; }
+.firebase-notifications__item .firebase-notifications__item--conditions-wrapper { background-color: #0073aa; padding: 2px 6px; border-radius: 2px; display: inline-block; color: white; margin-bottom: 4px; }
 
 .firebase-notifications__item .firebase-notifications__item--show-communication { color: #0073aa; -webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1; }
 
