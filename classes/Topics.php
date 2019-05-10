@@ -27,4 +27,21 @@ class Topics {
 			)
 		);
 	}
+
+	public function getTopicIds(){
+		return array_map(function($item){return $item->id; }, $this->getTopics());
+	}
+
+	public function getAndroidTopic(){
+		return apply_filters(
+			Plugin::FILTER_TOPIC_ANDROID,
+			"android"
+		);
+	}
+	public function getIosTopic(){
+		return apply_filters(
+			Plugin::FILTER_TOPIC_IOS,
+			"ios"
+		);
+	}
 }

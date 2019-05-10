@@ -57,6 +57,13 @@ class MetaBox {
 			Plugin::DOMAIN . "-meta-box",
 			"FirebaseNotifications_MetaBox",
 			array(
+				"topic_ids" => array_merge(
+					$this->plugin->topics->getTopicIds(),
+					array(
+						$this->plugin->topics->getAndroidTopic(),
+						$this->plugin->topics->getIosTopic(),
+					)
+				),
 				"payload" => array(
 					"post_id"   => $post->ID,
 					"permalink" => get_permalink( $post ),
@@ -84,6 +91,22 @@ class MetaBox {
 				          id="firebase-notifications__body"
 				          rows="4"
 				><?php echo $post->post_excerpt; ?></textarea>
+			</div>
+			<div class="components-base-control__field">
+				<label class="components-base-control__label"
+				       for="firebase-notifications__conditions">
+					Conditions <span id="firebase-notifications_conditions--valid"></span>
+				</label>
+				<input class="components-text-control__input"
+				       type="text"
+				       id="firebase-notifications__conditions"
+				       value=""
+				/>
+				<p class="description">
+					Topics: <?php echo implode(", ",array_map(function($item){ return $item->id; }, $this->plugin->topics->getTopics())); ?><br/>
+					Plattforms: <?php echo $this->plugin->topics->getIosTopic(); ?>, <?php echo $this->plugin->topics->getAndroidTopic(); ?><br/>
+					Example: ios AND ( topic1 OR topic2 )
+				</p>
 			</div>
 		</div>
 		<?php
