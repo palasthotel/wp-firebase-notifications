@@ -75,6 +75,23 @@
 
 }
 
+#firebase-notifications_conditions--valid{
+	border: 1px solid #666666;
+	border-radius: 4px;
+	font-size: 0.7rem;
+	padding: 2px 4px;
+	&.is-valid{
+		background-color: #00C853;
+		border-color: darken(#00C853, 5%);
+		color: white;
+	}
+	&.is-invalid{
+		border-color: darken(#E53935, 10%);
+		background-color: #E53935;
+		color:white;
+	}
+}
+
 @keyframes loading {
 	0% {
 		content: "…";
