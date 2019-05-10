@@ -23,6 +23,12 @@
 
 #firebase-notifications-meta-box .firebase-notifications__history--item { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; -ms-flex-pack: justify; justify-content: space-between; }
 
+#firebase-notifications_conditions--valid { border: 1px solid #666666; border-radius: 4px; font-size: 0.7rem; padding: 2px 4px; }
+
+#firebase-notifications_conditions--valid.is-valid { background-color: #00C853; border-color: #00af48; color: white; }
+
+#firebase-notifications_conditions--valid.is-invalid { border-color: #cd1e1a; background-color: #E53935; color: white; }
+
 @-webkit-keyframes loading { 0% { content: "…"; }
   30% { content: "⋰"; }
   60% { content: "⋮"; }
