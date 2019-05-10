@@ -6,6 +6,7 @@
 		let hasError = false;
 
 		const topic_ids = metaBox.topic_ids;
+		let conditions = null;
 
 		const $box = $("#firebase-notifications-meta-box");
 		const $title = $("#firebase-notifications__title").on("keyup", resetNormalState);
@@ -21,6 +22,7 @@
 			const expression = $conditions.val();
 
 			if(!expression.length){
+				conditions = null;
 				setConditionsInvalid();
 				return;
 			}
@@ -28,8 +30,14 @@
 			try{
 				const result = parseConditions(expression);
 				const isValid = isValidConditions(result, topic_ids);
-				(isValid) ? setConditionsValid(): setConditionsInvalid();
+				if(isValid){
+					conditions = result;
+					setConditionsValid()
+				} else {
+					setConditionsInvalid();
+				}
 			} catch (e) {
+				conditions = null;
 				setConditionsInvalid();
 				console.error(e);
 			}
@@ -37,7 +45,6 @@
 		});
 		$conditions.trigger("keyup");
 
-		const $topic = $("#firebase-notifications__topic").on("change", resetNormalState);
 		const $error = $box.find(".error-display");
 		
 		function resetConditionValid(){
@@ -52,15 +59,9 @@
 		function resetNormalState() {
 			$box.removeClass("has-error");
 		}
-
 		function showError(errorMessage){
 			$box.removeClass("is-sending").addClass("has-error");
 			$error.text(errorMessage);
-		}
-
-		function buildTopicsSelect(){
-
-			return $("<select>").append($options);
 		}
 
 		$box.on("click", "input[type=submit]", function(e){
@@ -68,7 +69,6 @@
 
 			const title = $title.val();
 			const body = $message.val();
-			const topic = $topic.val();
 
 			if(title.length === 0){
 				showError("Give me a message title, please.");
@@ -78,8 +78,8 @@
 				showError("Type some body content.");
 				return;
 			}
-			if(topic.length === 0){
-				showError("Select a topic.");
+			if(conditions == null){
+				showError("Please define your topic conditions.");
 				return;
 			}
 
@@ -88,7 +88,7 @@
 
 			$box.addClass("is-sending");
 
-			api.send( topic, title, body, metaBox.payload )
+			api.send( conditions, title, body, metaBox.payload )
 				.then((response)=>{
 					isSending = false;
 					$box.removeClass("is-sending");
@@ -106,7 +106,7 @@
 
 					$title.attr("readonly", "readonly");
 					$message.attr("readonly", "readonly");
-					$topic.attr("disabled", "disabled");
+					$conditions.attr("readonly", "readonly");
 				})
 				.catch((error)=>{
 					isSending = false;

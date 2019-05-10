@@ -28,6 +28,7 @@ namespace Palasthotel\FirebaseNotifications;
  * @property ToolsPage toolsPage
  * @property Settings settings
  * @property string basename
+ * @property DatabaseUpdates databaseUpdates
  */
 class Plugin {
 
@@ -45,6 +46,7 @@ class Plugin {
 	const ACTION_MESSAGE_SENT = "firebase_notifications_message_sent";
 
 	const OPTION_CONFIG = "_firebase_notifications_config_json";
+	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
 
 	/**
 	 * Plugin constructor.
@@ -58,6 +60,7 @@ class Plugin {
 
 		$this->cloudMessagingApi = new CloudMessagingApi($this);
 		$this->database = new Database();
+		$this->databaseUpdates = new DatabaseUpdates($this->database);
 		$this->ajax = new Ajax($this);
 		$this->notificationsSettingsThemeTemplate = new NotificationsSettingsThemeTemplate($this);
 		$this->metaBox = new MetaBox($this);
@@ -70,7 +73,6 @@ class Plugin {
 		 */
 		register_activation_hook( __FILE__, array( $this, "activation" ) );
 		register_deactivation_hook( __FILE__, array( $this, "deactivation" ) );
-
 	}
 
 	/**
@@ -78,6 +80,7 @@ class Plugin {
 	 */
 	function activation() {
 		$this->database->create();
+		$this->databaseUpdates->setToLatestSchemaVersion();
 		$this->notificationsSettingsThemeTemplate->add_endpoint();
 		flush_rewrite_rules();
 	}

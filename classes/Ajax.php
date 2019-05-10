@@ -67,7 +67,22 @@ class Ajax {
 
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
-		$topic = sanitize_text_field($_REQUEST["topic"]);
+		$conditions = $_REQUEST["conditions"];
+		foreach ($conditions as $index => $item){
+			if(is_string($item)){
+				$conditions[$index] = sanitize_text_field($item);
+			} else if(is_array($item)) {
+				foreach ($item as $_index => $_item){
+					if(is_string($_item)){
+						$item[$_index] = sanitize_text_field($_item);
+					} else {
+						wp_send_json_error("syntax error in conditions. String expected...");
+					}
+				}
+			} else {
+				wp_send_json_error("syntax error in conditions. String or array expected...");
+			}
+		}
 		$title = sanitize_text_field(stripslashes($_REQUEST["title"]));
 		$body = sanitize_textarea_field(stripslashes($_REQUEST["body"]));
 		$payload = $_REQUEST["payload"];
@@ -79,9 +94,9 @@ class Ajax {
 			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field($value);
 		}
 
-		if(empty($topic) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
+		if(empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
 
-		$message = Message::build($topic, $title, $body, $payload);
+		$message = Message::build($conditions, $title, $body, $payload);
 
 		$message = $this->plugin->database->add($message);
 		if(!$message) wp_send_json_error("Could not save notification");

@@ -5,19 +5,19 @@
 		ajax_url
 	} = api;
 
-	api.send = async (topic, title, body, payload = {} ) => {
-		if(isEmpty(topic) || isEmpty(title) || isEmpty(body)){
+	api.send = async (conditions, title, body, payload = {} ) => {
+		if(isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
 			throw "Missing arguments...";
 		}
 
-		console.log(topic, title, body);
+		console.log(conditions, title, body);
 		console.log(payload);
 
-		return post(actions.send, {title, body, topic, payload});
+		return post(actions.send, {title, body, conditions, payload});
 	};
 
 	function isEmpty(arg) {
-		return isUndefined(arg) || arg === "";
+		return isUndefined(arg) || arg === "" || arg.length < 1;
 	}
 	function isUndefined(arg){
 		return (typeof arg === typeof undefined)
