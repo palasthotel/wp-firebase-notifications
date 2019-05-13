@@ -45,6 +45,7 @@ class Database {
 		);
 
 		if($numberInserted){
+			$this->wpdb->query("UPDATE $this->tablename SET created = now() WHERE id = $numberInserted");
 			$message->id = $this->wpdb->insert_id;
 			do_action(Plugin::ACTION_MESSAGE_ADD, $message);
 			return $message;
@@ -156,20 +157,19 @@ class Database {
 
 		dbDelta( "CREATE TABLE IF NOT EXISTS $this->tablename (
 			 id bigint(20) unsigned not null auto_increment,
-			 conditions varchar(255) not null,
+			 conditions text not null,
 			 plattforms varchar(100) not null,
-			 title varchar(255) not null,
+			 title varchar(190) not null,
 			 body text not null,
 			 payload text not null,
-			 created datetime default now(),
+			 created datetime default null,
 			 sent datetime default null,
 			 result text default null,
 			 primary key (id),
 			 key (title),
-			 key (conditions),
 			 key (plattforms),
 			 key (sent),
-			 key(created)
+			 key (created)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
 
 		dbDelta( "CREATE TABLE IF NOT EXISTS $this->tablename_posts (
