@@ -38,8 +38,6 @@ class Plugin {
 	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend";
 
 	const FILTER_TOPICS = "firebase_notifications_topics";
-	const FILTER_TOPIC_ANDROID = "firebase_notifications_topic_android";
-	const FILTER_TOPIC_IOS = "firebase_notifications_topic_ios";
 	const FILTER_MESSAGE = "firebase_notifications_message";
 
 	const ACTION_MESSAGE_ADD = "firebase_notifications_message_add";

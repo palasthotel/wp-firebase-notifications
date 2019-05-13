@@ -80,6 +80,8 @@ class DatabaseUpdates {
 	public function update_1()
 	{
 		$tablename = $this->database->tablename;
+		$this->database->wpdb->query("ALTER TABLE $tablename ADD plattforms VARCHAR(100) AFTER id");
+		$this->database->wpdb->query("UPDATE $tablename SET plattforms = 'android,ios,web'");
 		$this->database->wpdb->query("ALTER TABLE $tablename CHANGE topic conditions VARCHAR(255)");
 		$this->database->wpdb->query("UPDATE $tablename SET conditions = concat('[\"',conditions,'\"]')");
 	}

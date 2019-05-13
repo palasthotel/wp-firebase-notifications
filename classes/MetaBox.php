@@ -57,13 +57,7 @@ class MetaBox {
 			Plugin::DOMAIN . "-meta-box",
 			"FirebaseNotifications_MetaBox",
 			array(
-				"topic_ids" => array_merge(
-					$this->plugin->topics->getTopicIds(),
-					array(
-						$this->plugin->topics->getAndroidTopic(),
-						$this->plugin->topics->getIosTopic(),
-					)
-				),
+				"topic_ids" => $this->plugin->topics->getTopicIds(),
 				"payload"   => array(
 					"post_id"   => $post->ID,
 					"permalink" => get_permalink( $post ),
@@ -92,15 +86,34 @@ class MetaBox {
 				          rows="4"
 				><?php echo $post->post_excerpt; ?></textarea>
 			</div>
+			<div class="components-base-control__field">
+				<label class="components-base-control__label">
+					Plattforms
+				</label>
+				<p>
+					<label><input type="checkbox" name="plattform[]" checked="checked" value="android" /> Android</label>
+					<label><input type="checkbox" name="plattform[]" checked="checked" value="ios" /> iOS</label>
+					<label><input type="checkbox" name="plattform[]" checked="checked" value="web" /> Web</label>
+				</p>
+			</div>
 
 			<?php
 			$topics = $this->plugin->topics->getTopics();
 			if ( count( $topics ) ) {
+
+				$examples = array();
+				if(count($topics) > 2){
+					$examples[] = $topics[2]->id." AND ( ".$topics[0]->id." OR ".$topics[1]->id." )";
+				} else {
+					$examples[] =  $topics[0]->id." AND ".$topics[1]->id;
+					$examples[] =  $topics[0]->id." OR ".$topics[1]->id;
+				}
+
 				?>
 				<div class="components-base-control__field">
 					<label class="components-base-control__label"
 					       for="firebase-notifications__conditions">
-						Conditions <span
+						Topics <span
 								id="firebase-notifications_conditions--valid"></span>
 					</label>
 					<input class="components-text-control__input"
@@ -112,10 +125,7 @@ class MetaBox {
 						Topics: <?php echo implode( ", ", array_map( function ( $item ) {
 							return $item->id;
 						}, $topics ) ); ?><br/>
-						Plattforms: <?php echo $this->plugin->topics->getIosTopic(); ?>
-						, <?php echo $this->plugin->topics->getAndroidTopic(); ?>
-						<br/>
-						Example: "ios AND ( topic1 OR topic2 )"
+						Examples: "<?php echo implode('" , "', $examples); ?>"
 					</p>
 				</div>
 				<?php

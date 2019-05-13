@@ -11,6 +11,15 @@
 		const $box = $("#firebase-notifications-meta-box");
 		const $title = $("#firebase-notifications__title").on("keyup", resetNormalState);
 		const $message = $("#firebase-notifications__body").on("keyup", resetNormalState);
+		const $plattforms = $box.find("[name='plattform[]']");
+		$plattforms.on("change", function(){
+			const values = getPlattforms();
+			if(values.length){
+				resetNormalState();
+			} else {
+				showPlattformsError();
+			}
+		});
 
 		// json encoded topic configuration
 		const $conditionsValid = $("#firebase-notifications_conditions--valid");
@@ -46,6 +55,15 @@
 		$conditions.trigger("keyup");
 
 		const $error = $box.find(".error-display");
+
+		function getPlattforms() {
+			const values = [];
+			$plattforms.each((index,el)=>{
+				const $el = $(el);
+				if($el.is(":checked")) values.push($el.val());
+			});
+			return values;
+		}
 		
 		function resetConditionValid(){
 			$conditionsValid.removeClass("is-invalid").removeClass("is-valid");
@@ -59,6 +77,9 @@
 		function resetNormalState() {
 			$box.removeClass("has-error");
 		}
+		function showPlattformsError(){
+			showError("At least one plattform needs to be activated.");
+		}
 		function showError(errorMessage){
 			$box.removeClass("is-sending").addClass("has-error");
 			$error.text(errorMessage);
@@ -69,6 +90,7 @@
 
 			const title = $title.val();
 			const body = $message.val();
+			const plattforms = getPlattforms();
 
 			if(title.length === 0){
 				showError("Give me a message title, please.");
@@ -82,13 +104,17 @@
 				showError("Please define your topic conditions.");
 				return;
 			}
+			if(!plattforms.length){
+				showPlattformsError();
+				return;
+			}
 
 			if(isSending || hasError) return;
 			isSending = true;
 
 			$box.addClass("is-sending");
 
-			api.send( conditions, title, body, metaBox.payload )
+			api.send( plattforms, conditions, title, body, metaBox.payload )
 				.then((response)=>{
 					isSending = false;
 					$box.removeClass("is-sending");

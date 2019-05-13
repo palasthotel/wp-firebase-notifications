@@ -83,6 +83,17 @@ class Ajax {
 				wp_send_json_error("syntax error in conditions. String or array expected...");
 			}
 		}
+		$plattforms = $_REQUEST["plattforms"];
+
+		if(!is_array($plattforms)){
+			wp_send_json_error("plattforms array not found");
+		}
+		$valid_plattforms = array("ios", "android", "web");
+		foreach($plattforms as $p){
+			if(!is_string($p)) wp_send_json_error("Plattforms array may only contain string values");
+			if(!in_array($p,$valid_plattforms)) wp_send_json_error("Not a valid plattforms $p");
+		}
+
 		$title = sanitize_text_field(stripslashes($_REQUEST["title"]));
 		$body = sanitize_textarea_field(stripslashes($_REQUEST["body"]));
 		$payload = $_REQUEST["payload"];
@@ -94,14 +105,15 @@ class Ajax {
 			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field($value);
 		}
 
-		if(empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
+		if( empty($plattforms) || empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
 
-		$message = Message::build($conditions, $title, $body, $payload);
+		$message = Message::build($plattforms,$conditions, $title, $body, $payload);
 
 		$message = $this->plugin->database->add($message);
 		if(!$message) wp_send_json_error("Could not save notification");
 
 		try{
+
 			$result = $this->plugin->cloudMessagingApi->send($message);
 			$message->result = $result;
 			$success = $this->plugin->database->setSent( $message->id, $result);

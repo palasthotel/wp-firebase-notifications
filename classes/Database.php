@@ -36,11 +36,12 @@ class Database {
 			$this->tablename,
 			array(
 				"conditions" => json_encode($message->conditions),
+				"plattforms" => implode(",",$message->plattforms),
 				"title" => $message->title,
 				"body" => $message->body,
 				"payload" => json_encode($message->payload),
 			),
-			array( "%s","%s","%s","%s", "%s")
+			array( "%s","%s","%s","%s","%s", "%s")
 		);
 
 		if($numberInserted){
@@ -135,6 +136,7 @@ class Database {
 	 */
 	function mapMessage($item){
 		$msg = Message::build(
+			explode(",", $item->plattforms),
 			json_decode($item->conditions),
 			$item->title,
 			$item->body,
@@ -155,6 +157,7 @@ class Database {
 		dbDelta( "CREATE TABLE IF NOT EXISTS $this->tablename (
 			 id bigint(20) unsigned not null auto_increment,
 			 conditions varchar(255) not null,
+			 plattforms varchar(100) not null,
 			 title varchar(255) not null,
 			 body text not null,
 			 payload text not null,
@@ -164,6 +167,7 @@ class Database {
 			 primary key (id),
 			 key (title),
 			 key (conditions),
+			 key (plattforms),
 			 key (sent),
 			 key(created)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );

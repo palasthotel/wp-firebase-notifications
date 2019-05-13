@@ -5,15 +5,17 @@
 		ajax_url
 	} = api;
 
-	api.send = async (conditions, title, body, payload = {} ) => {
-		if(isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
+	api.send = async (plattforms, conditions, title, body, payload = {} ) => {
+		if(isEmpty(plattforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
 			throw "Missing arguments...";
 		}
 
-		console.log(conditions, title, body);
+		console.log(plattforms);
+		console.log(conditions);
+		console.log(title, body);
 		console.log(payload);
 
-		return post(actions.send, {title, body, conditions, payload});
+		return post(actions.send, {title, body, plattforms, conditions, payload});
 	};
 
 	function isEmpty(arg) {

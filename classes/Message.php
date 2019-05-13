@@ -14,6 +14,7 @@ namespace Palasthotel\FirebaseNotifications;
  * @property string title
  * @property string body
  * @property array payload
+ * @property string[] plattforms
  */
 class Message {
 
@@ -40,12 +41,14 @@ class Message {
 	/**
 	 * Notification constructor.
 	 *
+	 * @param array $plattforms
 	 * @param array $conditions
 	 * @param string $title
 	 * @param string $body
 	 * @param array $payload
 	 */
-	private function __construct( $conditions, $title, $body, $payload ) {
+	private function __construct( $plattforms, $conditions, $title, $body, $payload ) {
+		$this->plattforms = $plattforms;
 		$this->conditions = $conditions;
 		$this->title      = $title;
 		$this->body       = $body;
@@ -53,17 +56,18 @@ class Message {
 	}
 
 	/**
-	 * @param $conditions
-	 * @param $title
-	 * @param $body
-	 * @param $payload
+	 * @param string[] $plattforms
+	 * @param array $conditions
+	 * @param string $title
+	 * @param string $body
+	 * @param array $payload
 	 *
 	 * @return Message
 	 */
-	public static function build( $conditions, $title, $body, $payload ) {
+	public static function build( $plattforms, $conditions, $title, $body, $payload ) {
 		return apply_filters(
 			Plugin::FILTER_MESSAGE,
-			new Message( $conditions, $title, $body, $payload )
+			new Message( $plattforms, $conditions, $title, $body, $payload )
 		);
 	}
 
@@ -149,14 +153,72 @@ class Message {
 	 */
 	public function getCloudMessageArray() {
 		//https://firebase-php.readthedocs.io/en/latest/cloud-messaging.html
-		return array(
-			'condition'    => $this->conditionForNotifications(),
-			'notification' => array(
-				'title' => $this->title,
-				'body'  => $this->body,
-			),
+
+		// base
+		$msg = array(
+			'condition' => $this->conditionForNotifications(),
 			'data'         => $this->payload,
 		);
+
+		if(count($this->plattforms) == 3){
+			// send to all plattforms
+			$msg = array_merge(
+				$msg,
+				array(
+					'notification' => array(
+						'title' => $this->title,
+						'body'  => $this->body,
+					)
+				)
+			);
+		} else {
+			if(in_array("android",$this->plattforms)){
+				$msg = array_merge(
+					$msg,
+					array(
+						'android' => array(
+							'notification' => array(
+								'title' => $this->title,
+								'body' => $this->body,
+							)
+						)
+					)
+				);
+			}
+			if(in_array("ios", $this->plattforms)){
+				$msg = array_merge(
+					$msg,
+					array(
+						'apns' => array(
+							'payload' => array(
+								'aps' => array(
+									'alert' => array(
+										'title' => $this->title,
+										'body' => $this->body,
+									),
+								),
+							),
+						),
+					)
+				);
+			}
+			if(in_array("web", $this->plattforms)){
+				$msg = array_merge(
+					$msg,
+					array(
+						'webpush' => array(
+							'notification' => array(
+								'title' => $this->title,
+								'body' => $this->body,
+							),
+						),
+					)
+				);
+			}
+		}
+
+		return $msg;
+
 	}
 
 }
