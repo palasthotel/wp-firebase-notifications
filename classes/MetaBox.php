@@ -161,8 +161,14 @@ class MetaBox {
 				}
 				?>
 				<li class="firebase-notifications__history--item">
-					<strong class="history-item__title"><?php echo $msg->title; ?></strong>
-					<span class="history-item__date"><?php echo $msg->created; ?></span>
+					<div class="history-item__left">
+						<div class="history-item__title"><?php echo $msg->title; ?></div>
+						<div class="history-item__conditions"><span><?php echo $msg->conditionForDisplay(); ?></span></div>
+					</div>
+					<div class="history-item__right">
+						<span class="history-item__date"><?php echo $msg->created; ?><br><?php echo implode(", ", $msg->plattforms) ?></span>
+					</div>
+
 				</li>
 				<?php
 			}

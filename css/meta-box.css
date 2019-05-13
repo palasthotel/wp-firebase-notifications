@@ -23,6 +23,8 @@
 
 #firebase-notifications-meta-box .firebase-notifications__history--item { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; -ms-flex-pack: justify; justify-content: space-between; }
 
+#firebase-notifications-meta-box .firebase-notifications__history--item .history-item__title { font-weight: bold; }
+
 #firebase-notifications_conditions--valid { border: 1px solid #666666; border-radius: 4px; font-size: 0.7rem; padding: 2px 4px; }
 
 #firebase-notifications_conditions--valid.is-valid { background-color: #00C853; border-color: #00af48; color: white; }

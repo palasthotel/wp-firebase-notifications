@@ -85,6 +85,19 @@
 			$error.text(errorMessage);
 		}
 
+		function lockUI(){
+			$title.attr("readonly", "readonly");
+			$message.attr("readonly", "readonly");
+			$conditions.attr("readonly", "readonly");
+			$plattforms.attr("disabled", "disabled");
+		}
+		function unlockUI(){
+			$title.removeAttr("readonly");
+			$message.removeAttr("readonly");
+			$conditions.removeAttr("readonly");
+			$plattforms.removeAttr("disabled");
+		}
+
 		$box.on("click", "input[type=submit]", function(e){
 			e.preventDefault();
 
@@ -113,6 +126,7 @@
 			isSending = true;
 
 			$box.addClass("is-sending");
+			lockUI();
 
 			api.send( plattforms, conditions, title, body, metaBox.payload )
 				.then((response)=>{
@@ -129,10 +143,6 @@
 						return;
 					}
 					$box.addClass("was-sent");
-
-					$title.attr("readonly", "readonly");
-					$message.attr("readonly", "readonly");
-					$conditions.attr("readonly", "readonly");
 				})
 				.catch((error)=>{
 					isSending = false;

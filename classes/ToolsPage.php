@@ -101,9 +101,11 @@ class ToolsPage {
 				echo "<div class='firebase-notifications__item--footer'>";
 
 					echo "<div class='firebase-notifications__item--sent'>Sent: $readableSent</div>";
-					echo "<div class='firebase-notifications__item--conditions'>Conditions: ";
+					echo "<div class='firebase-notifications__item--plattform'>".implode(", ",$item->plattforms)."</div>";
+					echo "<div class='firebase-notifications__item--conditions'>";
 					echo "<span class='firebase-notifications__item--conditions-wrapper'>".$item->conditionForDisplay() . "</span>";
 					echo "</div>";
+
 					echo "<div class='firebase-notifications__item--created'>Created: $readableCreated</div>";
 
 				echo "</div>";

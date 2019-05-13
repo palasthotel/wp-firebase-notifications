@@ -30,8 +30,15 @@ $font-light: #72777c;
 		color: $font-light;
 	}
 	.firebase-notifications__item--created,
-	.firebase-notifications__item--sent{
+	.firebase-notifications__item--sent {
 		flex-grow: 1;
+	}
+	.firebase-notifications__item--created{
+		text-align: right;
+	}
+
+	.firebase-notifications__item--plattform{
+		width: 160px;
 	}
 	.firebase-notifications__item--conditions{
 		flex-grow: 3;
