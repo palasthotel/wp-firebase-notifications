@@ -82,6 +82,7 @@ class DatabaseUpdates {
 		$tablename = $this->database->tablename;
 		$this->database->wpdb->query("ALTER TABLE $tablename ADD plattforms VARCHAR(100) AFTER id");
 		$this->database->wpdb->query("UPDATE $tablename SET plattforms = 'android,ios,web'");
+		$this->database->wpdb->query("ALTER TABLE $tablename DROP INDEX topic");
 		$this->database->wpdb->query("ALTER TABLE $tablename CHANGE topic conditions text");
 		$this->database->wpdb->query("UPDATE $tablename SET conditions = concat('[\"',conditions,'\"]')");
 	}
