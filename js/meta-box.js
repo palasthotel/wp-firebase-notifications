@@ -153,6 +153,18 @@
 
 		});
 
+		// ------------------------------------
+		// examples
+		// ------------------------------------
+		const $examples = $box.find(".firebase-notifications__examples");
+		const $examples_content = $examples.find(".examples__content");
+		$examples.on("click", ".examples__header", function(){
+			$examples_content.toggle();
+		});
+		$examples.on("click", ".examples__code--wrapper", function() {
+			$conditions.val($(this).text()).trigger("keyup");
+		})
+
 	});
 
 	// ------------------------------------
@@ -235,5 +247,7 @@
 			return item;
 		});
 	}
+
+
 
 })(jQuery, FirebaseNotificationsApi, FirebaseNotifications_MetaBox);

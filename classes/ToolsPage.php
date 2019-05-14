@@ -92,7 +92,7 @@ class ToolsPage {
 				}
 				$readableCreated = date_i18n($format, strtotime($item->sent));
 				$readableSent = (empty($item->sent))?
-					__(" 🚨 Not sent", Plugin::DOMAIN)
+					"🚨 "._x("Not sent", "Tools page", Plugin::DOMAIN)
 					:
 					" ✅ ".date_i18n($format, strtotime($item->sent));
 				echo "<li class='firebase-notifications__item card'>";
@@ -106,18 +106,20 @@ class ToolsPage {
 					echo "<span class='firebase-notifications__item--conditions-wrapper'>".$item->conditionForDisplay() . "</span>";
 					echo "</div>";
 
-					echo "<div class='firebase-notifications__item--created'>Created: $readableCreated</div>";
+					echo "<div class='firebase-notifications__item--created'>".__( "Created:", Plugin::DOMAIN )."$readableCreated</div>";
 
 				echo "</div>";
 				echo "<div class='firebase-notifications__item--communication'>";
-					echo "<label class='firebase-notifications__item--payload-label'>Payload</label>";
+					echo "<label class='firebase-notifications__item--payload-label'>".__("Payload", Plugin::DOMAIN)."</label>";
 					echo "<ul class='firebase-notifications__item--payload'>";
 					foreach ($item->payload as $key => $value){
 						echo "<li><strong>$key:</strong> $value</li>";
 					}
 					echo "</ul>";
 					if($item->sent != null){
-						echo "<label class='firebase-notifications__item--result-label'>Answer from Firebase Cloud Messaging</label>";
+						echo "<label class='firebase-notifications__item--result-label'>";
+						_e("Answer from Firebase Cloud Messaging", Plugin::DOMAIN);
+						echo "</label>";
 						echo "<ul class='firebase-notifications__item--result'>";
 						foreach ($item->result as $key => $value){
 							echo "<li><strong>$key:</strong> $value</li>";

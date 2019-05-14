@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Firebase Notifications\n"
+"POT-Creation-Date: 2019-05-14 10:15+0200\n"
+"PO-Revision-Date: 2019-05-14 10:15+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: Plugin.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: classes/Ajax.php:66
+msgid "No access"
+msgstr "Zugriff verweigert"
+
+#. Plugin Name of the plugin/theme
+#: classes/MetaBox.php:34 classes/ToolsPage.php:46 classes/ToolsPage.php:59
+msgid "Firebase Notifications"
+msgstr ""
+
+#: classes/MetaBox.php:72
+msgid "Title"
+msgstr "Titel"
+
+#: classes/MetaBox.php:81
+msgid "Body"
+msgstr "Text"
+
+#: classes/MetaBox.php:88
+msgid "Plattforms"
+msgstr "Plafformen"
+
+#: classes/MetaBox.php:110
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' and are also "
+"subscribed to the topic '%s'."
+msgstr ""
+"Sende eine Nachricht an alle Geräte die ‚%s‘ und das Thema ‚%s‘ abonniert "
+"haben."
+
+#: classes/MetaBox.php:116
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' or to '%s' or to "
+"both topics."
+msgstr ""
+"Sende eine Nachricht an alle Geräte die ‚%s‘ oder ‚%s‘ oder beide Themen "
+"abonniert haben."
+
+#: classes/MetaBox.php:124
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' and are also "
+"subscribed to '%s' or to '%s' or to both topics."
+msgstr ""
+"Sende eine Nachricht an alle Geräte die ‚%s‘ und eines der Themen ‚%s‘ oder "
+"‚%s‘ oder beide abonniert haben."
+
+#: classes/MetaBox.php:129
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' or are subscribed "
+"to both topics '%s' and '%s'."
+msgstr ""
+"Sende eine Nachricht an alle Geräte die das Thema ‚%s‘ oder beide Themen "
+"‚%s‘ und ‚%s‘  abonniert haben."
+
+#: classes/MetaBox.php:165
+msgid "Show examples"
+msgstr "Beispiele zeigen"
+
+#: classes/MetaBox.php:170
+msgid "Example"
+msgstr "Beispiel"
+
+#: classes/MetaBox.php:173
+msgctxt "post meta box condition examples"
+msgid "Use"
+msgstr "Verwenden"
+
+#: classes/MetaBox.php:197
+msgid "Send"
+msgstr "Senden"
+
+#: classes/MetaBox.php:198
+msgid "Sending message"
+msgstr "Sende Nachricht"
+
+#: classes/MetaBox.php:199
+msgid "Message has been sent!"
+msgstr "Nachricht wurde versandt!"
+
+#: classes/MetaBox.php:200
+msgctxt "Send message post meta box response"
+msgid "Error."
+msgstr "Fehler."
+
+#: classes/MetaBox.php:204
+msgid "Configuration missing. There are no topics defined"
+msgstr "Konfiguration fehlt. Es sind keine Themen definiert"
+
+#: classes/MetaBox.php:211
+msgid "History"
+msgstr "Verlauf"
+
+#: classes/MetaBox.php:235
+#, php-format
+msgid "Show complete history of %d items."
+msgstr "Zum gesamten Verlauf mit %d Einträgen."
+
+#: classes/Settings.php:43
+msgid "Google Services"
+msgstr ""
+
+#: classes/ToolsPage.php:45
+msgid "Tools ‹ Firebase Notifications"
+msgstr ""
+
+#: classes/ToolsPage.php:95
+msgctxt "Tools page"
+msgid "Not sent"
+msgstr "Nicht versendet"
+
+#: classes/ToolsPage.php:109
+msgid "Created:"
+msgstr "Erstellt:"
+
+#: classes/ToolsPage.php:113
+msgid "Payload"
+msgstr ""
+
+#: classes/ToolsPage.php:121
+msgid "Answer from Firebase Cloud Messaging"
+msgstr "Antwort von Firebase Cloud Messaging"
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/palasthotel/wp-firebase-notifications"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "We will see..."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)"
+msgstr "Palasthotel <rezeption@palasthotel.de> (in Person: Edward Bock)"
+
+#. Author URI of the plugin/theme
+msgid "http://www.palasthotel.de"
+msgstr ""

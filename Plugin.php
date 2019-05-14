@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Firebase Notifications
- * Plugin URI: https://github.com/palasthotel/grid-wordpress
+ * Plugin URI: https://github.com/palasthotel/wp-firebase-notifications
  * Description: We will see...
  * Version: 0.5
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
@@ -9,6 +9,8 @@
  * Requires at least: 5.0
  * Tested up to: 5.2
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
+ * Text Domain:       firebase-notifications
+ * Domain Path:       /languages
  *
  * @copyright Copyright (c) 2019, Palasthotel
  * @package Palasthotel\FirebaseNotifications
@@ -50,6 +52,16 @@ class Plugin {
 	 * Plugin constructor.
 	 */
 	private function __construct() {
+
+		/**
+		 * load translations
+		 */
+		load_plugin_textdomain(
+			Plugin::DOMAIN,
+			FALSE,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
+
 		$this->path = plugin_dir_path(__FILE__);
 		$this->url  = plugin_dir_url(__FILE__);
 		$this->basename = plugin_basename(__FILE__);

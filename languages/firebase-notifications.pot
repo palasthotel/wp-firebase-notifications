@@ -1,0 +1,138 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Firebase Notifications\n"
+"POT-Creation-Date: 2019-05-14 10:01+0200\n"
+"PO-Revision-Date: 2019-05-14 10:01+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: Plugin.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#. Plugin Name of the plugin/theme
+#: classes/MetaBox.php:34 classes/ToolsPage.php:46 classes/ToolsPage.php:59
+msgid "Firebase Notifications"
+msgstr ""
+
+#: classes/MetaBox.php:72
+msgid "Title"
+msgstr ""
+
+#: classes/MetaBox.php:81
+msgid "Body"
+msgstr ""
+
+#: classes/MetaBox.php:88
+msgid "Plattforms"
+msgstr ""
+
+#: classes/MetaBox.php:110
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' and are also "
+"subscribed to the topic '%s'."
+msgstr ""
+
+#: classes/MetaBox.php:116
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' or to '%s' or to "
+"both topics."
+msgstr ""
+
+#: classes/MetaBox.php:124
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' and are also "
+"subscribed to '%s' or to '%s' or to both topics."
+msgstr ""
+
+#: classes/MetaBox.php:129
+#, php-format
+msgid ""
+"Send a message to all devices that are subscribed to '%s' or are subscribed "
+"to both topics '%s' and '%s'."
+msgstr ""
+
+#: classes/MetaBox.php:165
+msgid "Show examples"
+msgstr ""
+
+#: classes/MetaBox.php:170
+msgid "Example"
+msgstr ""
+
+#: classes/MetaBox.php:173
+msgctxt "post meta box condition examples"
+msgid "Use"
+msgstr ""
+
+#: classes/MetaBox.php:197
+msgid "Send"
+msgstr ""
+
+#: classes/MetaBox.php:198
+msgid "Sending message"
+msgstr ""
+
+#: classes/MetaBox.php:199
+msgid "Message has been sent!"
+msgstr ""
+
+#: classes/MetaBox.php:200
+msgctxt "Send message post meta box response"
+msgid "Error."
+msgstr ""
+
+#: classes/MetaBox.php:204
+msgid "Configuration missing. There are no topics defined"
+msgstr ""
+
+#: classes/MetaBox.php:211
+msgid "History"
+msgstr ""
+
+#: classes/MetaBox.php:235
+#, php-format
+msgid "Show complete history of %d items."
+msgstr ""
+
+#: classes/Settings.php:43
+msgid "Google Services"
+msgstr ""
+
+#: classes/ToolsPage.php:45
+msgid "Tools ‹ Firebase Notifications"
+msgstr ""
+
+#: classes/ToolsPage.php:95
+msgid " 🚨 Not sent"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/palasthotel/grid-wordpress"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "We will see..."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.palasthotel.de"
+msgstr ""

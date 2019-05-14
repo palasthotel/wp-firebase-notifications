@@ -63,7 +63,7 @@ class Ajax {
 	public function send(){
 
 		// TODO: make it configuratable
-		if(!current_user_can('publish_posts')) wp_send_json_error("No access");
+		if(!current_user_can('publish_posts')) wp_send_json_error(__("No access", Plugin::DOMAIN));
 
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
