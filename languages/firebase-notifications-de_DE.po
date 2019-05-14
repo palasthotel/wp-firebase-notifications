@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Firebase Notifications\n"
-"POT-Creation-Date: 2019-05-14 10:15+0200\n"
-"PO-Revision-Date: 2019-05-14 10:15+0200\n"
+"POT-Creation-Date: 2019-05-14 20:42+0200\n"
+"PO-Revision-Date: 2019-05-14 20:42+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -30,19 +30,27 @@ msgstr "Zugriff verweigert"
 msgid "Firebase Notifications"
 msgstr ""
 
-#: classes/MetaBox.php:72
+#: classes/MetaBox.php:63
+msgid "Invalid"
+msgstr "Ungültig"
+
+#: classes/MetaBox.php:64
+msgid "Valid"
+msgstr "Gültig"
+
+#: classes/MetaBox.php:78
 msgid "Title"
 msgstr "Titel"
 
-#: classes/MetaBox.php:81
+#: classes/MetaBox.php:87
 msgid "Body"
 msgstr "Text"
 
-#: classes/MetaBox.php:88
+#: classes/MetaBox.php:94
 msgid "Plattforms"
 msgstr "Plafformen"
 
-#: classes/MetaBox.php:110
+#: classes/MetaBox.php:116
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' and are also "
@@ -51,7 +59,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ und das Thema ‚%s‘ abonniert "
 "haben."
 
-#: classes/MetaBox.php:116
+#: classes/MetaBox.php:122
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' or to '%s' or to "
@@ -60,7 +68,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ oder ‚%s‘ oder beide Themen "
 "abonniert haben."
 
-#: classes/MetaBox.php:124
+#: classes/MetaBox.php:130
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' and are also "
@@ -69,7 +77,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ und eines der Themen ‚%s‘ oder "
 "‚%s‘ oder beide abonniert haben."
 
-#: classes/MetaBox.php:129
+#: classes/MetaBox.php:135
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' or are subscribed "
@@ -78,45 +86,45 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die das Thema ‚%s‘ oder beide Themen "
 "‚%s‘ und ‚%s‘  abonniert haben."
 
-#: classes/MetaBox.php:165
+#: classes/MetaBox.php:171
 msgid "Show examples"
 msgstr "Beispiele zeigen"
 
-#: classes/MetaBox.php:170
+#: classes/MetaBox.php:176
 msgid "Example"
 msgstr "Beispiel"
 
-#: classes/MetaBox.php:173
+#: classes/MetaBox.php:179
 msgctxt "post meta box condition examples"
 msgid "Use"
 msgstr "Verwenden"
 
-#: classes/MetaBox.php:197
+#: classes/MetaBox.php:203
 msgid "Send"
 msgstr "Senden"
 
-#: classes/MetaBox.php:198
+#: classes/MetaBox.php:204
 msgid "Sending message"
 msgstr "Sende Nachricht"
 
-#: classes/MetaBox.php:199
+#: classes/MetaBox.php:205
 msgid "Message has been sent!"
 msgstr "Nachricht wurde versandt!"
 
-#: classes/MetaBox.php:200
+#: classes/MetaBox.php:206
 msgctxt "Send message post meta box response"
 msgid "Error."
 msgstr "Fehler."
 
-#: classes/MetaBox.php:204
+#: classes/MetaBox.php:210
 msgid "Configuration missing. There are no topics defined"
 msgstr "Konfiguration fehlt. Es sind keine Themen definiert"
 
-#: classes/MetaBox.php:211
+#: classes/MetaBox.php:217
 msgid "History"
 msgstr "Verlauf"
 
-#: classes/MetaBox.php:235
+#: classes/MetaBox.php:241
 #, php-format
 msgid "Show complete history of %d items."
 msgstr "Zum gesamten Verlauf mit %d Einträgen."

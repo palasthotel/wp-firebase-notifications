@@ -5,6 +5,7 @@
 		let isSending = false;
 		let hasError = false;
 
+		const i18n = metaBox.i18n;
 		const topic_ids = metaBox.topic_ids;
 		let conditions = null;
 
@@ -69,10 +70,10 @@
 			$conditionsValid.removeClass("is-invalid").removeClass("is-valid");
 		}
 		function setConditionsInvalid(){
-			$conditionsValid.text("invalid").addClass("is-invalid");
+			$conditionsValid.text(i18n.invalid).addClass("is-invalid");
 		}
 		function setConditionsValid(){
-			$conditionsValid.text("valid").addClass("is-valid");
+			$conditionsValid.text(i18n.valid).addClass("is-valid");
 		}
 		function resetNormalState() {
 			$box.removeClass("has-error");

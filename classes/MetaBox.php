@@ -39,6 +39,8 @@ class MetaBox {
 
 	/**
 	 * @param \WP_Post $post
+	 *
+	 * @throws \Exception
 	 */
 	public function render( $post ) {
 		wp_enqueue_style(
@@ -57,6 +59,10 @@ class MetaBox {
 			Plugin::DOMAIN . "-meta-box",
 			"FirebaseNotifications_MetaBox",
 			array(
+				"i18n" => array(
+					"invalid" => __( "Invalid", Plugin::DOMAIN ),
+					"valid" => __( "Valid", Plugin::DOMAIN ),
+				),
 				"topic_ids" => $this->plugin->topics->getTopicIds(),
 				"payload"   => array(
 					"post_id"   => $post->ID,
