@@ -1,0 +1,1 @@
+firebase-notifications-de_DE.mo
