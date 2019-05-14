@@ -47,7 +47,7 @@ class Database {
 		if($numberInserted){
 			$this->wpdb->query("UPDATE $this->tablename SET created = now() WHERE id = $numberInserted");
 			$message->id = $this->wpdb->insert_id;
-			do_action(Plugin::ACTION_MESSAGE_ADD, $message);
+			do_action(Plugin::ACTION_MESSAGE_CREATED, $message);
 			return $message;
 		}
 		return false;

@@ -42,7 +42,7 @@ class Plugin {
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
 
-	const ACTION_MESSAGE_ADD = "firebase_notifications_message_add";
+	const ACTION_MESSAGE_CREATED = "firebase_notifications_message_created";
 	const ACTION_MESSAGE_SENT = "firebase_notifications_message_sent";
 
 	const OPTION_CONFIG = "_firebase_notifications_config_json";

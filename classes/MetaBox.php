@@ -22,7 +22,7 @@ class MetaBox {
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
 		add_action( 'add_meta_boxes_post', array( $this, 'add_meta_box' ) );
-		add_action( Plugin::ACTION_MESSAGE_ADD, array( $this, 'message_add' ) );
+		add_action( Plugin::ACTION_MESSAGE_CREATED, array( $this, 'message_created' ) );
 	}
 
 	/**
@@ -241,7 +241,7 @@ class MetaBox {
 	/**
 	 * @param Message $message
 	 */
-	public function message_add( $message ) {
+	public function message_created( $message ) {
 		if ( isset( $message->payload["post_id"] ) ) {
 			$post_id = intval( $message->payload["post_id"] );
 			if ( $post_id > 0 ) {
