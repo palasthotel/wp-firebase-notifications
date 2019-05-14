@@ -162,7 +162,7 @@
 			$examples_content.toggle();
 		});
 		$examples.on("click", ".examples__code--wrapper", function() {
-			$conditions.val($(this).text()).trigger("keyup");
+			$conditions.val($(this).find(".examples__code").text()).trigger("keyup");
 		})
 
 	});
