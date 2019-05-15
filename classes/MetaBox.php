@@ -60,8 +60,18 @@ class MetaBox {
 			"FirebaseNotifications_MetaBox",
 			array(
 				"i18n" => array(
+					"empty_conditions" => __("You need to choose at least one topic", Plugin::DOMAIN),
 					"invalid" => __( "Invalid", Plugin::DOMAIN ),
 					"valid" => __( "Valid", Plugin::DOMAIN ),
+					"confirms" => array(
+						"overwrite_conditions"	=> __("This will overwrite your current topics condition. Proceed?", Plugin::DOMAIN),
+					),
+					"errors" => array(
+							"title" => __("Give me a message title, please.", Plugin::DOMAIN),
+						"body" => __("Type some body content.", Plugin::DOMAIN),
+						"conditions" => __("Please define your topic conditions.", Plugin::DOMAIN),
+						"plattforms" => __("At least one plattform needs to be activated.", Plugin::DOMAIN),
+					)
 				),
 				"topic_ids" => $this->plugin->topics->getTopicIds(),
 				"payload"   => array(
@@ -91,7 +101,7 @@ class MetaBox {
 				><?php echo $post->post_excerpt; ?></textarea>
 			</div>
 			<div class="components-base-control__field">
-				<label class="components-base-control__label"><?php _e("Plattforms", Plugin::DOMAIN); ?></label>
+				<label class="components-base-control__label"><?php _e("To all devices of plattform", Plugin::DOMAIN); ?></label>
 				<p class="firebase--notifications__plafforms">
 					<label><input type="checkbox" name="plattform[]" checked="checked" value="android" /> Android</label>
 					<label><input type="checkbox" name="plattform[]" checked="checked" value="ios" /> iOS</label>
@@ -142,8 +152,8 @@ class MetaBox {
 				<div class="components-base-control__field">
 					<label class="components-base-control__label"
 					       for="firebase-notifications__conditions">
-						Topics <span
-								id="firebase-notifications_conditions--valid"></span>
+						<?php _e("To all devices subscribed to topics condition", Plugin::DOMAIN);?>
+						<span id="firebase-notifications_conditions--valid">...</span>
 					</label>
 					<?php
 					$value = "";
@@ -163,12 +173,14 @@ class MetaBox {
 					if($tcount > 1){
 						?>
 						<p class="description">
-							Topics: <?php echo implode( ", ", array_map( function ( $item ) {
-								return $item->id;
-							}, $topics ) ); ?>
+							<?php echo implode( ", ", array_map( function ( $item ) {
+								return "<span class='firebase-notifications__topic--copy'>".$item->id."</span>";
+							}, $topics ) ); ?><br>
+							<span class='firebase-notifications__topic--copy-any'><?php _e("subscribed to any topic", Plugin::DOMAIN); ?></span>,
+							<span class='firebase-notifications__topic--copy-all'><?php _e("subscribed to all topics", Plugin::DOMAIN); ?></span>
 						</p>
 						<div class="firebase-notifications__examples">
-							<div class="examples__header"><?php _e("Show examples", Plugin::DOMAIN); ?></div>
+							<div class="examples__header"><?php _e("Show more examples", Plugin::DOMAIN); ?></div>
 							<div class="examples__content">
 								<?php
 									foreach ($examples as $i => $example){

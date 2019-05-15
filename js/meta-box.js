@@ -4,6 +4,7 @@
 
 		let isSending = false;
 		let hasError = false;
+		let generatedValue = false;
 
 		const i18n = metaBox.i18n;
 		const topic_ids = metaBox.topic_ids;
@@ -25,6 +26,7 @@
 		// json encoded topic configuration
 		const $conditionsValid = $("#firebase-notifications_conditions--valid");
 		const $conditions = $("#firebase-notifications__conditions").on("keyup", function(){
+			generatedValue = false;
 			resetNormalState();
 			resetConditionValid();
 
@@ -55,6 +57,25 @@
 		});
 		$conditions.trigger("keyup");
 
+		$box.on("click",".firebase-notifications__topic--copy", function(){
+			if(generatedValue || $conditions.val() === "" || confirm(i18n.confirms.overwrite_conditions)){
+				$conditions.val($(this).text()).trigger("keyup");
+				generatedValue = true;
+			}
+		});
+		$box.on("click",".firebase-notifications__topic--copy-any", function(){
+			if(generatedValue || $conditions.val() === "" || confirm(i18n.confirms.overwrite_conditions)){
+				$conditions.val(topic_ids.join(" OR ")).trigger("keyup");
+				generatedValue = true;
+			}
+		});
+		$box.on("click",".firebase-notifications__topic--copy-all", function(){
+			if(generatedValue || $conditions.val() === "" || confirm(i18n.confirms.overwrite_conditions)){
+				$conditions.val(topic_ids.join(" AND ")).trigger("keyup");
+				generatedValue = true;
+			}
+		});
+
 		const $error = $box.find(".error-display");
 
 		function getPlattforms() {
@@ -70,7 +91,9 @@
 			$conditionsValid.removeClass("is-invalid").removeClass("is-valid");
 		}
 		function setConditionsInvalid(){
-			$conditionsValid.text(i18n.invalid).addClass("is-invalid");
+			$conditionsValid.text(
+				($conditions.val() === "")? i18n.empty_conditions:i18n.invalid
+			).addClass("is-invalid");
 		}
 		function setConditionsValid(){
 			$conditionsValid.text(i18n.valid).addClass("is-valid");
@@ -79,7 +102,7 @@
 			$box.removeClass("has-error");
 		}
 		function showPlattformsError(){
-			showError("At least one plattform needs to be activated.");
+			showError(i18n.errors.plattforms);
 		}
 		function showError(errorMessage){
 			$box.removeClass("is-sending").addClass("has-error");
@@ -107,15 +130,15 @@
 			const plattforms = getPlattforms();
 
 			if(title.length === 0){
-				showError("Give me a message title, please.");
+				showError(i18n.errors.title);
 				return;
 			}
 			if(body.length === 0){
-				showError("Type some body content.");
+				showError(i18n.errors.body);
 				return;
 			}
 			if(conditions == null){
-				showError("Please define your topic conditions.");
+				showError(i18n.errors.conditions);
 				return;
 			}
 			if(!plattforms.length){
@@ -164,6 +187,7 @@
 		});
 		$examples.on("click", ".examples__code--wrapper", function() {
 			$conditions.val($(this).find(".examples__code").text()).trigger("keyup");
+			generatedValue = true;
 		})
 
 	});

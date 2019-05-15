@@ -19,6 +19,10 @@
 
 #firebase-notifications-meta-box .firebase--notifications__plafforms label { margin-left: 15px; }
 
+#firebase-notifications-meta-box .firebase-notifications__topic--copy, #firebase-notifications-meta-box .firebase-notifications__topic--copy-any, #firebase-notifications-meta-box .firebase-notifications__topic--copy-all { text-decoration: underline; color: #0073aa; display: inline-block; }
+
+#firebase-notifications-meta-box .firebase-notifications__topic--copy:hover, #firebase-notifications-meta-box .firebase-notifications__topic--copy-any:hover, #firebase-notifications-meta-box .firebase-notifications__topic--copy-all:hover { cursor: pointer; color: #00a0d2; }
+
 #firebase-notifications-meta-box .firebase-notifications__history li { margin: 0; padding: 5px; }
 
 #firebase-notifications-meta-box .firebase-notifications__history li:nth-child(odd) { background-color: #efefef; }

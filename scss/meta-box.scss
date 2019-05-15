@@ -59,6 +59,18 @@
 		}
 	}
 
+	.firebase-notifications__topic--copy,
+	.firebase-notifications__topic--copy-any,
+	.firebase-notifications__topic--copy-all{
+		text-decoration: underline;
+		color: #0073aa;
+		display: inline-block;
+		&:hover{
+			cursor: pointer;
+			color: #00a0d2;
+		}
+	}
+
 	.firebase-notifications__history{
 		li{
 			margin: 0;
