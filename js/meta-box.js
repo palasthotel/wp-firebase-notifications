@@ -44,6 +44,7 @@
 				const isValid = isValidConditions(result, topic_ids);
 				if(!isValid){
 					setConditionsInvalid();
+					return;
 				}
 
 				const inLimitations = isInConditionLimitations(result);
