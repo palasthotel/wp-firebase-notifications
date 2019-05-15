@@ -45,14 +45,16 @@ class MetaBox {
 	public function render( $post ) {
 		wp_enqueue_style(
 			Plugin::DOMAIN . "-meta-box",
-			$this->plugin->url . "/css/meta-box.css"
+			$this->plugin->url . "/css/meta-box.css",
+			array(),
+			filemtime($this->plugin->path."/css/meta-box.css")
 		);
 		$this->plugin->ajax->enqueueApiJs();
 		wp_enqueue_script(
 			Plugin::DOMAIN . "-meta-box",
 			$this->plugin->url . "/js/meta-box.js",
 			array( "jquery", $this->plugin->ajax->api_handle ),
-			1,
+			filemtime($this->plugin->path."/js/meta-box.js"),
 			true
 		);
 		wp_localize_script(
@@ -60,14 +62,17 @@ class MetaBox {
 			"FirebaseNotifications_MetaBox",
 			array(
 				"i18n" => array(
+
 					"empty_conditions" => __("You need to choose at least one topic", Plugin::DOMAIN),
+					"limitation_conditions" => __("You can use max of 5 topics", Plugin::DOMAIN),
 					"invalid" => __( "Invalid", Plugin::DOMAIN ),
 					"valid" => __( "Valid", Plugin::DOMAIN ),
+
 					"confirms" => array(
 						"overwrite_conditions"	=> __("This will overwrite your current topics condition. Proceed?", Plugin::DOMAIN),
 					),
 					"errors" => array(
-							"title" => __("Give me a message title, please.", Plugin::DOMAIN),
+						"title" => __("Give me a message title, please.", Plugin::DOMAIN),
 						"body" => __("Type some body content.", Plugin::DOMAIN),
 						"conditions" => __("Please define your topic conditions.", Plugin::DOMAIN),
 						"plattforms" => __("At least one plattform needs to be activated.", Plugin::DOMAIN),
@@ -175,9 +180,7 @@ class MetaBox {
 						<p class="description">
 							<?php echo implode( ", ", array_map( function ( $item ) {
 								return "<span class='firebase-notifications__topic--copy'>".$item->id."</span>";
-							}, $topics ) ); ?><br>
-							<span class='firebase-notifications__topic--copy-any'><?php _e("subscribed to any topic", Plugin::DOMAIN); ?></span>,
-							<span class='firebase-notifications__topic--copy-all'><?php _e("subscribed to all topics", Plugin::DOMAIN); ?></span>
+							}, $topics ) ); ?>
 						</p>
 						<div class="firebase-notifications__examples">
 							<div class="examples__header"><?php _e("Show more examples", Plugin::DOMAIN); ?></div>

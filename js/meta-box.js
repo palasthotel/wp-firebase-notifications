@@ -42,12 +42,18 @@
 			try{
 				const result = parseConditions(expression);
 				const isValid = isValidConditions(result, topic_ids);
-				if(isValid){
+				if(!isValid){
+					setConditionsInvalid();
+				}
+
+				const inLimitations = isInConditionLimitations(result);
+				if(inLimitations){
 					conditions = result;
 					setConditionsValid()
 				} else {
-					setConditionsInvalid();
+					setConditionsNotInLimitations();
 				}
+
 			} catch (e) {
 				conditions = null;
 				setConditionsInvalid();
@@ -60,18 +66,6 @@
 		$box.on("click",".firebase-notifications__topic--copy", function(){
 			if(generatedValue || $conditions.val() === "" || confirm(i18n.confirms.overwrite_conditions)){
 				$conditions.val($(this).text()).trigger("keyup");
-				generatedValue = true;
-			}
-		});
-		$box.on("click",".firebase-notifications__topic--copy-any", function(){
-			if(generatedValue || $conditions.val() === "" || confirm(i18n.confirms.overwrite_conditions)){
-				$conditions.val(topic_ids.join(" OR ")).trigger("keyup");
-				generatedValue = true;
-			}
-		});
-		$box.on("click",".firebase-notifications__topic--copy-all", function(){
-			if(generatedValue || $conditions.val() === "" || confirm(i18n.confirms.overwrite_conditions)){
-				$conditions.val(topic_ids.join(" AND ")).trigger("keyup");
 				generatedValue = true;
 			}
 		});
@@ -94,6 +88,9 @@
 			$conditionsValid.text(
 				($conditions.val() === "")? i18n.empty_conditions:i18n.invalid
 			).addClass("is-invalid");
+		}
+		function setConditionsNotInLimitations(){
+			$conditionsValid.text( i18n.limitation_conditions).addClass("is-invalid");
 		}
 		function setConditionsValid(){
 			$conditionsValid.text(i18n.valid).addClass("is-valid");
@@ -212,6 +209,18 @@
 			}
 		}
 		return true;
+	}
+
+	function isInConditionLimitations(conditions){
+		const doesCount = (item)=> item.toUpperCase() === "AND" || item.toUpperCase() === "OR";
+		// max of 4 conditionals
+		const reduced = conditions.reduce((value, item)=>{
+			if(typeof item === typeof []) return value + item.reduce((value, item)=> (doesCount(item))?value+1:value,0);
+			if(doesCount(item)) return value+1;
+			return value;
+		}, 0);
+
+		return reduced <= 4;
 	}
 
 	// ------------------------------------

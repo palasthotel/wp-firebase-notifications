@@ -73,10 +73,24 @@ function isValidConditions(conditions, allowed_topic_ids){
     return true;
 }
 
+function isInConditionLimitations(conditions){
+    const doesCount = (item)=> item.toUpperCase() === "AND" || item.toUpperCase() === "OR";
+    // max of 4 conditionals
+    const reduced = conditions.reduce((value, item)=>{
+        if(typeof item === typeof []) return value + item.reduce((value, item)=> (doesCount(item))?value+1:value,0);
+        if(doesCount(item)) return value+1;
+        return value;
+    }, 0);
+
+    return reduced <= 4;
+}
+
 try{
-    const condition = "android and (topic1 OR topic2)   AND  (topic1 OR topic2  )";
+    const condition = "android and (topic1 OR topic2) AND topic1 AND topic3 AND topic1";
     const result = parseConditions(condition);
     const isValid = isValidConditions(result, ['topic1', 'topic2', 'ios', 'android']);
+    const inLimitations = isInConditionLimitations(result);
+    inLimitations;
     isValid;
 } catch(e){
     e;

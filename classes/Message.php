@@ -124,8 +124,10 @@ class Message {
 	 */
 	public function buildConditionForNotifications($items){
 		$parts=array();
+		$countConditions = 0;
 		foreach ($items as $i => $item){
 			if($i % 2){
+				if(++$countConditions > 4) throw new \Exception("Maximum of 4 logical operators supported.");
 				$upper = strtoupper($item);
 				if($upper == "AND"){
 					$parts[] = "&&";
