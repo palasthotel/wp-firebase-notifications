@@ -85,12 +85,12 @@ class ToolsPage {
 		?>
 		<ul class="firebase-notifications__list">
 			<?php
-			$notifications = $this->plugin->database->getAll(0, 10);
+			$notifications = $this->plugin->database->getAll(0, 20);
 			foreach ($notifications as $item){
 				if( $post_id != null && ( !isset($item->payload->post_id) || $item->payload->post_id != $post_id ) ){
 					continue;
 				}
-				$readableCreated = date_i18n($format, strtotime($item->sent));
+				$readableCreated = date_i18n($format, strtotime($item->created));
 				$readableSent = (empty($item->sent))?
 					"🚨 "._x("Not sent", "Tools page", Plugin::DOMAIN)
 					:

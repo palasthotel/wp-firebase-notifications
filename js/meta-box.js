@@ -1,5 +1,29 @@
 (function($, api, metaBox){
 
+	const _isKeyDown = {};
+
+	const isKeyDown =(key) => typeof _isKeyDown[key] !== typeof undefined && _isKeyDown[key] === true;
+	const setKeyDown = (key, isDown) =>{ _isKeyDown[key] = isDown };
+	const isAltDown = () => isKeyDown("alt");
+	const setAltDown = (isDown) => { setKeyDown("alt", isDown) };
+	const isShiftDown = () => isKeyDown("shift");
+	const setShiftDown = (isDown)=>{setKeyDown("shift", isDown) };
+
+	function keyEvent(e, isDown){
+		switch (e.keyCode) {
+			case 18:
+				setAltDown(isDown);
+				break;
+			case 16:
+				setShiftDown(isDown);
+				break;
+		}
+	}
+
+	$(window)
+		.on("keydown",function(e){ keyEvent(e, true)})
+		.on("keyup", function(e){ keyEvent(e, false)});
+
 	$(function(){
 
 		let isSending = false;

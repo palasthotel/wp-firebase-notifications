@@ -44,9 +44,12 @@ class Database {
 			array( "%s","%s","%s","%s","%s", "%s")
 		);
 
+
+
 		if($numberInserted){
-			$this->wpdb->query("UPDATE $this->tablename SET created = now() WHERE id = $numberInserted");
-			$message->id = $this->wpdb->insert_id;
+			$insertId = $this->wpdb->insert_id;
+			$this->wpdb->query("UPDATE $this->tablename SET created = now() WHERE id = $insertId");
+			$message->id = $insertId;
 			do_action(Plugin::ACTION_MESSAGE_CREATED, $message);
 			return $message;
 		}
