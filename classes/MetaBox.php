@@ -64,7 +64,7 @@ class MetaBox {
 				"i18n" => array(
 
 					"empty_conditions" => __("You need to choose at least one topic", Plugin::DOMAIN),
-					"limitation_conditions" => __("You can use max of 5 topics", Plugin::DOMAIN),
+					"limitation_conditions" => __("You can use max of 4 logical operations", Plugin::DOMAIN),
 					"invalid" => __( "Invalid", Plugin::DOMAIN ),
 					"valid" => __( "Valid", Plugin::DOMAIN ),
 
