@@ -8,7 +8,7 @@
 
 .firebase-notifications__item .firebase-notifications__item--created, .firebase-notifications__item .firebase-notifications__item--sent { -webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1; }
 
-.firebase-notifications__item .firebase-notifications__item--created { text-align: right; }
+.firebase-notifications__item .firebase-notifications__item--sent { text-align: right; }
 
 .firebase-notifications__item .firebase-notifications__item--plattform { width: 160px; }
 
