@@ -179,6 +179,7 @@ class Message {
 					$msg,
 					array(
 						'android' => array(
+							'priority' => 'normal',
 							'notification' => array(
 								'title' => $this->title,
 								'body' => $this->body,
@@ -192,6 +193,9 @@ class Message {
 					$msg,
 					array(
 						'apns' => array(
+							'headers' => [
+								'apns-priority' => '10',
+							],
 							'payload' => array(
 								'aps' => array(
 									'alert' => array(
