@@ -86,27 +86,27 @@ class MetaBox {
 			)
 		);
 		?>
-		<div class="components-base-control">
-			<div class="components-base-control__field">
-				<label class="components-base-control__label"
+		<div class="fn__wrapper">
+			<div class="fn__base-control--field">
+				<label class="fn__base-control--label"
 				       for="firebase-notifications__title"
 				><?php _e("Title", Plugin::DOMAIN); ?></label>
-				<input class="components-text-control__input"
+				<input class="fn__base-control--input"
 				       type="text"
 				       id="firebase-notifications__title"
 				       value="<?php the_title(); ?>"
 				/>
 			</div>
-			<div class="components-base-control__field">
-				<label class="components-base-control__label"
+			<div class="fn__base--control--field">
+				<label class="fn__base-control--label"
 				       for="firebase-notifications__body"><?php _e("Body", Plugin::DOMAIN); ?></label>
-				<textarea class="components-textarea-control__input"
+				<textarea class="fn__base-control--input"
 				          id="firebase-notifications__body"
 				          rows="4"
 				><?php echo $post->post_excerpt; ?></textarea>
 			</div>
-			<div class="components-base-control__field">
-				<label class="components-base-control__label"><?php _e("To all devices of plattform", Plugin::DOMAIN); ?></label>
+			<div class="fn__base-control--field">
+				<label class="fn__base-control--label"><?php _e("To all devices of plattform", Plugin::DOMAIN); ?></label>
 				<p class="firebase--notifications__plafforms">
 					<label><input type="checkbox" name="plattform[]" checked="checked" value="android" /> Android</label>
 					<label><input type="checkbox" name="plattform[]" checked="checked" value="ios" /> iOS</label>
@@ -154,8 +154,8 @@ class MetaBox {
 				}
 
 				?>
-				<div class="components-base-control__field">
-					<label class="components-base-control__label"
+				<div class="fn__base-control--field">
+					<label class="fn__base-control--label"
 					       for="firebase-notifications__conditions">
 						<?php _e("To all devices subscribed to topics condition", Plugin::DOMAIN);?>
 						<span id="firebase-notifications_conditions--valid">...</span>
@@ -168,7 +168,7 @@ class MetaBox {
 						$readonly = "readonly";
 					}
 					?>
-					<input class="components-text-control__input"
+					<input class="fn__base-control--input"
 					       type="text"
 					       id="firebase-notifications__conditions"
 					       <?php echo $readonly; ?>
