@@ -108,9 +108,11 @@ class Ajax {
 		if( empty($plattforms) || empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
 
 		$message = Message::build($plattforms,$conditions, $title, $body, $payload);
+		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
+		$message_id = $this->plugin->database->add($message);
 
-		$message = $this->plugin->database->add($message);
-		if(!$message) wp_send_json_error("Could not save notification");
+		if(!$message_id) wp_send_json_error("Could not save notification");
+		do_action(Plugin::ACTION_SAVED_MESSAGE, $message);
 
 		try{
 

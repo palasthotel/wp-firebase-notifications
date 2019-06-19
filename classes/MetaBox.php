@@ -22,7 +22,7 @@ class MetaBox {
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
 		add_action( 'add_meta_boxes_post', array( $this, 'add_meta_box' ) );
-		add_action( Plugin::ACTION_MESSAGE_CREATED, array( $this, 'message_created' ) );
+		add_action( Plugin::ACTION_SAVED_MESSAGE, array( $this, 'saved_message' ) );
 	}
 
 	/**
@@ -50,15 +50,16 @@ class MetaBox {
 			filemtime($this->plugin->path."/css/meta-box.css")
 		);
 		$this->plugin->ajax->enqueueApiJs();
+		$meta_box_script_handle = Plugin::DOMAIN . "-meta-box";
 		wp_enqueue_script(
-			Plugin::DOMAIN . "-meta-box",
+			$meta_box_script_handle,
 			$this->plugin->url . "/js/meta-box.js",
 			array( "jquery", $this->plugin->ajax->api_handle ),
 			filemtime($this->plugin->path."/js/meta-box.js"),
 			true
 		);
 		wp_localize_script(
-			Plugin::DOMAIN . "-meta-box",
+			$meta_box_script_handle,
 			"FirebaseNotifications_MetaBox",
 			array(
 				"i18n" => array(
@@ -85,6 +86,7 @@ class MetaBox {
 				),
 			)
 		);
+		do_action(Plugin::ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT,$meta_box_script_handle);
 		?>
 		<div class="fn__wrapper">
 			<div class="fn__base-control--field">
@@ -97,7 +99,7 @@ class MetaBox {
 				       value="<?php the_title(); ?>"
 				/>
 			</div>
-			<div class="fn__base--control--field">
+			<div class="fn__base-control--field">
 				<label class="fn__base-control--label"
 				       for="firebase-notifications__body"><?php _e("Body", Plugin::DOMAIN); ?></label>
 				<textarea class="fn__base-control--input"
@@ -212,6 +214,8 @@ class MetaBox {
 		</div>
 		<?php
 
+		do_action(Plugin::ACTION_META_BOX_CUSTOM, $this);
+
 		if ( count( $topics ) ) {
 
 			echo "<p>";
@@ -262,7 +266,7 @@ class MetaBox {
 	/**
 	 * @param Message $message
 	 */
-	public function message_created( $message ) {
+	public function saved_message( $message ) {
 		if ( isset( $message->payload["post_id"] ) ) {
 			$post_id = intval( $message->payload["post_id"] );
 			if ( $post_id > 0 ) {

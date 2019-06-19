@@ -65,10 +65,7 @@ class Message {
 	 * @return Message
 	 */
 	public static function build( $plattforms, $conditions, $title, $body, $payload ) {
-		return apply_filters(
-			Plugin::FILTER_MESSAGE,
-			new Message( $plattforms, $conditions, $title, $body, $payload )
-		);
+		return new Message( $plattforms, $conditions, $title, $body, $payload );
 	}
 
 	/**
@@ -150,6 +147,60 @@ class Message {
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function isForIOS(){
+		return in_array("ios",$this->plattforms);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isForAndroid(){
+		return in_array("android",$this->plattforms);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isForWeb(){
+		return in_array("web",$this->plattforms);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isForAllPlattforms(){
+		return $this->isForIOS() && $this->isForAndroid() && $this->isForWeb();
+	}
+
+	/**
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
+	public function getPayload($key){
+		return (isset($this->payload[$key]))? $this->payload[$key] : null;
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 */
+	public function setPayload($key, $value){
+		$this->payload[$key] = $value;
+	}
+
+	public function unsetPayload($key_to_delete){
+		$new = array();
+		foreach ($this->payload as $key => $value){
+			if($key == $key_to_delete) continue;
+			$new[$key] = $value;
+		}
+		$this->payload = $new;
+	}
+
+	/**
 	 * @return array
 	 * @throws \Exception
 	 */
@@ -162,7 +213,7 @@ class Message {
 			'data'         => $this->payload,
 		);
 
-		if(count($this->plattforms) == 3){
+		if($this->isForAllPlattforms()){
 			// send to all plattforms
 			$msg = array_merge(
 				$msg,
@@ -174,7 +225,7 @@ class Message {
 				)
 			);
 		} else {
-			if(in_array("android",$this->plattforms)){
+			if($this->isForAndroid()){
 				$msg = array_merge(
 					$msg,
 					array(
@@ -188,7 +239,7 @@ class Message {
 					)
 				);
 			}
-			if(in_array("ios", $this->plattforms)){
+			if($this->isForIOS()){
 				$msg = array_merge(
 					$msg,
 					array(
@@ -208,7 +259,7 @@ class Message {
 					)
 				);
 			}
-			if(in_array("web", $this->plattforms)){
+			if($this->isForWeb()){
 				$msg = array_merge(
 					$msg,
 					array(

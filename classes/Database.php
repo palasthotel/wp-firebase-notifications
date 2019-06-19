@@ -29,9 +29,10 @@ class Database {
 	/**
 	 * @param Message $message
 	 *
-	 * @return false|Message
+	 * @return false
 	 */
 	function add($message){
+
 		$numberInserted =  $this->wpdb->insert(
 			$this->tablename,
 			array(
@@ -44,14 +45,11 @@ class Database {
 			array( "%s","%s","%s","%s","%s", "%s")
 		);
 
-
-
 		if($numberInserted){
 			$insertId = $this->wpdb->insert_id;
 			$this->wpdb->query("UPDATE $this->tablename SET created = now() WHERE id = $insertId");
 			$message->id = $insertId;
-			do_action(Plugin::ACTION_MESSAGE_CREATED, $message);
-			return $message;
+			return true;
 		}
 		return false;
 	}
@@ -144,7 +142,7 @@ class Database {
 			json_decode($item->conditions),
 			$item->title,
 			$item->body,
-			json_decode($item->payload)
+			json_decode($item->payload, true)
 		);
 		$msg->result = json_decode($item->result);
 		$msg->created = $item->created;

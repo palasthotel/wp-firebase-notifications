@@ -42,7 +42,10 @@ class Plugin {
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
 
-	const ACTION_MESSAGE_CREATED = "firebase_notifications_message_created";
+	const ACTION_META_BOX_CUSTOM = "firebase_notifications_meta_box_custom";
+	const ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT = "firebase_notification_meta_box_enqueue_script";
+	const ACTION_SAVE_MESSAGE = "firebase_notifications_save_message";
+	const ACTION_SAVED_MESSAGE = "firebase_notifications_saved_message";
 	const ACTION_MESSAGE_SENT = "firebase_notifications_message_sent";
 
 	const OPTION_CONFIG = "_firebase_notifications_config_json";
