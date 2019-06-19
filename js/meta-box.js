@@ -1,5 +1,52 @@
 (function($, api, metaBox){
 
+	/**
+	 * Hooks
+	 */
+	function Hooks() {
+		const hooks = [];
+		const trigger = (hook, data) => {
+			hooks
+				.filter(h => h.name === hook)
+				.forEach((h)=>{
+					h.fn(data);
+				})
+		};
+		const on = (hook, fn)=>{
+			hooks.push({
+				name: hook,
+				fn,
+			});
+		};
+		return {
+			on,
+			trigger,
+		};
+	}
+	const hooks = metaBox.hooks = Hooks();
+
+	/**
+	 * Plugins handler
+	 */
+	function Plugins(){
+		const plugins = [];
+		const hooks = [];
+		const get = () => plugins;
+		const add = (plugin)=> plugins.push(plugin);
+		const getFunctions = (name)=>{
+			return plugins
+				.filter((p)=> typeof p[name] === "function")
+				.map((p)=>p[name]);
+		};
+		return {
+			get,
+			add,
+			getFunctions,
+			setPayloads: ()=> getFunctions("set_payload"),
+		};
+	}
+	const plugins = metaBox.plugins = Plugins();
+
 	const _isKeyDown = {};
 
 	const isKeyDown =(key) => typeof _isKeyDown[key] !== typeof undefined && _isKeyDown[key] === true;
@@ -46,6 +93,7 @@
 				showPlattformsError();
 			}
 		});
+		hooks.on("resetNormalState", ()=> resetNormalState());
 
 		// json encoded topic configuration
 		const $conditionsValid = $("#firebase-notifications_conditions--valid");
@@ -136,12 +184,14 @@
 			$message.attr("readonly", "readonly");
 			$conditions.attr("readonly", "readonly");
 			$plattforms.attr("disabled", "disabled");
+			hooks.trigger("lockUI");
 		}
 		function unlockUI(){
 			$title.removeAttr("readonly");
 			$message.removeAttr("readonly");
 			$conditions.removeAttr("readonly");
 			$plattforms.removeAttr("disabled");
+			hooks.trigger("unlockUI");
 		}
 
 		$box.on("click", "input[type=submit]", function(e){
@@ -150,6 +200,7 @@
 			const title = $title.val();
 			const body = $message.val();
 			const plattforms = getPlattforms();
+			const payload = metaBox.payload;
 
 			if(title.length === 0){
 				showError(i18n.errors.title);
@@ -165,6 +216,18 @@
 			}
 			if(!plattforms.length){
 				showPlattformsError();
+				return;
+			}
+
+			let error = false;
+			for(const setPayload of plugins.setPayloads()){
+				setPayload(payload,(_error)=>{
+					error = _error;
+				});
+				if(error) break;
+			}
+			if(error){
+				showError(error);
 				return;
 			}
 
