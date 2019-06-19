@@ -1,4 +1,10 @@
 @charset "UTF-8";
+#firebase-notifications-meta-box .fn__base--control--field { margin-bottom: 8px; }
+
+#firebase-notifications-meta-box .fn__base-control--label { display: block; margin-bottom: 4px; }
+
+#firebase-notifications-meta-box .fn__base-control--input { width: 100%; padding: 6px 8px; }
+
 #firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .error-display, #firebase-notifications-meta-box .result-display { display: none; }
 
 #firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .result-display { margin-top: 1em; }
