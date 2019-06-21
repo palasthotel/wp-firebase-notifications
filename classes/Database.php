@@ -116,17 +116,35 @@ class Database {
 	}
 
 	/**
-	 * @param $page
-	 * @param $limit
+	 * @param int $page
+	 * @param int $count
 	 *
 	 * @return Message[]
 	 */
-	function getAll($page, $limit){
-		$offset = $limit*$page;
+	function getAll($page = 0, $count = 10){
+		$offset = $count * $page;
 		return array_map(
 			array($this, "mapMessage"),
 			$this->wpdb->get_results(
-				"SELECT * FROM $this->tablename ORDER BY created DESC LIMIT $offset, $limit"
+				"SELECT * FROM $this->tablename ORDER BY created DESC LIMIT $offset, $count"
+			)
+		);
+	}
+
+	/**
+	 * @param int $post_id
+	 * @param int $page
+	 * @param int $count
+	 *
+	 * @return array
+	 */
+	function getByPostId($post_id, $page = 0, $count = 10){
+		$offset = $count*$page;
+		$sub = "SELECT message_id FROM $this->tablename_posts WHERE post_id = $post_id";
+		return array_map(
+			array($this, "mapMessage"),
+			$this->wpdb->get_results(
+				"SELECT * FROM $this->tablename WHERE id IN ($sub) ORDER BY created DESC LIMIT $offset, $count"
 			)
 		);
 	}

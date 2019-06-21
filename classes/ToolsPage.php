@@ -36,6 +36,21 @@ class ToolsPage {
 		return admin_url("/tools.php?page=firebase-notifications-tools$post");
 	}
 
+	public function getPage(){
+		$paged = (isset($_GET["paged"]) && !empty($_GET["paged"]))? abs(intval($_GET["paged"])): 1;
+		return ($paged<1)? 1: $paged;
+	}
+	/**
+	 * @return int
+	 */
+	public function getPaged(){
+		return $this->getPage()-1;
+	}
+
+	public function getPostId(){
+		return (isset($_GET["post_id"]) && !empty($_GET["post_id"]))? intval($_GET["post_id"]): null;
+	}
+
 	/**
 	 * add menu item
 	 */
@@ -58,9 +73,22 @@ class ToolsPage {
 		<div class="wrap firebase-notifications__tools-page">
 			<h1><?php _e( 'Firebase Notifications', Plugin::DOMAIN ); ?></h1>
 			<?php
+			$this->renderForm();
 			$this->renderHistory();
 			?>
 		</div>
+		<?php
+	}
+
+	public function renderForm(){
+		$post_id = $this->getPostId();
+		?>
+		<form method="get" action="<?php echo admin_url("tools.php"); ?>">
+			<input type="hidden" name="page" value="firebase-notifications-tools" />
+			<label>Post ID: <input name="post_id" value="<?php echo ($post_id)?$post_id:""; ?>" /></label>
+			<label>Page: <input type="number" name="paged" min="1" value="<?php echo $this->getPage(); ?>" style="width: 60px;"/></label>
+			<button type="submit">Find</button>
+		</form>
 		<?php
 	}
 
@@ -81,15 +109,20 @@ class ToolsPage {
 		$date_format = get_option( 'date_format' );
 		$time_format = get_option( 'time_format' );
 		$format = "$date_format $time_format";
-		$post_id = (isset($_GET["post_id"]))? intval($_GET["post_id"]): null;
+		$post_id = $this->getPostId();
+		$paged = $this->getPaged();
+		$count = 20;
 		?>
 		<ul class="firebase-notifications__list">
 			<?php
-			$notifications = $this->plugin->database->getAll(0, 20);
+
+			if($post_id){
+				$notifications = $this->plugin->database->getByPostId($post_id, $paged, $count);
+			} else {
+				$notifications = $this->plugin->database->getAll($paged, $count);
+			}
+
 			foreach ($notifications as $item){
-				if( $post_id != null && ( !isset($item->payload["post_id"]) || $item->payload["post_id"] != $post_id ) ){
-					continue;
-				}
 				$readableCreated = date_i18n($format, strtotime($item->created));
 				$readableSent = (empty($item->sent))?
 					"🚨 "._x("Not sent", "Tools page", Plugin::DOMAIN)
