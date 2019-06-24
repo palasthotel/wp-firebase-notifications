@@ -43,6 +43,13 @@ class MetaBox {
 	 * @throws \Exception
 	 */
 	public function render( $post ) {
+
+		// post needs to be published first
+		if( "publish" != $post->post_status){
+			printf("<p>%s</p>",__("Post needs to be published.", Plugin::DOMAIN));
+			return;
+		}
+
 		wp_enqueue_style(
 			Plugin::DOMAIN . "-meta-box",
 			$this->plugin->url . "/css/meta-box.css",
