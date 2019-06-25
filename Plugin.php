@@ -31,6 +31,8 @@ namespace Palasthotel\FirebaseNotifications;
  * @property Settings settings
  * @property string basename
  * @property DatabaseUpdates databaseUpdates
+ * @property Permissions permissions
+ * @property Schedule schedule
  */
 class Plugin {
 
@@ -39,6 +41,7 @@ class Plugin {
 	const TEMPLATE = "firebase-notifications-settings.php";
 	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend";
 
+	const FILTER_CURRENT_USER_CAN_SEND_MESSAGE = "firebase_notifications_current_user_can_send_message";
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
 
@@ -50,6 +53,8 @@ class Plugin {
 
 	const OPTION_CONFIG = "_firebase_notifications_config_json";
 	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
+
+	const SCHEDULE_SEND_MESSAGED = "firebase_notifications_send_messaged_schedule";
 
 	/**
 	 * Plugin constructor.
@@ -80,6 +85,8 @@ class Plugin {
 		$this->topics = new Topics($this);
 		$this->toolsPage = new ToolsPage($this);
 		$this->settings = new Settings($this);
+		$this->permissions = new Permissions();
+		$this->schedule = new Schedule($this);
 
 		/**
 		 * on activate or deactivate plugin

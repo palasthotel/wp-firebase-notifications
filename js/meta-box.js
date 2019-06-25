@@ -85,6 +85,7 @@
 		const $title = $("#firebase-notifications__title").on("keyup", resetNormalState);
 		const $message = $("#firebase-notifications__body").on("keyup", resetNormalState);
 		const $plattforms = $box.find("[name='plattform[]']");
+
 		$plattforms.on("change", function(){
 			const values = getPlattforms();
 			if(values.length){
@@ -93,7 +94,21 @@
 				showPlattformsError();
 			}
 		});
+		const $schedule = $box.find("[name=firebase_schedule]");
+		const $schedule_datetime = $box.find("[name=firebase_schedule_datetime]");
+		$schedule.on("change", function(){
+			if(this.value === "plan"){
+				$box.find("input[type=submit]").val(i18n.submit.plan);
+				$schedule_datetime.closest("label").show();
+			} else {
+				$box.find("input[type=submit]").val(i18n.submit.now);
+				$schedule_datetime.closest("label").hide();
+			}
+		});
+		$schedule_datetime.closest("label").hide();
+
 		hooks.on("resetNormalState", ()=> resetNormalState());
+
 
 		// json encoded topic configuration
 		const $conditionsValid = $("#firebase-notifications_conditions--valid");
@@ -153,6 +168,15 @@
 			});
 			return values;
 		}
+		function isScheduled(){
+			return $box.find("[name=firebase_schedule]:checked").val() === "plan";
+		}
+		function getScheduleDatetime() {
+			return $schedule_datetime.val();
+		}
+		function getScheduleTimestamp() {
+			return (new Date($schedule_datetime.val())).getTime();
+		}
 		
 		function resetConditionValid(){
 			$conditionsValid.removeClass("is-invalid").removeClass("is-valid");
@@ -184,6 +208,8 @@
 			$message.attr("readonly", "readonly");
 			$conditions.attr("readonly", "readonly");
 			$plattforms.attr("disabled", "disabled");
+			$schedule_datetime.attr("readonly", "readonly");
+			$schedule.attr("disabled", "disabled");
 			hooks.trigger("lockUI");
 		}
 		function unlockUI(){
@@ -191,16 +217,20 @@
 			$message.removeAttr("readonly");
 			$conditions.removeAttr("readonly");
 			$plattforms.removeAttr("disabled");
+			$schedule_datetime.removeAttr("readonly");
+			$schedule.removeAttr("disabled");
 			hooks.trigger("unlockUI");
 		}
 
 		$box.on("click", "input[type=submit]", function(e){
 			e.preventDefault();
+			resetNormalState();
 
 			const title = $title.val();
 			const body = $message.val();
 			const plattforms = getPlattforms();
 			const payload = metaBox.payload;
+			const schedule = (isScheduled())? getScheduleTimestamp():null;
 
 			if(title.length === 0){
 				showError(i18n.errors.title);
@@ -217,6 +247,17 @@
 			if(!plattforms.length){
 				showPlattformsError();
 				return;
+			}
+
+			if( isScheduled() ) {
+				if (typeof schedule !== typeof 1 || !schedule) {
+					showError(i18n.errors.schedule.invalid);
+					return;
+				}
+				else if (schedule <= ((new Date()).getTime() + 60 * 60)) {
+					showError(i18n.errors.schedule.in_the_past);
+					return;
+				}
 			}
 
 			let error = false;
@@ -237,7 +278,7 @@
 			$box.addClass("is-sending");
 			lockUI();
 
-			api.send( plattforms, conditions, title, body, metaBox.payload )
+			api.send( plattforms, conditions, title, body, payload, schedule )
 				.then((response)=>{
 					isSending = false;
 					$box.removeClass("is-sending");
@@ -251,7 +292,13 @@
 						hasError = true;
 						return;
 					}
-					$box.addClass("was-sent");
+					console.log(response.data);
+					if(schedule){
+						$box.addClass("was-scheduled");
+					} else {
+						$box.addClass("was-sent");
+					}
+
 				})
 				.catch((error)=>{
 					isSending = false;

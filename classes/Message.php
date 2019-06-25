@@ -39,6 +39,11 @@ class Message {
 	var $sent = NULL;
 
 	/**
+	 * @var null|string
+	 */
+	var $publish = NULL;
+
+	/**
 	 * Notification constructor.
 	 *
 	 * @param array $plattforms

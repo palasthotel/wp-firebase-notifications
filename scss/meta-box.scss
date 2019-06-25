@@ -6,15 +6,23 @@
 	.fn__base-control--label{
 		display: block;
 		margin-bottom: 4px;
+		font-weight: bold;
 	}
 	.fn__base-control--input{
 		width: 100%;
 		padding: 6px 8px;
 	}
+	.firebase--notifications__schedule{
+		line-height: 2.4;
+		label{
+			margin-right: 20px;
+		}
+	}
 
 	.is-loading,
 	.error-display,
-	.result-display{
+	.result-display-sent,
+	.result-display-scheduled{
 		display: none;
 	}
 	.is-loading,
@@ -43,7 +51,15 @@
 
 	}
 	&.was-sent{
-		.result-display{
+		.result-display-sent{
+			display: block;
+		}
+		#firebase-notifications-submit{
+			display: none;
+		}
+	}
+	&.was-scheduled{
+		.result-display-scheduled{
 			display: block;
 		}
 		#firebase-notifications-submit{

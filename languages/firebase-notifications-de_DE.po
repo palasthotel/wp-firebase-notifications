@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Firebase Notifications\n"
-"POT-Creation-Date: 2019-06-24 14:33+0200\n"
-"PO-Revision-Date: 2019-06-24 14:34+0200\n"
+"POT-Creation-Date: 2019-06-24 19:34+0200\n"
+"PO-Revision-Date: 2019-06-24 19:34+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -27,63 +27,71 @@ msgid "No access"
 msgstr "Zugriff verweigert"
 
 #. Plugin Name of the plugin/theme
-#: classes/MetaBox.php:34 classes/ToolsPage.php:61 classes/ToolsPage.php:74
+#: classes/MetaBox.php:37 classes/ToolsPage.php:61 classes/ToolsPage.php:74
 msgid "Firebase Notifications"
 msgstr ""
 
-#: classes/MetaBox.php:49
+#: classes/MetaBox.php:52
 msgid "Post needs to be published."
 msgstr "Beitrag muss veröffentlicht sein."
 
-#: classes/MetaBox.php:74
+#: classes/MetaBox.php:77
 msgid "You need to choose at least one topic"
 msgstr "Wähle mindestens ein Thema aus"
 
-#: classes/MetaBox.php:75
+#: classes/MetaBox.php:78
 msgid "You can use max of 4 logical operations"
 msgstr "Maximal 4 logische Operationen möglich"
 
-#: classes/MetaBox.php:76
+#: classes/MetaBox.php:79
 msgid "Invalid"
 msgstr "Ungültig"
 
-#: classes/MetaBox.php:77
+#: classes/MetaBox.php:80
 msgid "Valid"
 msgstr "Gültig"
 
-#: classes/MetaBox.php:80
+#: classes/MetaBox.php:83 classes/MetaBox.php:245
+msgid "Send"
+msgstr "Senden"
+
+#: classes/MetaBox.php:84 classes/MetaBox.php:234
+msgid "Plan"
+msgstr "Planen"
+
+#: classes/MetaBox.php:88
 msgid "This will overwrite your current topics condition. Proceed?"
 msgstr "Deine aktuelle Themendefinition wird überschrieben. Fortfahren?"
 
-#: classes/MetaBox.php:83
+#: classes/MetaBox.php:91
 msgid "Give me a message title, please."
 msgstr "Bitte gib einen Nachrichtentitel an."
 
-#: classes/MetaBox.php:84
+#: classes/MetaBox.php:92
 msgid "Type some body content."
 msgstr "Der Nachrichtentext ist leer."
 
-#: classes/MetaBox.php:85
+#: classes/MetaBox.php:93
 msgid "Please define your topic conditions."
 msgstr "Definiere die Themenbedingung."
 
-#: classes/MetaBox.php:86
+#: classes/MetaBox.php:94
 msgid "At least one plattform needs to be activated."
 msgstr "Wähle mindestens eine Plattform aus."
 
-#: classes/MetaBox.php:102
+#: classes/MetaBox.php:110
 msgid "Title"
 msgstr "Titel"
 
-#: classes/MetaBox.php:111
+#: classes/MetaBox.php:119
 msgid "Body"
 msgstr "Text"
 
-#: classes/MetaBox.php:118
+#: classes/MetaBox.php:126
 msgid "To all devices of plattform"
 msgstr "An alle Geräte der Plattform"
 
-#: classes/MetaBox.php:140
+#: classes/MetaBox.php:148
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' and are also "
@@ -92,7 +100,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ und das Thema ‚%s‘ abonniert "
 "haben."
 
-#: classes/MetaBox.php:146
+#: classes/MetaBox.php:154
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' or to '%s' or to "
@@ -101,7 +109,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ oder ‚%s‘ oder beide Themen "
 "abonniert haben."
 
-#: classes/MetaBox.php:154
+#: classes/MetaBox.php:162
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' and are also "
@@ -110,7 +118,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ und eines der Themen ‚%s‘ oder "
 "‚%s‘ oder beide abonniert haben."
 
-#: classes/MetaBox.php:159
+#: classes/MetaBox.php:167
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' or are subscribed "
@@ -119,49 +127,53 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die das Thema ‚%s‘ oder beide Themen "
 "‚%s‘ und ‚%s‘  abonniert haben."
 
-#: classes/MetaBox.php:169
+#: classes/MetaBox.php:177
 msgid "To all devices subscribed to topics condition"
 msgstr "An alle Geräte die die Themenbedingung erfüllen"
 
-#: classes/MetaBox.php:195
+#: classes/MetaBox.php:203
 msgid "Show more examples"
 msgstr "Mehr Beispiele zeigen"
 
-#: classes/MetaBox.php:200
+#: classes/MetaBox.php:208
 msgid "Example"
 msgstr "Beispiel"
 
-#: classes/MetaBox.php:203
+#: classes/MetaBox.php:211
 msgctxt "post meta box condition examples"
 msgid "Use"
 msgstr "Verwenden"
 
-#: classes/MetaBox.php:229
-msgid "Send"
-msgstr "Senden"
+#: classes/MetaBox.php:231
+msgid "Schedule"
+msgstr "Zeitplan"
 
-#: classes/MetaBox.php:230
+#: classes/MetaBox.php:233
+msgid "Now"
+msgstr "Jetzt"
+
+#: classes/MetaBox.php:246
 msgid "Sending message"
 msgstr "Sende Nachricht"
 
-#: classes/MetaBox.php:231
+#: classes/MetaBox.php:247
 msgid "Message has been sent!"
 msgstr "Nachricht wurde versandt!"
 
-#: classes/MetaBox.php:232
+#: classes/MetaBox.php:248
 msgctxt "Send message post meta box response"
 msgid "Error."
 msgstr "Fehler."
 
-#: classes/MetaBox.php:236
+#: classes/MetaBox.php:252
 msgid "Configuration missing. There are no topics defined"
 msgstr "Konfiguration fehlt. Es sind keine Themen definiert"
 
-#: classes/MetaBox.php:243
+#: classes/MetaBox.php:259
 msgid "History"
 msgstr "Verlauf"
 
-#: classes/MetaBox.php:267
+#: classes/MetaBox.php:283
 #, php-format
 msgid "Show complete history of %d items."
 msgstr "Zum gesamten Verlauf mit %d Einträgen."

@@ -29,6 +29,9 @@ class MetaBox {
 	 *  register meta box
 	 */
 	public function add_meta_box() {
+		if(!$this->plugin->permissions->canSendMessages()){
+			return;
+		}
 		add_meta_box(
 			Plugin::DOMAIN . '-meta-box',
 			__( 'Firebase Notifications', Plugin::DOMAIN ),
@@ -76,6 +79,11 @@ class MetaBox {
 					"invalid" => __( "Invalid", Plugin::DOMAIN ),
 					"valid" => __( "Valid", Plugin::DOMAIN ),
 
+					"submit" => array(
+						"now" => __("Send", Plugin::DOMAIN),
+						"plan" => __("Plan", Plugin::DOMAIN),
+					),
+
 					"confirms" => array(
 						"overwrite_conditions"	=> __("This will overwrite your current topics condition. Proceed?", Plugin::DOMAIN),
 					),
@@ -84,6 +92,10 @@ class MetaBox {
 						"body" => __("Type some body content.", Plugin::DOMAIN),
 						"conditions" => __("Please define your topic conditions.", Plugin::DOMAIN),
 						"plattforms" => __("At least one plattform needs to be activated.", Plugin::DOMAIN),
+						"schedule" => array(
+							"invalid" =>  __("Please provide a valid schedule date that is at least one hour in the future.", Plugin::DOMAIN),
+							"in_the_past" => __("Schedule date must be at least one hour in the future.", Plugin::DOMAIN),
+						)
 					)
 				),
 				"topic_ids" => $this->plugin->topics->getTopicIds(),
@@ -219,6 +231,15 @@ class MetaBox {
 			?>
 
 		</div>
+		<div class="fn__base-control--field">
+			<label class="fn__base-control--label"><?php _e("Schedule", Plugin::DOMAIN); ?></label>
+			<p class="firebase--notifications__schedule">
+				<label><input type="radio" name="firebase_schedule" checked value="now" /> <?php _e("Now", Plugin::DOMAIN); ?></label>
+				<label><input type="radio" name="firebase_schedule" value="plan" /> <?php _e("Plan", Plugin::DOMAIN); ?></label>
+				<label><input type="datetime-local" name="firebase_schedule_datetime" value=""/></label>
+
+			</p>
+		</div>
 		<?php
 
 		do_action(Plugin::ACTION_META_BOX_CUSTOM, $this);
@@ -228,7 +249,8 @@ class MetaBox {
 			echo "<p>";
 			submit_button( __("Send", Plugin::DOMAIN), "primary", "firebase-notifications-submit", false );
 			printf( "<span class='is-loading'>%s</span>", __("Sending message", Plugin::DOMAIN));
-			printf("<span class='result-display'> ✅ %s</span>", __("Message has been sent!", Plugin::DOMAIN));
+			printf("<span class='result-display-sent'> ✅ %s</span>", __("Message has been sent!", Plugin::DOMAIN));
+			printf("<span class='result-display-scheduled'> ✅ %s</span>", __("Message has been scheduled!", Plugin::DOMAIN));
 			printf( "<span class='error-display'> 🚨 %s</span>", _x("Error.", "Send message post meta box response", Plugin::DOMAIN));
 			echo "</p>";
 
@@ -251,9 +273,23 @@ class MetaBox {
 					<div class="history-item__left">
 						<div class="history-item__title"><?php echo $msg->title; ?></div>
 						<div class="history-item__conditions"><span><?php echo $msg->conditionForDisplay(); ?></span></div>
+						<?php if($msg->publish != null && $msg->sent == null){
+							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->publish));
+							echo "<div class='history-item__schedule'>⏱ $formatted</div>";
+						} ?>
 					</div>
 					<div class="history-item__right">
-						<span class="history-item__date"><?php echo $msg->created; ?><br><?php echo implode(", ", $msg->plattforms) ?></span>
+						<span class="history-item__date"><?php
+							$created = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->created));
+							$sent = "";
+							if($msg->sent){
+								$sent = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->sent));
+							}
+							echo "💾 $created";
+							if(!empty($sent)){
+								echo "<br>✉️ $sent";
+							}
+							?><br><?php echo implode(", ", $msg->plattforms) ?></span>
 					</div>
 
 				</li>

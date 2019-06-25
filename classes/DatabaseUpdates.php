@@ -87,6 +87,12 @@ class DatabaseUpdates {
 		$this->database->wpdb->query("UPDATE $tablename SET conditions = concat('[\"',conditions,'\"]')");
 	}
 
+	public function update_2()
+	{
+		$tablename = $this->database->tablename;
+		$this->database->wpdb->query("ALTER TABLE $tablename ADD publish DATETIME DEFAULT null AFTER created");
+	}
+
 }
 
 

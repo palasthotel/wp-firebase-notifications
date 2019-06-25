@@ -63,7 +63,7 @@ class CloudMessagingApi {
 	 * @throws \Exception
 	 */
 	function send( $msg ) {
-		return $this->firebase->getMessaging()->send(
+		return $this->getFirebase()->getMessaging()->send(
 			$msg->getCloudMessageArray()
 		);
 	}

@@ -1,11 +1,15 @@
 @charset "UTF-8";
 #firebase-notifications-meta-box .fn__base-control--field { margin-bottom: 8px; }
 
-#firebase-notifications-meta-box .fn__base-control--label { display: block; margin-bottom: 4px; }
+#firebase-notifications-meta-box .fn__base-control--label { display: block; margin-bottom: 4px; font-weight: bold; }
 
 #firebase-notifications-meta-box .fn__base-control--input { width: 100%; padding: 6px 8px; }
 
-#firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .error-display, #firebase-notifications-meta-box .result-display { display: none; }
+#firebase-notifications-meta-box .firebase--notifications__schedule { line-height: 2.4; }
+
+#firebase-notifications-meta-box .firebase--notifications__schedule label { margin-right: 20px; }
+
+#firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .error-display, #firebase-notifications-meta-box .result-display-sent, #firebase-notifications-meta-box .result-display-scheduled { display: none; }
 
 #firebase-notifications-meta-box .is-loading, #firebase-notifications-meta-box .result-display { margin-top: 1em; }
 
@@ -15,9 +19,13 @@
 
 #firebase-notifications-meta-box.is-sending #firebase-notifications-submit { display: none; }
 
-#firebase-notifications-meta-box.was-sent .result-display { display: block; }
+#firebase-notifications-meta-box.was-sent .result-display-sent { display: block; }
 
 #firebase-notifications-meta-box.was-sent #firebase-notifications-submit { display: none; }
+
+#firebase-notifications-meta-box.was-scheduled .result-display-scheduled { display: block; }
+
+#firebase-notifications-meta-box.was-scheduled #firebase-notifications-submit { display: none; }
 
 #firebase-notifications-meta-box.has-error .error-display { margin-left: 8px; display: inline-block; }
 

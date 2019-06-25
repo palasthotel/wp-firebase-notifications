@@ -83,6 +83,22 @@ class Database {
 
 	/**
 	 * @param int $message_id
+	 * @param int $in_seconds
+	 *
+	 * @return false|int
+	 */
+	function setSchedule($message_id, $in_seconds){
+		$result = $this->wpdb->query(
+			$this->wpdb->prepare(
+				"UPDATE $this->tablename SET publish = date_add(now(), INTERVAL %d SECOND) WHERE id = %d",
+				$in_seconds, $message_id
+			)
+		);
+		return $result;
+	}
+
+	/**
+	 * @param int $message_id
 	 * @param int $post_id
 	 *
 	 * @return false|int
@@ -96,6 +112,21 @@ class Database {
 			),
 			array( "%d", "%d")
 		);
+	}
+
+	/**
+	 * @param int $message_id
+	 *
+	 * @return bool|Message
+	 */
+	function getMessage($message_id){
+		$result = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				"SELECT * FROM $this->tablename WHERE id = %d", $message_id
+			)
+		);
+		if(!$result) return false;
+		return $this->mapMessage($result);
 	}
 
 	/**
@@ -132,11 +163,41 @@ class Database {
 	}
 
 	/**
+	 * @return Message[]
+	 */
+	function getNextScheduledMessages(){
+		return array_map(
+			array($this, "mapMessage"),
+			$this->wpdb->get_results(
+				"SELECT * FROM $this->tablename WHERE sent IS NULL AND publish IS NOT NULL AND publish <= NOW()"
+			)
+		);
+	}
+
+	/**
+	 * @param bool $include_sent
+	 * @param int $page
+	 * @param int $count
+	 *
+	 * @return Message[]
+	 */
+	function getScheduledMessages( $include_sent = false, $page = 0, $count = 10){
+		$offset = $count * $page;
+		$where_sent = ($include_sent)? "": " AND sent NOT NULL ";
+		return array_map(
+			array($this, "mapMessage"),
+			$this->wpdb->get_results(
+				"SELECT * FROM $this->tablename WHERE publish IS NOT NULL $where_sent ORDER BY publish ASC LIMIT $offset, $count"
+			)
+		);
+	}
+
+	/**
 	 * @param int $post_id
 	 * @param int $page
 	 * @param int $count
 	 *
-	 * @return array
+	 * @return Message[]
 	 */
 	function getByPostId($post_id, $page = 0, $count = 10){
 		$offset = $count*$page;
@@ -162,9 +223,11 @@ class Database {
 			$item->body,
 			json_decode($item->payload, true)
 		);
+		$msg->id = $item->id;
 		$msg->result = json_decode($item->result);
 		$msg->created = $item->created;
 		$msg->sent = $item->sent;
+		$msg->publish = $item->publish;
 		return $msg;
 	}
 
@@ -182,13 +245,15 @@ class Database {
 			 body text not null,
 			 payload text not null,
 			 created datetime default null,
+			 publish datetime default null,
 			 sent datetime default null,
 			 result text default null,
 			 primary key (id),
 			 key (title),
 			 key (plattforms),
 			 key (sent),
-			 key (created)
+			 key (created),
+			 key (publish)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
 
 		dbDelta( "CREATE TABLE IF NOT EXISTS $this->tablename_posts (
