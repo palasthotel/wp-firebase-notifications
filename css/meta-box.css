@@ -59,6 +59,14 @@
 
 #firebase-notifications-meta-box .firebase-notifications__examples .examples__content .examples__code--wrapper:hover .examples__copy { color: #00a0d2; }
 
+#firebase-notifications-meta-box .counter-warp { color: #666; }
+
+#firebase-notifications-meta-box .counter-warp .is-good { color: #00C853; }
+
+#firebase-notifications-meta-box .counter-warp .is-long, #firebase-notifications-meta-box .counter-warp .is-short { color: #e2a507; }
+
+#firebase-notifications-meta-box .counter-warp .is-too-long { color: #E53935; }
+
 #firebase-notifications_conditions--valid { border: 1px solid #666666; border-radius: 4px; font-size: 0.7rem; padding: 2px 4px; }
 
 #firebase-notifications_conditions--valid.is-valid { background-color: #00C853; border-color: #00af48; color: white; }
