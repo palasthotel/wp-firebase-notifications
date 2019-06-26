@@ -121,9 +121,9 @@
 
 		const $box = $("#firebase-notifications-meta-box");
 		const $title = $("#firebase-notifications__title").on("keyup", resetNormalState);
-		CountableWrapper($title, restrictions.title.notice, restrictions.title.warning, restrictions.title.short);
+		CountableWrapper($title, restrictions.title.long, restrictions.title.too_long, restrictions.title.short);
 		const $message = $("#firebase-notifications__body").on("keyup", resetNormalState);
-		CountableWrapper($message, restrictions.text.notice, restrictions.text.warning, restrictions.text.short);
+		CountableWrapper($message, restrictions.text.long, restrictions.text.too_long, restrictions.text.short);
 		const $plattforms = $box.find("[name='plattform[]']");
 
 		$plattforms.on("change", function(){

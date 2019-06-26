@@ -78,13 +78,13 @@ class MetaBox {
 					array(
 						"title" => array(
 							"short" => 8,
-							"notice" => 40,
-							"warning" => 60,
+							"long" => 40,
+							"too_long" => 60,
 						),
 						"text" => array(
-							"short" => 10,
-							"notice" => 70,
-							"warning" => 100,
+							"short" => 20,
+							"long" => 70,
+							"too_long" => 100,
 						),
 					)
 				),
