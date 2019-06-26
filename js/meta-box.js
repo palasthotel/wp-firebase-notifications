@@ -1,5 +1,46 @@
 (function($, api, metaBox){
 
+	const restrictions = metaBox.restrictions;
+	const i18n = metaBox.i18n;
+	const topic_ids = metaBox.topic_ids;
+
+	function CountChars($countable, fn){
+		$countable.on("keyup",(e)=>{
+			fn($countable.val().length);
+		});
+		$countable.trigger("keyup");
+	}
+
+	function CountableWrapper($countable, longLength, tooLongLength, shortLength) {
+		const $wrap = $("<div></div>").addClass("counter-warp");
+		$countable.after($wrap);
+		$wrap.append($countable);
+		const $counter = $("<span></span>");
+		$wrap.append($counter);
+		CountChars($countable,(length)=>{
+			let text = i18n.countable.text.replace("%d", length);
+			$counter.removeClass("is-short");
+			$counter.removeClass("is-good");
+			$counter.removeClass("is-long");
+			$counter.removeClass("is-too-long");
+
+			if( length >= tooLongLength ){
+				text+= " "+i18n.countable.too_long;
+				$counter.addClass("is-too-long");
+			} else if( length >= longLength) {
+				text+= " "+i18n.countable.long;
+				$counter.addClass("is-long");
+			} else if(shortLength > 0 && length >= shortLength){
+				text+=" "+i18n.countable.good;
+				$counter.addClass("is-good");
+			} else if(length <= shortLength){
+				text+=" "+i18n.countable.short;
+				$counter.addClass("is-short");
+			}
+			$counter.text(text);
+		});
+	}
+
 	/**
 	 * Hooks
 	 */
@@ -76,14 +117,13 @@
 		let isSending = false;
 		let hasError = false;
 		let generatedValue = false;
-
-		const i18n = metaBox.i18n;
-		const topic_ids = metaBox.topic_ids;
 		let conditions = null;
 
 		const $box = $("#firebase-notifications-meta-box");
 		const $title = $("#firebase-notifications__title").on("keyup", resetNormalState);
+		CountableWrapper($title, restrictions.title.notice, restrictions.title.warning, restrictions.title.short);
 		const $message = $("#firebase-notifications__body").on("keyup", resetNormalState);
+		CountableWrapper($message, restrictions.text.notice, restrictions.text.warning, restrictions.text.short);
 		const $plattforms = $box.find("[name='plattform[]']");
 
 		$plattforms.on("change", function(){

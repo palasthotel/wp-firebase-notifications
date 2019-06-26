@@ -44,6 +44,7 @@ class Plugin {
 	const FILTER_CURRENT_USER_CAN_SEND_MESSAGE = "firebase_notifications_current_user_can_send_message";
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
+	const FILTER_META_BOX_RESTRICTIONS = "firebase_notifications_meta_box_restrictions";
 
 	const ACTION_META_BOX_CUSTOM = "firebase_notifications_meta_box_custom";
 	const ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT = "firebase_notification_meta_box_enqueue_script";

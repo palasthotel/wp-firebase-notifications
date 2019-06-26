@@ -72,7 +72,32 @@ class MetaBox {
 			$meta_box_script_handle,
 			"FirebaseNotifications_MetaBox",
 			array(
+
+				"restrictions" => apply_filters(
+					Plugin::FILTER_META_BOX_RESTRICTIONS,
+					array(
+						"title" => array(
+							"short" => 8,
+							"notice" => 40,
+							"warning" => 60,
+						),
+						"text" => array(
+							"short" => 10,
+							"notice" => 70,
+							"warning" => 100,
+						),
+					)
+				),
+
 				"i18n" => array(
+
+					"countable" => array(
+						"text" => __("%d chars. ", Plugin::DOMAIN),
+						"short" => __("Could be too short 🤔", Plugin::DOMAIN),
+						"good" => __("Seems to be a good length 👍", Plugin::DOMAIN),
+						"long" => __("Could be a little too long ⚠️", Plugin::DOMAIN),
+						"too_long" => __("Will probably be too long 🚨️", Plugin::DOMAIN),
+					),
 
 					"empty_conditions" => __("You need to choose at least one topic", Plugin::DOMAIN),
 					"limitation_conditions" => __("You can use max of 4 logical operations", Plugin::DOMAIN),
@@ -96,7 +121,7 @@ class MetaBox {
 							"invalid" =>  __("Please provide a valid schedule date that is at least one hour in the future.", Plugin::DOMAIN),
 							"in_the_past" => __("Schedule date must be at least one hour in the future.", Plugin::DOMAIN),
 						)
-					)
+					),
 				),
 				"topic_ids" => $this->plugin->topics->getTopicIds(),
 				"payload"   => array(
@@ -115,6 +140,7 @@ class MetaBox {
 				<input class="fn__base-control--input"
 				       type="text"
 				       id="firebase-notifications__title"
+				       maxlength="190"
 				       value="<?php the_title(); ?>"
 				/>
 			</div>

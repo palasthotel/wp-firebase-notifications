@@ -157,6 +157,19 @@
 		}
 	}
 
+	.counter-warp{
+		color: #666;
+		.is-good{
+			color: #00C853;
+		}
+		.is-long,
+		.is-short{
+			color: #e2a507;
+		}
+		.is-too-long{
+			color:#E53935;
+		}
+	}
 }
 
 #firebase-notifications_conditions--valid{
