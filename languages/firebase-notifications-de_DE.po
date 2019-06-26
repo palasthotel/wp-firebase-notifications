@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Firebase Notifications\n"
-"POT-Creation-Date: 2019-06-24 19:34+0200\n"
-"PO-Revision-Date: 2019-06-24 19:34+0200\n"
+"POT-Creation-Date: 2019-06-26 09:20+0200\n"
+"PO-Revision-Date: 2019-06-26 09:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-WPHeader: Plugin.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 "X-Poedit-SearchPathExcluded-1: vendor\n"
@@ -35,63 +35,97 @@ msgstr ""
 msgid "Post needs to be published."
 msgstr "Beitrag muss veröffentlicht sein."
 
-#: classes/MetaBox.php:77
+#: classes/MetaBox.php:95
+#, php-format
+msgid "%d chars. "
+msgstr "%d Zeichen. "
+
+#: classes/MetaBox.php:96
+msgid "Could be too short 🤔"
+msgstr "Könnte zu kurz sein 🤔"
+
+#: classes/MetaBox.php:97
+msgid "Seems to be a good length 👍"
+msgstr "Sieht gut aus 👍"
+
+#: classes/MetaBox.php:98
+msgid "Could be a little too long ⚠️"
+msgstr "Könnte etwas zu lang sein ⚠️"
+
+#: classes/MetaBox.php:99
+msgid "Will probably be too long 🚨️"
+msgstr "Wird wahrscheinlich zu lang sein 🚨"
+
+#: classes/MetaBox.php:102
 msgid "You need to choose at least one topic"
 msgstr "Wähle mindestens ein Thema aus"
 
-#: classes/MetaBox.php:78
+#: classes/MetaBox.php:103
 msgid "You can use max of 4 logical operations"
 msgstr "Maximal 4 logische Operationen möglich"
 
-#: classes/MetaBox.php:79
+#: classes/MetaBox.php:104
 msgid "Invalid"
 msgstr "Ungültig"
 
-#: classes/MetaBox.php:80
+#: classes/MetaBox.php:105
 msgid "Valid"
 msgstr "Gültig"
 
-#: classes/MetaBox.php:83 classes/MetaBox.php:245
+#: classes/MetaBox.php:108 classes/MetaBox.php:276
 msgid "Send"
 msgstr "Senden"
 
-#: classes/MetaBox.php:84 classes/MetaBox.php:234
+#: classes/MetaBox.php:109 classes/MetaBox.php:264
 msgid "Plan"
 msgstr "Planen"
 
-#: classes/MetaBox.php:88
+#: classes/MetaBox.php:113
 msgid "This will overwrite your current topics condition. Proceed?"
 msgstr "Deine aktuelle Themendefinition wird überschrieben. Fortfahren?"
 
-#: classes/MetaBox.php:91
+#: classes/MetaBox.php:116
 msgid "Give me a message title, please."
 msgstr "Bitte gib einen Nachrichtentitel an."
 
-#: classes/MetaBox.php:92
+#: classes/MetaBox.php:117
 msgid "Type some body content."
 msgstr "Der Nachrichtentext ist leer."
 
-#: classes/MetaBox.php:93
+#: classes/MetaBox.php:118
 msgid "Please define your topic conditions."
 msgstr "Definiere die Themenbedingung."
 
-#: classes/MetaBox.php:94
+#: classes/MetaBox.php:119
 msgid "At least one plattform needs to be activated."
 msgstr "Wähle mindestens eine Plattform aus."
 
-#: classes/MetaBox.php:110
+#: classes/MetaBox.php:121
+msgid ""
+"Please provide a valid schedule date that is at least one hour in the future."
+msgstr ""
+"Wähle ein gültiges Datum mit Uhrzeit, dass mindestens eine Stunde in der "
+"Zukunft liegt."
+
+#: classes/MetaBox.php:122
+msgid "Schedule date must be at least one hour in the future."
+msgstr ""
+"Das Datum für das geplante Versenden muss mindestens eine Stunde in der "
+"Zukunft liegen."
+
+#: classes/MetaBox.php:139
 msgid "Title"
 msgstr "Titel"
 
-#: classes/MetaBox.php:119
+#: classes/MetaBox.php:149
 msgid "Body"
 msgstr "Text"
 
-#: classes/MetaBox.php:126
+#: classes/MetaBox.php:156
 msgid "To all devices of plattform"
 msgstr "An alle Geräte der Plattform"
 
-#: classes/MetaBox.php:148
+#: classes/MetaBox.php:178
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' and are also "
@@ -100,7 +134,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ und das Thema ‚%s‘ abonniert "
 "haben."
 
-#: classes/MetaBox.php:154
+#: classes/MetaBox.php:184
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' or to '%s' or to "
@@ -109,7 +143,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ oder ‚%s‘ oder beide Themen "
 "abonniert haben."
 
-#: classes/MetaBox.php:162
+#: classes/MetaBox.php:192
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' and are also "
@@ -118,7 +152,7 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die ‚%s‘ und eines der Themen ‚%s‘ oder "
 "‚%s‘ oder beide abonniert haben."
 
-#: classes/MetaBox.php:167
+#: classes/MetaBox.php:197
 #, php-format
 msgid ""
 "Send a message to all devices that are subscribed to '%s' or are subscribed "
@@ -127,53 +161,59 @@ msgstr ""
 "Sende eine Nachricht an alle Geräte die das Thema ‚%s‘ oder beide Themen "
 "‚%s‘ und ‚%s‘  abonniert haben."
 
-#: classes/MetaBox.php:177
+#: classes/MetaBox.php:207
 msgid "To all devices subscribed to topics condition"
 msgstr "An alle Geräte die die Themenbedingung erfüllen"
 
-#: classes/MetaBox.php:203
+#: classes/MetaBox.php:233
 msgid "Show more examples"
 msgstr "Mehr Beispiele zeigen"
 
-#: classes/MetaBox.php:208
+#: classes/MetaBox.php:238
 msgid "Example"
 msgstr "Beispiel"
 
-#: classes/MetaBox.php:211
+#: classes/MetaBox.php:241
 msgctxt "post meta box condition examples"
 msgid "Use"
 msgstr "Verwenden"
 
-#: classes/MetaBox.php:231
+#: classes/MetaBox.php:261
 msgid "Schedule"
 msgstr "Zeitplan"
 
-#: classes/MetaBox.php:233
+#: classes/MetaBox.php:263
 msgid "Now"
 msgstr "Jetzt"
 
-#: classes/MetaBox.php:246
+#: classes/MetaBox.php:277
 msgid "Sending message"
 msgstr "Sende Nachricht"
 
-#: classes/MetaBox.php:247
+#: classes/MetaBox.php:278
 msgid "Message has been sent!"
 msgstr "Nachricht wurde versandt!"
 
-#: classes/MetaBox.php:248
+#: classes/MetaBox.php:279
+#, fuzzy
+#| msgid "Message has been sent!"
+msgid "Message has been scheduled!"
+msgstr "Nachricht wurde versandt!"
+
+#: classes/MetaBox.php:280
 msgctxt "Send message post meta box response"
 msgid "Error."
 msgstr "Fehler."
 
-#: classes/MetaBox.php:252
+#: classes/MetaBox.php:284
 msgid "Configuration missing. There are no topics defined"
 msgstr "Konfiguration fehlt. Es sind keine Themen definiert"
 
-#: classes/MetaBox.php:259
+#: classes/MetaBox.php:291
 msgid "History"
 msgstr "Verlauf"
 
-#: classes/MetaBox.php:283
+#: classes/MetaBox.php:329
 #, php-format
 msgid "Show complete history of %d items."
 msgstr "Zum gesamten Verlauf mit %d Einträgen."
@@ -184,7 +224,7 @@ msgstr ""
 
 #: classes/ToolsPage.php:60
 msgid "Tools ‹ Firebase Notifications"
-msgstr ""
+msgstr "Werkzeuge ‹ Firebase Notifications"
 
 #: classes/ToolsPage.php:128
 msgctxt "Tools page"
@@ -213,7 +253,7 @@ msgstr ""
 
 #. Description of the plugin/theme
 msgid "send messages with firebase messaging"
-msgstr ""
+msgstr "versende Nachrichten über Firebase Messaging"
 
 #. Author of the plugin/theme
 msgid "Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)"
