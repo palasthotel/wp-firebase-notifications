@@ -103,6 +103,7 @@ class Plugin {
 		$this->database->create();
 		$this->databaseUpdates->setToLatestSchemaVersion();
 		$this->notificationsSettingsThemeTemplate->add_endpoint();
+		$this->schedule->start();
 		flush_rewrite_rules();
 	}
 
@@ -110,6 +111,7 @@ class Plugin {
 	 * on plugin deactivation
 	 */
 	function deactivation() {
+		$this->schedule->stop();
 		flush_rewrite_rules();
 	}
 
