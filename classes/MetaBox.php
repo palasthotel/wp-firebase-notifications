@@ -288,7 +288,7 @@ class MetaBox {
 		$messages = $this->plugin->database->getPostMessages( $post->ID );
 		$count    = count( $messages );
 		if ( $count > 0 ) {
-			echo "<h3>" . __( "History", "post meta box", Plugin::DOMAIN ) . "</h3>";
+			echo "<h3>" . __( "History", Plugin::DOMAIN ) . "</h3>";
 			echo "<ul class='firebase-notifications__history'>";
 			foreach ( $messages as $index => $msg ) {
 				if ( $index >= 3 ) {
@@ -303,6 +303,9 @@ class MetaBox {
 							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->publish));
 							echo "<div class='history-item__schedule'>⏱ $formatted</div>";
 						} ?>
+						<div class="history-item_more description">
+							<a href="<?php echo $this->plugin->toolsPage->getUrl( $post->ID ); ?>"><?php _e("More info", Plugin::DOMAIN); ?></a>
+						</div>
 					</div>
 					<div class="history-item__right">
 						<span class="history-item__date"><?php
@@ -326,7 +329,10 @@ class MetaBox {
 		if ( $count > 1 ) {
 			$url = $this->plugin->toolsPage->getUrl( $post->ID );
 			echo "<p><a href='$url'>";
-			printf(__("Show complete history of %d items."), $count);
+			printf(
+				__("Show complete history of %d items.", Plugin::DOMAIN),
+				$count
+			);
 			echo "</a></p>";
 		}
 
