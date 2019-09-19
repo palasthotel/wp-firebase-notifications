@@ -39,6 +39,7 @@ class Plugin {
 	const DOMAIN = "firebase-notifications";
 
 	const TEMPLATE = "firebase-notifications-settings.php";
+	const HANDLE_APP_JS = "firebase-notifications-app";
 	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend";
 
 	const FILTER_CURRENT_USER_CAN_SEND_MESSAGE = "firebase_notifications_current_user_can_send_message";

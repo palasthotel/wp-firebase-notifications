@@ -1,32 +1,10 @@
-(async function($){
+(async function($,firebaseNotifications){
 
 	const isAndroid = (typeof AndroidAppSubscriptions !== typeof undefined);
 	const isiOS = (typeof iOSNotifications !== typeof undefined);
 
-	if(!isAndroid && !isiOS) return;
-
-	const AppNotifications = {
-		isNotificationsEnabled: async ()=>{
-			if(isiOS) return iOSNotifications.isNotificationsEnabled();
-			return AndroidAppSubscriptions.isNotificationsEnabled();
-		},
-		setNotificationsEnabled: async (setEnabled)=>{
-			if(isiOS) return iOSNotifications.setNotificationsEnabled(setEnabled === true);
-			return AndroidAppSubscriptions.setNotificationsEnabled(setEnabled === true);
-		},
-		subscribe: async (topic)=>{
-			if(isiOS) return iOSNotifications.subscribe(topic);
-			return AndroidAppSubscriptions.subscribe(topic);
-		},
-		unsubscribe: async (topic)=>{
-			if(isiOS) return iOSNotifications.unsubscribe(topic);
-			return AndroidAppSubscriptions.unsubscribe(topic);
-		},
-		isSubscribed: async (topic)=>{
-			if(isiOS) return iOSNotifications.isSubscribed(topic);
-			return AndroidAppSubscriptions.isSubscribed(topic);
-		}
-	};
+	if(!firebaseNotifications.isApp) return;
+	const AppNotifications = firebaseNotifications.fn;
 
 	// global android activate notifications
 	const $globalAndroid = $("[data-firebase-notifications-active]");
@@ -75,4 +53,4 @@
 		return $el.attr("data-firebase-notifications-topic");
 	}
 
-})(jQuery);
+})(jQuery, window.FirebaseNotifications);

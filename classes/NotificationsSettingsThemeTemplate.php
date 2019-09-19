@@ -38,6 +38,8 @@ class NotificationsSettingsThemeTemplate {
 		add_filter( 'query_vars', array( $this, 'add_query_vars' ), 0 );
 		add_action( 'init', array( $this, 'add_endpoint' ) );
 
+		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+
 		add_action( 'template_include', array( $this, 'change_template' ) );
 
 	}
@@ -100,11 +102,21 @@ class NotificationsSettingsThemeTemplate {
 		return $template;
 	}
 
+	public function enqueue_scripts(){
+		wp_register_script(
+			Plugin::HANDLE_APP_JS,
+			$this->plugin->url . "/js/app.js",
+			array(),
+			filemtime( $this->plugin->path . "/js/app.js"),
+			true
+		);
+	}
+
 	public function enqueueAppScript(){
 		$this->enqueueJS(
 			Plugin::HANDLE_FRONTEND_JS,
 			"frontend-firebase-notifications-settings.js",
-			array( "jquery" )
+			array( "jquery", Plugin::HANDLE_APP_JS )
 		);
 	}
 	public function enqueueTestScript(){
