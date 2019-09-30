@@ -235,7 +235,7 @@ class Message {
 					$msg,
 					array(
 						'android' => array(
-							'priority' => 'normal',
+							'priority' => 'high',
 							'notification' => array(
 								'title' => $this->title,
 								'body' => $this->body,
@@ -279,7 +279,7 @@ class Message {
 			}
 		}
 
-		return $msg;
+		return apply_filters(Plugin::FILTER_MESSAGE, $msg);
 
 	}
 
