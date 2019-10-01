@@ -302,13 +302,17 @@ class MetaBox {
 						<?php if($msg->publish != null && $msg->sent == null){
 							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->publish));
 							printf(
-									"<div class='history-item__schedule'>⏱ %s <a href='#' class='delete'>%s</a></div>",
-									$formatted,
-									__("Delete schedule", Plugin::DOMAIN)
+								"<div class='history-item__schedule'>⏱ %s</div>",
+								$formatted
 							);
 						} ?>
 						<div class="history-item_more description">
 							<a href="<?php echo $this->plugin->toolsPage->getUrl( $post->ID ); ?>"><?php _e("More info", Plugin::DOMAIN); ?></a>
+							<?php if($msg->publish != null && $msg->sent == null){
+								echo " | ";
+								?><a href='#' class='delete'><?php _e("Delete scheduled message", Plugin::DOMAIN); ?></a><?php
+							}
+							?>
 						</div>
 					</div>
 					<div class="history-item__right">
