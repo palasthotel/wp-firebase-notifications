@@ -63,14 +63,13 @@ class CloudMessagingApi {
 	 * @throws \Exception
 	 */
 	function send( $msg ) {
+		$arr = $msg->getCloudMessageArray();
 		if(WP_DEBUG){
 			return array(
 				"WP_DEBUG" => true,
 				"info" => __("No message was sent", "CloudMessagingApi class", Plugin::DOMAIN),
 			);
 		}
-		return $this->getFirebase()->getMessaging()->send(
-			$msg->getCloudMessageArray()
-		);
+		return $this->getFirebase()->getMessaging()->send($arr);
 	}
 }

@@ -229,55 +229,56 @@ class Message {
 					)
 				)
 			);
-		} else {
-			if($this->isForAndroid()){
-				$msg = array_merge(
-					$msg,
-					array(
-						'android' => array(
-							'priority' => 'high',
-							'notification' => array(
-								'title' => $this->title,
-								'body' => $this->body,
-							)
+		}
+
+		if($this->isForAndroid()){
+			$msg = array_merge(
+				$msg,
+				array(
+					'android' => array(
+						'priority' => 'normal',
+						'notification' => array(
+							'title' => $this->title,
+							'body' => $this->body,
 						)
 					)
-				);
-			}
-			if($this->isForIOS()){
-				$msg = array_merge(
-					$msg,
-					array(
-						'apns' => array(
-							'headers' => [
-								'apns-priority' => '10',
-							],
-							'payload' => array(
-								'aps' => array(
-									'alert' => array(
-										'title' => $this->title,
-										'body' => $this->body,
-									),
+				)
+			);
+		}
+		if($this->isForIOS()){
+			$msg = array_merge(
+				$msg,
+				array(
+					'apns' => array(
+						'headers' => [
+							'apns-priority' => '10',
+						],
+						'payload' => array(
+							'aps' => array(
+								'alert' => array(
+									'title' => $this->title,
+									'body' => $this->body,
 								),
 							),
 						),
-					)
-				);
-			}
-			if($this->isForWeb()){
-				$msg = array_merge(
-					$msg,
-					array(
-						'webpush' => array(
-							'notification' => array(
-								'title' => $this->title,
-								'body' => $this->body,
-							),
-						),
-					)
-				);
-			}
+					),
+				)
+			);
 		}
+		if($this->isForWeb()){
+			$msg = array_merge(
+				$msg,
+				array(
+					'webpush' => array(
+						'notification' => array(
+							'title' => $this->title,
+							'body' => $this->body,
+						),
+					),
+				)
+			);
+		}
+
 
 		return apply_filters(Plugin::FILTER_MESSAGE, $msg);
 
