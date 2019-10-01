@@ -57,10 +57,10 @@ class Database {
 	/**
 	 * @param int $message_id
 	 *
-	 * @return false|int
 	 */
 	function delete($message_id){
-		return $this->wpdb->delete($this->tablename, array("id" => $message_id), array("%d"));
+		$this->wpdb->delete($this->tablename_posts, array("message_id" => $message_id), array("%d"));
+		$this->wpdb->delete($this->tablename, array("id" => $message_id), array("%d"));
 	}
 
 	/**

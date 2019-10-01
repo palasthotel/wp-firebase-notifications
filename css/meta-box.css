@@ -45,6 +45,8 @@
 
 #firebase-notifications-meta-box .firebase-notifications__history--item .history-item__title { font-weight: bold; }
 
+#firebase-notifications-meta-box .firebase-notifications__history--item .delete { color: #a00; }
+
 #firebase-notifications-meta-box .firebase-notifications__examples .examples__header { text-decoration: underline; color: #0073aa; display: inline-block; }
 
 #firebase-notifications-meta-box .firebase-notifications__examples .examples__header:hover { cursor: help; color: #00a0d2; }

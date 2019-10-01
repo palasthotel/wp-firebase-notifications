@@ -13,9 +13,9 @@ use PHPUnit\Runner\Exception;
 
 /**
  * @property string action_send
- * @property string action_topics_list
  * @property Plugin plugin
  * @property string api_handle
+ * @property string action_delete
  */
 class Ajax {
 
@@ -28,9 +28,9 @@ class Ajax {
 		$this->plugin = $plugin;
 		$this->api_handle = Plugin::DOMAIN."-api";
 		$this->action_send = Plugin::DOMAIN."_send";
-		$this->action_topics_list = Plugin::DOMAIN."_topics_list";
+		$this->action_delete = Plugin::DOMAIN."_delete";
 		add_action("wp_ajax_$this->action_send", array($this, 'send'));
-		add_action("wp_ajax_$this->action_topics_list", array($this, 'topics_list'));
+		add_action("wp_ajax_$this->action_delete", array($this, 'delete'));
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Ajax {
 				"ajax_url" => admin_url( 'admin-ajax.php' ),
 				"actions" => array(
 					"send" => $this->plugin->ajax->action_send,
-					"topics_list" => $this->plugin->ajax->action_topics_list,
+					"delete" => $this->plugin->ajax->action_delete,
 				),
 			)
 		);
@@ -144,6 +144,17 @@ class Ajax {
 			wp_send_json_error($e->getMessage());
 		}
 
+	}
+
+	/**
+	 * delete a single message
+	 */
+	public function delete(){
+		if(!current_user_can('publish_posts')) wp_send_json_error(__("No access", Plugin::DOMAIN));
+		$message_id = intval($_REQUEST["message_id"]);
+
+		$this->plugin->database->delete($message_id);
+		wp_send_json_success($message_id);
 	}
 
 }

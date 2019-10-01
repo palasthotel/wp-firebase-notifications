@@ -360,6 +360,20 @@
 		$examples.on("click", ".examples__code--wrapper", function() {
 			$conditions.val($(this).find(".examples__code").text()).trigger("keyup");
 			generatedValue = true;
+		});
+
+		// ------------------------------------
+		// history
+		// ------------------------------------
+		$(".firebase-notifications__history").on("click",".delete", function(e) {
+			e.preventDefault();
+			const $msg = $(this).closest("[data-message-id]");
+			const id = $msg.attr("data-message-id");
+			if(id){
+				api.delete(id).then(()=>{
+					$msg.remove();
+				});
+			}
 		})
 
 	});

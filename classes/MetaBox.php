@@ -295,13 +295,17 @@ class MetaBox {
 					break;
 				}
 				?>
-				<li class="firebase-notifications__history--item">
+				<li class="firebase-notifications__history--item" data-message-id="<?php echo $msg->id; ?>">
 					<div class="history-item__left">
 						<div class="history-item__title"><?php echo $msg->title; ?></div>
 						<div class="history-item__conditions"><span><?php echo $msg->conditionForDisplay(); ?></span></div>
 						<?php if($msg->publish != null && $msg->sent == null){
 							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->publish));
-							echo "<div class='history-item__schedule'>⏱ $formatted</div>";
+							printf(
+									"<div class='history-item__schedule'>⏱ %s <a href='#' class='delete'>%s</a></div>",
+									$formatted,
+									__("Delete schedule", Plugin::DOMAIN)
+							);
 						} ?>
 						<div class="history-item_more description">
 							<a href="<?php echo $this->plugin->toolsPage->getUrl( $post->ID ); ?>"><?php _e("More info", Plugin::DOMAIN); ?></a>

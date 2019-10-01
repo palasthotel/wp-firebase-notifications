@@ -18,9 +18,13 @@
 
 		return post(actions.send, {
 			title, body, plattforms, conditions,
-			schedule: Math.round(schedule_timestamp/1000),
+			schedule: (schedule_timestamp)? Math.round(schedule_timestamp/1000): null,
 			payload
 		});
+	};
+
+	api.delete = async (message_id) => {
+		return post(actions.delete, {message_id})
 	};
 
 	function isEmpty(arg) {
