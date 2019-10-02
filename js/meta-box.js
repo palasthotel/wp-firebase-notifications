@@ -215,7 +215,8 @@
 			return $schedule_datetime.val();
 		}
 		function getScheduleTimestamp() {
-			return (new Date($schedule_datetime.val())).getTime();
+			const d = new Date($schedule_datetime.val());
+			return d.getTime()-d.getTimezoneOffset();
 		}
 		
 		function resetConditionValid(){
