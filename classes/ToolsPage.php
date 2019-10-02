@@ -108,6 +108,7 @@ class ToolsPage {
 		);
 		$date_format = get_option( 'date_format' );
 		$time_format = get_option( 'time_format' );
+		$timezone = new \DateTimeZone(get_option("timezone_string", "UTC"));
 		$format = "$date_format $time_format";
 		$post_id = $this->getPostId();
 		$paged = $this->getPaged();
@@ -121,13 +122,16 @@ class ToolsPage {
 			} else {
 				$notifications = $this->plugin->database->getAll($paged, $count);
 			}
-
 			foreach ($notifications as $item){
-				$readableCreated = date_i18n($format, strtotime($item->created));
-				$readableSent = (empty($item->sent))?
+				$created = new \DateTime($item->created);
+				$created->setTimezone($timezone);
+				$sent = (!empty($item->sent))? new \DateTime($item->sent): null;
+				if($sent) $sent->setTimezone($timezone);
+				$readableCreated = date_i18n($format, $created->getTimestamp());
+				$readableSent = (empty($sent))?
 					"🚨 "._x("Not sent", "Tools page", Plugin::DOMAIN)
 					:
-					" ✅ ".date_i18n($format, strtotime($item->sent));
+					" ✅ ".date_i18n($format, $sent->getTimestamp());
 				echo "<li class='firebase-notifications__item card'>";
 				echo "<div class='firebase-notifications__item--title'>$item->title</div>";
 				echo "<div class='firebase-notifications__item--body'>$item->body</div>";
