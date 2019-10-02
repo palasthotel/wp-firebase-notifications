@@ -33,6 +33,8 @@ class Database {
 	 */
 	function add($message){
 
+		$message->created = $this->nowUTC();
+
 		$numberInserted =  $this->wpdb->insert(
 			$this->tablename,
 			array(
@@ -41,14 +43,13 @@ class Database {
 				"title" => $message->title,
 				"body" => $message->body,
 				"payload" => json_encode($message->payload),
+				"created" => $message->created,
 			),
 			array( "%s","%s","%s","%s","%s", "%s")
 		);
 
 		if($numberInserted){
-			$insertId = $this->wpdb->insert_id;
-			$this->wpdb->query("UPDATE $this->tablename SET created = now() WHERE id = $insertId");
-			$message->id = $insertId;
+			$message->id = $this->wpdb->insert_id;
 			return true;
 		}
 		return false;
@@ -74,7 +75,8 @@ class Database {
 		do_action(Plugin::ACTION_MESSAGE_SENT, $message_id, $result);
 		return $this->wpdb->query(
 			$this->wpdb->prepare(
-				"UPDATE $this->tablename SET sent = now(), result = %s WHERE id = %d ",
+				"UPDATE $this->tablename SET sent = %s, result = %s WHERE id = %d ",
+				$this->nowUTC(),
 				json_encode($result),
 				$message_id
 			)
@@ -88,10 +90,14 @@ class Database {
 	 * @return false|int
 	 */
 	function setSchedule($message_id, $in_seconds){
+		$datetime = new \DateTime();
+		$datetime->setTimezone(new \DateTimeZone("UTC"));
+		$datetime->add(New \DateInterval('PT'.$in_seconds.'S'));
 		$result = $this->wpdb->query(
 			$this->wpdb->prepare(
-				"UPDATE $this->tablename SET publish = date_add(now(), INTERVAL %d SECOND) WHERE id = %d",
-				$in_seconds, $message_id
+				"UPDATE $this->tablename SET publish = %s WHERE id = %d",
+				$datetime->format("Y-m-d H:i:s"),
+				$message_id
 			)
 		);
 		return $result;
@@ -210,6 +216,12 @@ class Database {
 		);
 	}
 
+	function nowUTC(){
+		$dt = new \DateTime();
+		$dt->setTimezone(new \DateTimeZone("UTC"));
+		return $dt->format("Y-m-d H:i:s");
+	}
+
 	/**
 	 * @param object $item
 	 *
@@ -244,7 +256,7 @@ class Database {
 			 title varchar(190) not null,
 			 body text not null,
 			 payload text not null,
-			 created datetime default null,
+			 created datetime NOT NULL,
 			 publish datetime default null,
 			 sent datetime default null,
 			 result text default null,
