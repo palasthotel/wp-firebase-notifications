@@ -305,7 +305,7 @@ class MetaBox {
 							$publish = new \DateTime($msg->publish);
 							$publish->setTimezone($timezone);
 
-							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), $publish->getTimestamp());
+							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), $publish->getTimestamp()+$publish->getOffset());
 							printf(
 								"<div class='history-item__schedule'>⏱ %s</div>",
 								$formatted
@@ -324,12 +324,12 @@ class MetaBox {
 						<span class="history-item__date"><?php
 							$created = new \DateTime($msg->created);
 							$created->setTimezone($timezone);
-							$created = date_i18n(get_option('date_format')." ".get_option('time_format'), $created->getTimestamp());
+							$created = date_i18n(get_option('date_format')." ".get_option('time_format'), $created->getTimestamp()+$created->getOffset());
 							$sent = "";
 							if($msg->sent){
 								$sent = new \DateTime($msg->created);
 								$sent->setTimezone($timezone);
-								$sent = date_i18n(get_option('date_format')." ".get_option('time_format'), $sent->getTimestamp());
+								$sent = date_i18n(get_option('date_format')." ".get_option('time_format'), $sent->getTimestamp()+$sent->getOffset());
 							}
 							echo "💾 $created";
 							if(!empty($sent)){

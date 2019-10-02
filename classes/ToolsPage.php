@@ -127,11 +127,11 @@ class ToolsPage {
 				$created->setTimezone($timezone);
 				$sent = (!empty($item->sent))? new \DateTime($item->sent): null;
 				if($sent) $sent->setTimezone($timezone);
-				$readableCreated = date_i18n($format, $created->getTimestamp());
+				$readableCreated = date_i18n($format, $created->getTimestamp()+$created->getOffset());
 				$readableSent = (empty($sent))?
 					"🚨 "._x("Not sent", "Tools page", Plugin::DOMAIN)
 					:
-					" ✅ ".date_i18n($format, $sent->getTimestamp());
+					" ✅ ".date_i18n($format, $sent->getTimestamp()+$sent->getOffset());
 				echo "<li class='firebase-notifications__item card'>";
 				echo "<div class='firebase-notifications__item--title'>$item->title</div>";
 				echo "<div class='firebase-notifications__item--body'>$item->body</div>";
