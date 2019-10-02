@@ -288,6 +288,8 @@ class MetaBox {
 		$messages = $this->plugin->database->getPostMessages( $post->ID );
 		$count    = count( $messages );
 		if ( $count > 0 ) {
+			$tz = get_option("timezone_string", "UTC");
+			$timezone = new \DateTimeZone($tz);
 			echo "<h3>" . __( "History", Plugin::DOMAIN ) . "</h3>";
 			echo "<ul class='firebase-notifications__history'>";
 			foreach ( $messages as $index => $msg ) {
@@ -300,7 +302,10 @@ class MetaBox {
 						<div class="history-item__title"><?php echo $msg->title; ?></div>
 						<div class="history-item__conditions"><span><?php echo $msg->conditionForDisplay(); ?></span></div>
 						<?php if($msg->publish != null && $msg->sent == null){
-							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->publish));
+							$publish = new \DateTime($msg->publish);
+							$publish->setTimezone($timezone);
+
+							$formatted = date_i18n(get_option('date_format')." ".get_option('time_format'), $publish->getTimestamp());
 							printf(
 								"<div class='history-item__schedule'>⏱ %s</div>",
 								$formatted
@@ -317,10 +322,14 @@ class MetaBox {
 					</div>
 					<div class="history-item__right">
 						<span class="history-item__date"><?php
-							$created = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->created));
+							$created = new \DateTime($msg->created);
+							$created->setTimezone($timezone);
+							$created = date_i18n(get_option('date_format')." ".get_option('time_format'), $created->getTimestamp());
 							$sent = "";
 							if($msg->sent){
-								$sent = date_i18n(get_option('date_format')." ".get_option('time_format'), strtotime($msg->sent));
+								$sent = new \DateTime($msg->created);
+								$sent->setTimezone($timezone);
+								$sent = date_i18n(get_option('date_format')." ".get_option('time_format'), $sent->getTimestamp());
 							}
 							echo "💾 $created";
 							if(!empty($sent)){

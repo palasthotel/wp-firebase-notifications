@@ -3,7 +3,7 @@
  * Plugin Name: Firebase Notifications
  * Plugin URI: https://github.com/palasthotel/wp-firebase-notifications
  * Description: send messages with firebase messaging
- * Version: 1.0
+ * Version: 1.0.1
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 5.0
