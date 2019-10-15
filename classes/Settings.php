@@ -154,6 +154,7 @@ class Settings {
 			$checked = (in_array($key, $activated))? "checked='checked'":"";
 			echo "<input name='$name' type='checkbox' value='$key' $checked/> ".$post_type->labels->name."<br/>";
 		}
+		echo "<p class='description'>Activate post types for firebase push notifications.</p>";
 	}
 
 	/**
