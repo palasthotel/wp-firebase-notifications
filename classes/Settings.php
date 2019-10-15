@@ -149,11 +149,13 @@ class Settings {
 	function render_post_types(){
 		$activated = $this->getActivatedPostTypes();
 		$post_types = get_post_types( array('public' => true, 'show_ui' => true), 'objects' );
+		echo "<p>";
 		foreach ( $post_types as $key => $post_type ) {
 			$name = Plugin::OPTION_POST_TYPES."[]";
 			$checked = (in_array($key, $activated))? "checked='checked'":"";
-			echo "<input name='$name' type='checkbox' value='$key' $checked/> ".$post_type->labels->name."<br/>";
+			echo "<label><input name='$name' type='checkbox' value='$key' $checked /> ".$post_type->labels->name."</label><br/>";
 		}
+		echo "</p>";
 		echo "<p class='description'>Activate post types for firebase push notifications.</p>";
 	}
 
