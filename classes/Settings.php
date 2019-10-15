@@ -50,6 +50,18 @@ class Settings {
 			Plugin::OPTION_CONFIG,
 			array($this, 'sanitize_config')
 		);
+
+		add_settings_field(
+			Plugin::OPTION_POST_TYPES,
+			__('Post types', Plugin::DOMAIN),
+			array($this, 'render_post_types'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_POST_TYPES
+		);
 	}
 
 	/**
@@ -128,6 +140,20 @@ class Settings {
 		?>
 
 		<?php
+	}
+
+	function getActivatedPostTypes(){
+		return get_option(Plugin::OPTION_POST_TYPES, array("post"));
+	}
+
+	function render_post_types(){
+		$activated = $this->getActivatedPostTypes();
+		$post_types = get_post_types( array('public' => true, 'show_ui' => true), 'objects' );
+		foreach ( $post_types as $key => $post_type ) {
+			$name = Plugin::OPTION_POST_TYPES."[]";
+			$checked = (in_array($key, $activated))? "checked='checked'":"";
+			echo "<input name='$name' type='checkbox' value='$key' $checked/> ".$post_type->labels->name."<br/>";
+		}
 	}
 
 	/**

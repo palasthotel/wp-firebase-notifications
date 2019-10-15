@@ -54,6 +54,7 @@ class Plugin {
 	const ACTION_MESSAGE_SENT = "firebase_notifications_message_sent";
 
 	const OPTION_CONFIG = "_firebase_notifications_config_json";
+	const OPTION_POST_TYPES = "_firebase_notifications_post_types";
 	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
 
 	const SCHEDULE_SEND_MESSAGED = "firebase_notifications_send_messaged_schedule";

@@ -21,7 +21,7 @@ class MetaBox {
 	 */
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
-		add_action( 'add_meta_boxes_post', array( $this, 'add_meta_box' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( Plugin::ACTION_SAVED_MESSAGE, array( $this, 'saved_message' ) );
 	}
 
@@ -36,7 +36,7 @@ class MetaBox {
 			Plugin::DOMAIN . '-meta-box',
 			__( 'Firebase Notifications', Plugin::DOMAIN ),
 			array( $this, 'render' ),
-			'post'
+			$this->plugin->settings->getActivatedPostTypes()
 		);
 	}
 
