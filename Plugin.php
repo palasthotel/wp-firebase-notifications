@@ -46,6 +46,7 @@ class Plugin {
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
 	const FILTER_META_BOX_RESTRICTIONS = "firebase_notifications_meta_box_restrictions";
+	const FILTER_SETTINGS_URL = "firebase_notifications_settings_url";
 
 	const ACTION_META_BOX_CUSTOM = "firebase_notifications_meta_box_custom";
 	const ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT = "firebase_notification_meta_box_enqueue_script";

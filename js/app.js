@@ -11,23 +11,28 @@
 			fn: {
 				isNotificationsEnabled: async ()=>{
 					if(isiOS) return iOSNotifications.isNotificationsEnabled();
-					return AndroidAppSubscriptions.isNotificationsEnabled();
+					if(isAndroid) return AndroidAppSubscriptions.isNotificationsEnabled();
+					console.error("No interface found. Could not check if notifications are enabled");
 				},
 				setNotificationsEnabled: async (setEnabled)=>{
 					if(isiOS) return iOSNotifications.setNotificationsEnabled(setEnabled === true);
-					return AndroidAppSubscriptions.setNotificationsEnabled(setEnabled === true);
+					if(isAndroid) return AndroidAppSubscriptions.setNotificationsEnabled(setEnabled === true);
+					console.error("No interface found. Could not set notifications endabled to "+ setEnabled);
 				},
 				subscribe: async (topic)=>{
 					if(isiOS) return iOSNotifications.subscribe(topic);
-					return AndroidAppSubscriptions.subscribe(topic);
+					if(isAndroid) return AndroidAppSubscriptions.subscribe(topic);
+					console.error("No interface found. Could not subscribe to "+ topic);
 				},
 				unsubscribe: async (topic)=>{
 					if(isiOS) return iOSNotifications.unsubscribe(topic);
-					return AndroidAppSubscriptions.unsubscribe(topic);
+					if(isAndroid) return AndroidAppSubscriptions.unsubscribe(topic);
+					console.error("No interface found. Could not unsubscribe from "+ topic);
 				},
 				isSubscribed: async (topic)=>{
 					if(isiOS) return iOSNotifications.isSubscribed(topic);
-					return AndroidAppSubscriptions.isSubscribed(topic);
+					if(isAndroid) return AndroidAppSubscriptions.isSubscribed(topic);
+					console.error("No interface found. Could not check if is subscribed to "+ topic);
 				}
 			},
 		}

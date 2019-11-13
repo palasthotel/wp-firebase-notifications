@@ -24,7 +24,15 @@ class NotificationsSettingsThemeTemplate {
 	 * @return string
 	 */
 	public static function url() {
-		return '/' . self::URL . '/';
+		return  '/' . self::urlRelative() . '/';
+	}
+
+	/**
+	 * relative url no front slashes
+	 * @return string
+	 */
+	public static function urlRelative(){
+		return ltrim(rtrim((apply_filters(Plugin::FILTER_SETTINGS_URL, self::URL )),'/\\'), '/\\');
 	}
 
 	/**
@@ -64,8 +72,9 @@ class NotificationsSettingsThemeTemplate {
 	 * @return void
 	 */
 	public function add_endpoint() {
+		$relative = self::urlRelative();
 		add_rewrite_rule(
-			'^' . self::URL . '$',
+			'^' . self::urlRelative() . '$',
 			'index.php?' . self::PARAM_KEY . '=' . self::PARAM_VALUE,
 			'top'
 		);
