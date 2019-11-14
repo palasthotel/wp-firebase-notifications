@@ -72,7 +72,6 @@ class NotificationsSettingsThemeTemplate {
 	 * @return void
 	 */
 	public function add_endpoint() {
-		$relative = self::urlRelative();
 		add_rewrite_rule(
 			'^' . self::urlRelative() . '$',
 			'index.php?' . self::PARAM_KEY . '=' . self::PARAM_VALUE,

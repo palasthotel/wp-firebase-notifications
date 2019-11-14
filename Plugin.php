@@ -33,6 +33,7 @@ namespace Palasthotel\FirebaseNotifications;
  * @property DatabaseUpdates databaseUpdates
  * @property Permissions permissions
  * @property Schedule schedule
+ * @property DesktopMessaging desktopMessaging
  */
 class Plugin {
 
@@ -56,6 +57,7 @@ class Plugin {
 
 	const OPTION_CONFIG = "_firebase_notifications_config_json";
 	const OPTION_POST_TYPES = "_firebase_notifications_post_types";
+	const OPTION_WEBAPP_CONFIG = "_firebase_notifications_webapp_config_json";
 	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
 
 	const SCHEDULE_SEND_MESSAGED = "firebase_notifications_send_messaged_schedule";
@@ -85,6 +87,7 @@ class Plugin {
 		$this->databaseUpdates = new DatabaseUpdates($this->database);
 		$this->ajax = new Ajax($this);
 		$this->notificationsSettingsThemeTemplate = new NotificationsSettingsThemeTemplate($this);
+		$this->desktopMessaging = new DesktopMessaging($this);
 		$this->metaBox = new MetaBox($this);
 		$this->topics = new Topics($this);
 		$this->toolsPage = new ToolsPage($this);

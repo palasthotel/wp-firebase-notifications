@@ -21,8 +21,20 @@ class Settings {
 	 */
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;
-		add_action('admin_init', array($this,'custom_settings'));
 		add_filter('plugin_action_links_' . $plugin->basename, array($this, 'add_action_links'));
+		add_action('admin_init', array($this,'custom_settings'));
+	}
+
+	/**
+	 * action link to settings on plugins list page
+	 * @param $links
+	 *
+	 * @return array
+	 */
+	public function add_action_links($links){
+		return array_merge($links, array(
+			'<a href="'.admin_url('options-writing.php#'.Plugin::DOMAIN).'">Settings</a>'
+		));
 	}
 
 	/**
@@ -41,7 +53,7 @@ class Settings {
 		add_settings_field(
 			Plugin::OPTION_CONFIG,
 			__('Google Services', Plugin::DOMAIN),
-			array($this, 'render_url_field'),
+			array($this, 'render_services_config_field'),
 			'writing',
 			'firebase-notifications-settings'
 		);
@@ -62,6 +74,20 @@ class Settings {
 			'writing',
 			Plugin::OPTION_POST_TYPES
 		);
+
+
+		add_settings_field(
+			Plugin::OPTION_WEBAPP_CONFIG,
+			__('Webapp', Plugin::DOMAIN),
+			array($this, 'render_webapp_config_field'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_WEBAPP_CONFIG
+		);
+
 	}
 
 	/**
@@ -103,9 +129,35 @@ class Settings {
 	}
 
 	/**
+	 * @param bool $assoc
+	 *
+	 * @return object|array|null
+	 */
+	public function getWebappConfig($assoc = false){
+		$config = get_option(Plugin::OPTION_WEBAPP_CONFIG, "");
+		return json_decode($config, $assoc);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isWebappConfigValid(){
+		$config = $this->getWebappConfig();
+		if($config == null) return false;
+		if(!isset($config->apiKey)) return false;
+		if(!isset($config->authDomain)) return false;
+		if(!isset($config->projectId)) return false;
+		if(!isset($config->storageBucket)) return false;
+		if(!isset($config->messagingSenderId)) return false;
+		if(!isset($config->appId)) return false;
+		if(!isset($config->measurementId)) return false;
+		return true;
+	}
+
+	/**
 	 * render the setting field
 	 */
-	public function render_url_field(){
+	public function render_services_config_field(){
 		$config = $this->getConfig();
 		if($config == null){
 			$config = "";
@@ -160,14 +212,57 @@ class Settings {
 	}
 
 	/**
-	 * action link to settings on plugins list page
-	 * @param $links
-	 *
-	 * @return array
+	 * render the setting field
 	 */
-	public function add_action_links($links){
-		return array_merge($links, array(
-			'<a href="'.admin_url('options-writing.php#'.Plugin::DOMAIN).'">Settings</a>'
-		));
+	public function render_webapp_config_field(){
+		$config = $this->getWebappConfig();
+		if($config == null){
+			$config = "";
+		} else {
+			$config = json_encode($config, JSON_PRETTY_PRINT);
+		}
+		?>
+		<ol class="description">
+			<li>Goto <a href="https://console.firebase.google.com">Firebase Console</a></li>
+			<li>Choose your project</li>
+			<li>Goto "Project Settings"</li>
+			<li>Scroll down to "My Apps"</li>
+			<li>Select an existing or add a new "Web app"</li>
+			<li>Choose "Configuration" for the Firebase SDK snippet.</li>
+			<li>Copy and past it here.</li>
+		</ol>
+		<textarea
+				style="width: 100%"
+				rows="13"
+				id="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
+				name="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
+		><?php echo $config ?></textarea>
+		<script>
+			jQuery(function($){
+				const variableDefRegex = /^( *(const|let|var) firebaseConfig = *{)/gm;
+				const regex = /(\w+):( +|")/gm;
+				const endsWithSemicolonRegex = /(;)$/gm;
+				const subst = `"$1":`;
+				$("#<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>").on("keyup", function(){
+					let val = this.value;
+					val = val.replace(variableDefRegex, "{", val);
+					val = val.replace(endsWithSemicolonRegex, "", val);
+					this.value = val.replace(regex, subst);
+				});
+			});
+		</script>
+		<?php
+		echo '<p class="description">';
+		if($this->isWebappConfigValid()){
+			echo "✅ Found Webapp configuration.";
+		} else {
+			echo "🚨 There is no webapp configuration.";
+		}
+		echo '</p>'
+		?>
+		<p>After that you have to add two cloud function so users can subscribe to topics</p>
+		<?php
 	}
+
+
 }
