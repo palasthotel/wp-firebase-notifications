@@ -153,7 +153,7 @@ class MetaBox {
 				><?php echo $post->post_excerpt; ?></textarea>
 			</div>
 			<div class="fn__base-control--field">
-				<label class="fn__base-control--label"><?php _e("To all devices of plattform", Plugin::DOMAIN); ?></label>
+				<label class="fn__base-control--label"><?php _e("To devices of plattform", Plugin::DOMAIN); ?></label>
 				<p class="firebase--notifications__plafforms">
 					<label><input type="checkbox" name="plattform[]" checked="checked" value="android" /> Android</label>
 					<label><input type="checkbox" name="plattform[]" checked="checked" value="ios" /> iOS</label>
@@ -204,7 +204,7 @@ class MetaBox {
 				<div class="fn__base-control--field">
 					<label class="fn__base-control--label"
 					       for="firebase-notifications__conditions">
-						<?php _e("To all devices subscribed to topics condition", Plugin::DOMAIN);?>
+						<?php _e("To devices subscribed to topics condition", Plugin::DOMAIN);?>
 						<span id="firebase-notifications_conditions--valid">...</span>
 					</label>
 					<?php

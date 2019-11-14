@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Firebase Notifications\n"
-"POT-Creation-Date: 2019-10-01 18:24+0200\n"
-"PO-Revision-Date: 2019-10-01 18:27+0200\n"
+"POT-Creation-Date: 2019-11-14 16:22+0100\n"
+"PO-Revision-Date: 2019-11-14 16:25+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -126,8 +126,8 @@ msgid "Body"
 msgstr "Text"
 
 #: classes/MetaBox.php:156
-msgid "To all devices of plattform"
-msgstr "An alle Geräte der Plattform"
+msgid "To devices of plattform"
+msgstr "An Geräte der Plattform"
 
 #: classes/MetaBox.php:178
 #, php-format
@@ -166,8 +166,8 @@ msgstr ""
 "‚%s‘ und ‚%s‘  abonniert haben."
 
 #: classes/MetaBox.php:207
-msgid "To all devices subscribed to topics condition"
-msgstr "An alle Geräte die die Themenbedingung erfüllen"
+msgid "To devices subscribed to topics condition"
+msgstr "An Geräte die die Themenbedingung erfüllen"
 
 #: classes/MetaBox.php:233
 msgid "Show more examples"
@@ -211,49 +211,57 @@ msgstr "Fehler."
 msgid "Configuration missing. There are no topics defined"
 msgstr "Konfiguration fehlt. Es sind keine Themen definiert"
 
-#: classes/MetaBox.php:291
+#: classes/MetaBox.php:293
 msgid "History"
 msgstr "Verlauf"
 
-#: classes/MetaBox.php:307
-msgid "Delete scheduled message"
-msgstr "Geplante Nachricht löschen"
-
-#: classes/MetaBox.php:311
+#: classes/MetaBox.php:315
 msgid "More info"
 msgstr "Mehr Informationen"
 
-#: classes/MetaBox.php:337
+#: classes/MetaBox.php:318
+msgid "Delete scheduled message"
+msgstr "Geplante Nachricht löschen"
+
+#: classes/MetaBox.php:350
 #, php-format
 msgid "Show complete history of %d items."
 msgstr "Zum gesamten Verlauf mit %d Einträgen."
 
-#: classes/Settings.php:43
+#: classes/Settings.php:55
 msgid "Google Services"
+msgstr ""
+
+#: classes/Settings.php:68
+msgid "Post types"
+msgstr ""
+
+#: classes/Settings.php:81
+msgid "Webapp"
 msgstr ""
 
 #: classes/ToolsPage.php:60
 msgid "Tools ‹ Firebase Notifications"
 msgstr "Werkzeuge ‹ Firebase Notifications"
 
-#: classes/ToolsPage.php:128
+#: classes/ToolsPage.php:132
 msgctxt "Tools page"
 msgid "Not sent"
 msgstr "Nicht versendet"
 
-#: classes/ToolsPage.php:136
+#: classes/ToolsPage.php:140
 msgid "Created:"
 msgstr "Erstellt:"
 
-#: classes/ToolsPage.php:142
+#: classes/ToolsPage.php:146
 msgid "Sent:"
 msgstr "Gesendet:"
 
-#: classes/ToolsPage.php:148
+#: classes/ToolsPage.php:152
 msgid "Payload"
 msgstr ""
 
-#: classes/ToolsPage.php:156
+#: classes/ToolsPage.php:160
 msgid "Answer from Firebase Cloud Messaging"
 msgstr "Antwort von Firebase Cloud Messaging"
 
