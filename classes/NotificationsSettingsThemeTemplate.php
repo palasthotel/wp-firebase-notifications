@@ -111,10 +111,14 @@ class NotificationsSettingsThemeTemplate {
 	}
 
 	public function enqueue_scripts(){
+		$deps = array();
+		if($this->plugin->settings->isWebappConfigValid()){
+			$deps[] = Plugin::HANDLE_MESSAGING_JS;
+		}
 		wp_register_script(
 			Plugin::HANDLE_APP_JS,
 			$this->plugin->url . "/js/app.js",
-			array(),
+			$deps,
 			filemtime( $this->plugin->path . "/js/app.js"),
 			true
 		);

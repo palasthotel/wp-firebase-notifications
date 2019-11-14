@@ -1,9 +1,11 @@
 (async function($,firebaseNotifications){
 
-	const isAndroid = (typeof AndroidAppSubscriptions !== typeof undefined);
-	const isiOS = (typeof iOSNotifications !== typeof undefined);
-
 	if(!firebaseNotifications.isApp) return;
+
+	const isAndroid = firebaseNotifications.isAndroid;
+	const isiOS = firebaseNotifications.isiOS;
+	const isWeb = firebaseNotifications.isWeb;
+
 	const AppNotifications = firebaseNotifications.fn;
 
 	// global android activate notifications

@@ -40,6 +40,7 @@ class Plugin {
 	const DOMAIN = "firebase-notifications";
 
 	const TEMPLATE = "firebase-notifications-settings.php";
+	const HANDLE_MESSAGING_JS = "firebase-notifications-script";
 	const HANDLE_APP_JS = "firebase-notifications-app";
 	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend";
 

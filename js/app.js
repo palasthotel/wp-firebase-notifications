@@ -1,37 +1,44 @@
-(function(){
+(function(web, android, ios){
 
 	window.FirebaseNotifications = function(){
-		const isAndroid = (typeof AndroidAppSubscriptions !== typeof undefined);
-		const isiOS = (typeof iOSNotifications !== typeof undefined);
+		const isAndroid = (typeof android !== typeof undefined);
+		const isiOS = (typeof ios !== typeof undefined);
+		const isWeb = (typeof web !== typeof undefined && typeof web.api !== typeof undefined);
 
 		return {
 			isAndroid,
 			isiOS,
-			isApp: isAndroid || isiOS,
+			isWeb,
+			isApp: isAndroid || isiOS || isWeb,
 			fn: {
 				isNotificationsEnabled: async ()=>{
-					if(isiOS) return iOSNotifications.isNotificationsEnabled();
-					if(isAndroid) return AndroidAppSubscriptions.isNotificationsEnabled();
+					if(isiOS) return ios.isNotificationsEnabled();
+					if(isAndroid) return android.isNotificationsEnabled();
+					if(isWeb) return true; // browser handles it?
 					console.error("No interface found. Could not check if notifications are enabled");
 				},
 				setNotificationsEnabled: async (setEnabled)=>{
-					if(isiOS) return iOSNotifications.setNotificationsEnabled(setEnabled === true);
-					if(isAndroid) return AndroidAppSubscriptions.setNotificationsEnabled(setEnabled === true);
+					if(isiOS) return ios.setNotificationsEnabled(setEnabled === true);
+					if(isAndroid) return android.setNotificationsEnabled(setEnabled === true);
+					if(isWeb) return; // browser handles it?
 					console.error("No interface found. Could not set notifications endabled to "+ setEnabled);
 				},
 				subscribe: async (topic)=>{
-					if(isiOS) return iOSNotifications.subscribe(topic);
-					if(isAndroid) return AndroidAppSubscriptions.subscribe(topic);
+					if(isiOS) return ios.subscribe(topic);
+					if(isAndroid) return android.subscribe(topic);
+					if(isWeb) return web.api.subscribe(topic);
 					console.error("No interface found. Could not subscribe to "+ topic);
 				},
 				unsubscribe: async (topic)=>{
-					if(isiOS) return iOSNotifications.unsubscribe(topic);
-					if(isAndroid) return AndroidAppSubscriptions.unsubscribe(topic);
+					if(isiOS) return ios.unsubscribe(topic);
+					if(isAndroid) return android.unsubscribe(topic);
+					if(isWeb) return web.api.unsubscribe(topic);
 					console.error("No interface found. Could not unsubscribe from "+ topic);
 				},
 				isSubscribed: async (topic)=>{
-					if(isiOS) return iOSNotifications.isSubscribed(topic);
-					if(isAndroid) return AndroidAppSubscriptions.isSubscribed(topic);
+					if(isiOS) return ios.isSubscribed(topic);
+					if(isAndroid) return android.isSubscribed(topic);
+					if(isWeb) return web.api.isSubscribed(topic);
 					console.error("No interface found. Could not check if is subscribed to "+ topic);
 				}
 			},
@@ -39,4 +46,8 @@
 	}();
 
 
-})();
+})(
+	window.FirebaseMessagingWebapp,
+	window.AndroidAppSubscriptions,
+	window.iOSNotifications
+);

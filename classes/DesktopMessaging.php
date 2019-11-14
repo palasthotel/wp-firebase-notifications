@@ -58,13 +58,13 @@ class DesktopMessaging {
 			true
 		);
 		wp_register_script(
-			"firebase-notifications-script",
+			Plugin::HANDLE_MESSAGING_JS,
 			$this->plugin->url . "/js/desktop-messaging.js",
 			array( "firebase-core", "firebase-messaging" ),
 			filemtime( $this->plugin->path . "/js/desktop-messaging.js" )
 		);
 		wp_localize_script(
-			"firebase-notifications-script",
+			Plugin::HANDLE_MESSAGING_JS,
 			"FirebaseMessagingWebapp",
 			array(
 				"config" => $this->plugin->settings->getWebappConfig( true ),

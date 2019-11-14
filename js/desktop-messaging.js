@@ -82,12 +82,15 @@
 	messaging.onMessage(function(payload){
 		console.log("received message", payload.notification, payload.data);
 		onMessageListener.each(payload.notification, payload.data, payload.priority, payload);
+
+		new Notification(payload.notification.title, {
+			body: payload.notification.body,
+		});
 	});
 
 	// -----------------------------------
 	// topic subscription api
 	// -----------------------------------
-
 	const _subscriptionValue = "1";
 	const _getSubscriptionKey = (token, topic) => "fcm-"+token+"-is-subscribed-"+topic;
 	const isSubscribed = (token, topic) => localStorage.getItem(_getSubscriptionKey(token, topic)) === "1";
