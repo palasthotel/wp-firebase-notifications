@@ -59,6 +59,7 @@ class Plugin {
 	const OPTION_CONFIG = "_firebase_notifications_config_json";
 	const OPTION_POST_TYPES = "_firebase_notifications_post_types";
 	const OPTION_WEBAPP_CONFIG = "_firebase_notifications_webapp_config_json";
+	const OPTION_WEBAPP_NOTIFICATION_ICON = "_firebase_notifications_webapp_notification_icon";
 	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
 
 	const SCHEDULE_SEND_MESSAGED = "firebase_notifications_send_messaged_schedule";

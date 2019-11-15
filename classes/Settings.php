@@ -23,6 +23,7 @@ class Settings {
 		$this->plugin = $plugin;
 		add_filter('plugin_action_links_' . $plugin->basename, array($this, 'add_action_links'));
 		add_action('admin_init', array($this,'custom_settings'));
+		add_action('admin_enqueue_scripts', array($this, 'load_wp_media_files') );
 	}
 
 	/**
@@ -88,6 +89,18 @@ class Settings {
 			Plugin::OPTION_WEBAPP_CONFIG
 		);
 
+		add_settings_field(
+			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON,
+			__('Notification Icon', Plugin::DOMAIN),
+			array($this, 'render_notification_icon_field'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON
+		);
+
 	}
 
 	/**
@@ -136,6 +149,14 @@ class Settings {
 	public function getWebappConfig($assoc = false){
 		$config = get_option(Plugin::OPTION_WEBAPP_CONFIG, "");
 		return json_decode($config, $assoc);
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getNotificationIconImageId(){
+		return get_option(Plugin::OPTION_WEBAPP_NOTIFICATION_ICON, "");
 	}
 
 	/**
@@ -262,6 +283,93 @@ class Settings {
 		?>
 		<p>After that you have to add two cloud function so users can subscribe to topics</p>
 		<?php
+	}
+
+	function load_wp_media_files( $page ) {
+		// change to the $page where you want to enqueue the script
+		if( $page == 'options-writing.php' ) {
+			// Enqueue WordPress media scripts
+			wp_enqueue_media();
+		}
+	}
+
+	function render_notification_icon_field(){
+		?>
+		<button
+				id="firebase-notifications-icon"
+				style="padding:0;margin:0;"
+		>
+			<span>Add image</span>
+		</button>
+		<input
+				name="<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>"
+				value="<?php echo $this->getNotificationIconImageId(); ?>"
+				type="hidden"
+		/>
+		<p class="description">Square image with 192px x 192px.</p>
+		<script>
+			jQuery(function($) {
+				const $button = $('#firebase-notifications-icon');
+				const $input = $("[name=<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>]");
+
+				function showButtonLabel(show){
+					if(show) $button.find("span").show(); else $button.find("span").hide();
+				}
+
+				let image_frame = null;
+				$button.click(function(e) {
+					e.preventDefault();
+
+					if(image_frame){
+						image_frame.open();
+					}
+					// Define image_frame as wp.media object
+					image_frame = wp.media({
+						title: 'Select Notification Icon',
+						multiple : false,
+						library : {
+							type : 'image',
+						}
+					});
+
+					image_frame.on('close',function() {
+						const selection =  image_frame.state().get('selection');
+						selection.each(function(attachment){ // should be a single value array
+							$input.val(attachment['id']);
+							updateUI(attachment.get('url'));
+						});
+					});
+
+					image_frame.on('open',function() {
+						const selection = image_frame.state().get('selection');
+						const attachment = wp.media.attachment($input.val());
+						selection.add( attachment ? [ attachment ] : [] );
+					});
+
+					image_frame.open();
+				});
+
+				function updateUI(urlOrNot){
+					console.log("url",urlOrNot);
+					if(typeof urlOrNot === typeof "" && urlOrNot !== ""){
+						console.log("append img");
+						showButtonLabel(false);
+						$button.find("img").remove();
+						$("<img>")
+							.css({
+								'padding': 0,
+								'margin': 0,
+							})
+							.attr("src", urlOrNot)
+							.appendTo($button);
+					}
+				}
+
+				updateUI("<?php echo wp_get_attachment_image_url($this->getNotificationIconImageId(), 'full'); ?>");
+
+			});
+		</script>
+<?php
 	}
 
 
