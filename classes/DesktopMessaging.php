@@ -111,7 +111,13 @@ class DesktopMessaging {
 			$id = $this->plugin->settings->getWebappConfig()->messagingSenderId;
 			$iconId = $this->plugin->settings->getNotificationIconImageId();
 			$iconUrl = "";
-			if(!empty($iconId))	$iconUrl = wp_get_attachment_image_url($iconId);
+			if(!empty($iconId)){
+				$iconUrl = wp_get_attachment_image_url($iconId);
+				if(!empty($iconUrl)){
+					$parsed = parse_url($iconUrl);
+					if(isset($parsed['path']) && !empty($parsed['path'])) $iconUrl = $parsed['path'];
+				}
+			}
 			echo "const messagingSenderId = '$id'\n";
 			echo "const notificationIconUrl = '$iconUrl'\n";
 			echo file_get_contents( $this->plugin->path . "/js/firebase-messaging-sw.js" );
