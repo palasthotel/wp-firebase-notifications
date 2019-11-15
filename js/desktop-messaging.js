@@ -68,7 +68,6 @@
 		.requestPermission()
 		.then(function(){
 			// permission granted
-			console.log("granted permission");
 			return messaging.getToken();
 		})
 		.then(function(token){
@@ -82,13 +81,18 @@
 
 	// wait for messages
 	messaging.onMessage(function(payload){
+
 		console.log("received message", payload.notification, payload.data);
+
 		onMessageListener.each(payload.notification, payload.data, payload.priority, payload);
 
-		new Notification(payload.notification.title, {
+		const notification = new Notification(payload.notification.title, {
 			body: payload.notification.body,
 			icon: iconUrl,
 		});
+		notification.onclick = function(e){
+			window.open(payload.data.permalink,'_blank');
+		}
 	});
 
 	// -----------------------------------
@@ -124,5 +128,6 @@
 		unsubscribe,
 		isSubscribed: (topic) => isSubscribed(getToken(), topic),
 	};
+
 
 })( FirebaseMessagingWebapp, firebase);
