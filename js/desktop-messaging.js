@@ -20,6 +20,8 @@
 		return;
 	}
 
+	const iconUrl = FirebaseMessagingWebapp.iconUrl;
+
 	// -----------------------------------
 	// initialize firebase
 	// -----------------------------------
@@ -85,6 +87,7 @@
 
 		new Notification(payload.notification.title, {
 			body: payload.notification.body,
+			icon: iconUrl,
 		});
 	});
 

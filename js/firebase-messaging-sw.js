@@ -21,15 +21,10 @@ messaging.setBackgroundMessageHandler(function(payload) {
 
 	// Customize notification here
 	const notificationTitle = payload.title;
-	const notificationOptions = {
-		body: payload.body,
-	};
-	if(notificationIconUrl !== ""){
-		notificationOptions.icon = notificationIconUrl;
-	}
 
-	return self.registration.showNotification(
-		notificationTitle,
-		notificationOptions
-	);
+	return self.registration
+		.showNotification(notificationTitle,{
+			body: payload.body,
+			icon: notificationIconUrl,
+		});
 });

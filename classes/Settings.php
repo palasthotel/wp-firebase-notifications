@@ -160,6 +160,19 @@ class Settings {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getNotificationIconURL(){
+		$iconId = $this->plugin->settings->getNotificationIconImageId();
+		$iconUrl = "";
+		if(!empty($iconId)){
+			$url = wp_get_attachment_image_url($iconId);
+			if($url !== false) $iconUrl = $url;
+		}
+		return $iconUrl;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function isWebappConfigValid(){
