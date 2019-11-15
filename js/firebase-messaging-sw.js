@@ -16,15 +16,17 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 
-// TODO: customize notification
+// wait for message
 messaging.setBackgroundMessageHandler(function(payload) {
 
 	// Customize notification here
 	const notificationTitle = payload.title;
 	const notificationOptions = {
 		body: payload.body,
-		icon: '/firebase-logo.png'
 	};
+	if(notificationIconUrl !== ""){
+		notificationOptions.icon = notificationIconUrl;
+	}
 
 	return self.registration.showNotification(
 		notificationTitle,
