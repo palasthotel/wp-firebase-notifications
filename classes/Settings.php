@@ -295,12 +295,28 @@ class Settings {
 
 	function render_notification_icon_field(){
 		?>
-		<button
-				id="firebase-notifications-icon"
-				style="padding:0;margin:0;"
+		<div
+			style="border: 1px solid #a3a3a3; height: 192px; width: 192px; margin-bottom: 10px;"
 		>
-			<span>Add image</span>
+			<img
+					id="firebase-notifications-icon-preview"
+					src=""
+			/>
+		</div>
+		<div>
+		<button
+				class="button button-small button-secondary"
+				id="firebase-notifications-icon-add"
+		>
+			Add image
 		</button>
+		<button
+				class="button button-small button-secondary"
+				id="firebase-notifications-icon-remove"
+			>
+			Remove image
+		</button>
+		</div>
 		<input
 				name="<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>"
 				value="<?php echo $this->getNotificationIconImageId(); ?>"
@@ -309,15 +325,18 @@ class Settings {
 		<p class="description">Square image with 192px x 192px.</p>
 		<script>
 			jQuery(function($) {
-				const $button = $('#firebase-notifications-icon');
+				const $imagePreview = $("#firebase-notifications-icon-preview");
+				const $buttonAdd = $('#firebase-notifications-icon-add');
+				const $buttonRemove = $('#firebase-notifications-icon-remove');
 				const $input = $("[name=<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>]");
 
-				function showButtonLabel(show){
-					if(show) $button.find("span").show(); else $button.find("span").hide();
-				}
+				$buttonRemove.click(function(e){
+					e.preventDefault();
+					updateState("","");
+				});
 
 				let image_frame = null;
-				$button.click(function(e) {
+				$buttonAdd.click(function(e) {
 					e.preventDefault();
 
 					if(image_frame){
@@ -335,8 +354,7 @@ class Settings {
 					image_frame.on('close',function() {
 						const selection =  image_frame.state().get('selection');
 						selection.each(function(attachment){ // should be a single value array
-							$input.val(attachment['id']);
-							updateUI(attachment.get('url'));
+							updateState(attachment['id'], attachment.get('url'));
 						});
 					});
 
@@ -349,23 +367,24 @@ class Settings {
 					image_frame.open();
 				});
 
-				function updateUI(urlOrNot){
-					console.log("url",urlOrNot);
-					if(typeof urlOrNot === typeof "" && urlOrNot !== ""){
-						console.log("append img");
-						showButtonLabel(false);
-						$button.find("img").remove();
-						$("<img>")
-							.css({
-								'padding': 0,
-								'margin': 0,
-							})
-							.attr("src", urlOrNot)
-							.appendTo($button);
+				function updateState(id, url){
+					$input.val(id);
+
+					if(typeof url === typeof "" && url !== ""){
+						$imagePreview.attr("src", url);
+						$imagePreview.show();
+						$buttonRemove.show();
+					} else {
+						$buttonRemove.hide();
+						$imagePreview.hide();
 					}
 				}
 
-				updateUI("<?php echo wp_get_attachment_image_url($this->getNotificationIconImageId(), 'full'); ?>");
+				// update application state to initial state
+				updateState(
+					"<?php echo $this->getNotificationIconImageId() ?>",
+					"<?php echo wp_get_attachment_image_url($this->getNotificationIconImageId(), 'full'); ?>"
+				);
 
 			});
 		</script>
