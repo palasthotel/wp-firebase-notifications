@@ -16,15 +16,40 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 
+let lastNotificationUrl = false;
+
 // wait for message
 messaging.setBackgroundMessageHandler(function(payload) {
 
 	// Customize notification here
 	const notificationTitle = payload.title;
+	lastNotificationUrl = payload.permalink;
+	console.log("sw got permalink "+payload.permalink, payload);
 
 	return self.registration
 		.showNotification(notificationTitle,{
 			body: payload.body,
 			icon: notificationIconUrl,
 		});
+});
+
+
+self.addEventListener('notificationclick', function(event) {
+	event.notification.close(); // Android needs explicit close.
+	event.waitUntil(
+		clients.matchAll({type: 'window'}).then( function(windowClients){
+			// Check if there is already a window/tab open with the target URL
+			for (var i = 0; i < windowClients.length; i++) {
+				var client = windowClients[i];
+				// If so, just focus it.
+				if (client.url === lastNotificationUrl && 'focus' in client) {
+					return client.focus();
+				}
+			}
+			// If not, then open the target URL in a new window/tab.
+			if (clients.openWindow) {
+				return clients.openWindow(lastNotificationUrl);
+			}
+		})
+	);
 });

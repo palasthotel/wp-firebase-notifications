@@ -8,21 +8,21 @@
 
 	const AppNotifications = firebaseNotifications.fn;
 
-	// global android activate notifications
-	const $globalAndroid = $("[data-firebase-notifications-active]");
+	// global web or android activate notifications
+	const $globalNotifications = $("[data-firebase-notifications-active]");
 	if(isAndroid){
-		$globalAndroid.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
-		$globalAndroid.on("change", function(e){
+		$globalNotifications.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
+		$globalNotifications.on("change", function(e){
 			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
 		});
 	} else {
-		$globalAndroid.closest("[data-firebase-notifications-global]").remove();
+		$globalNotifications.closest("[data-firebase-notifications-global]").remove();
 	}
 
 	// ios notification settings link
 	const $globaliOS = $("[data-firebase-notifications-link]");
 	if(isiOS){
-		setInterval(async ()=>{
+		setInterval(async function(){
 			const url = await iOSNotifications.getSettingsURL();
 			if(url != null) $globaliOS.attr("href", url);
 		}, 1000);
@@ -43,13 +43,23 @@
 		const $el = $(this);
 		const topic = getTopic($el);
 		if($el.is(":checked")){
-			AppNotifications.subscribe(topic);
-			if(isAndroid) $globalAndroid.prop("checked", "checked").trigger("change");
+			execute(AppNotifications.subscribe,topic);
+			// AppNotifications.subscribe(topic);
+			if(isAndroid || isWeb) $globalNotifications.prop("checked", "checked").trigger("change");
 		} else {
-			AppNotifications.unsubscribe(topic);
+			execute(AppNotifications.unsubscribe,topic);
+			// AppNotifications.unsubscribe(topic);
 		}
 
 	});
+
+	function execute(promisingFunction, topic){
+		const $row = $("[data-firebase-notifications-wrapper-of=\""+topic+"\"]");
+		$row.attr("data-firebase-notifications-is-loading", true);
+		promisingFunction(topic).then(function(){
+			$row.removeAttr("data-firebase-notifications-is-loading");
+		});
+	}
 
 	function getTopic($el) {
 		return $el.attr("data-firebase-notifications-topic");

@@ -21,7 +21,7 @@ get_header();
 		$topics = firebase_notifications_get_topics();
 		foreach ($topics as $topic){
 			?>
-			<label>
+			<label data-firebase-notifications-wrapper-of="<?php echo $topic->id; ?>">
 				<input type="checkbox"
 				       checked
 				       data-firebase-notifications-topic="<?php echo $topic->id; ?>"

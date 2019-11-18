@@ -30,16 +30,18 @@
 	// -----------------------------------
 	// expose listener
 	// -----------------------------------
-	const buildListener = ()=>{
+	const buildListener = function(){
 		let listeners = [];
 		return {
-			add: (fn)=>{
+			add: function(fn){
 				if(listeners.includes(fn)) return;
 				listeners.push(fn);
 			},
-			remove: (fn)=>{
+			remove: function(fn){
 				if(!listeners.includes(fn)) return;
-				listeners = listeners.filter(function(tmp){ return tmp !== fn;});
+				listeners = listeners.filter(function(tmp){
+					return tmp !== fn;
+				});
 			},
 			each: function(){
 				const args = arguments;
@@ -98,32 +100,47 @@
 	// -----------------------------------
 	// topic subscription api
 	// -----------------------------------
-	const _subscriptionValue = "1";
-	const _getSubscriptionKey = (token, topic) => "fcm-"+token+"-is-subscribed-"+topic;
-	const isSubscribed = (token, topic) => localStorage.getItem(_getSubscriptionKey(token, topic)) === "1";
-	const setSubscribed = (token, topic) => localStorage.setItem(_getSubscriptionKey(token, topic), _subscriptionValue);
-	const setUnsubscribed = (token, topic) => localStorage.removeItem(_getSubscriptionKey(token, topic));
+	const _isActiveValue = "1";
+	function setNotificationsEnabled(isEnabled){
+		if(isEnabled){
+			localStorage.setItem("fcm-is-enabled", _isActiveValue)
+		}  else {
+			localStorage.removeItem("fcm-is-enabled");
+		}
+	}
+	function isNotificationsEnabled(){
+		return localStorage.getItem("fcm-is-enabled") === _isActiveValue;
+	}
+	function _getSubscriptionKey (token, topic){ return "fcm-"+token+"-is-subscribed-"+topic; }
+	function isSubscribed (token, topic){ return localStorage.getItem(_getSubscriptionKey(token, topic)) === "1";}
+	function setSubscribed (token, topic){ localStorage.setItem(_getSubscriptionKey(token, topic), _isActiveValue); }
+	function setUnsubscribed (token, topic){ localStorage.removeItem(_getSubscriptionKey(token, topic)); }
+
 
 	const cloudFunctionsBaseUrl = "https://us-central1-"+firebaseConfig.projectId+".cloudfunctions.net";
 
-	const request = (action, token, topic)=> fetch(
+	function request(action, token, topic){
+		return fetch(
 			cloudFunctionsBaseUrl+"/"+action+"?token="+token+"&topic="+topic,
 			{mode: 'no-cors',}
-			);
+		);
+	}
 
-	const subscribe = (topic)=>{
+	function subscribe (topic){
 		return request("subscribe", getToken(), topic).then(function(){
 			setSubscribed(getToken(), topic);
 		});
-	};
-	const unsubscribe = (topic) => {
+	}
+	function unsubscribe(topic) {
 		return request("unsubscribe", getToken(), topic).then(function(){
 			setUnsubscribed(getToken(), topic);
 		});
-	};
+	}
 
 	// exposed api
 	webapp.api = {
+		setNotificationsEnabled,
+		isNotificationsEnabled,
 		subscribe,
 		unsubscribe,
 		isSubscribed: (topic) => isSubscribed(getToken(), topic),
