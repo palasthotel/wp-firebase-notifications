@@ -8,15 +8,36 @@
 
 	const AppNotifications = firebaseNotifications.fn;
 
+	// topics
+	const $topics = $("[data-firebase-notifications-topic]");
+	function updateTopics(){
+		$topics.each(async function(){
+			const $el = $(this);
+			$el.prop(
+				"checked",
+				(await AppNotifications.isSubscribed(getTopic($el)))
+					?"checked":""
+			);
+		});
+	}
+
 	// global web or android activate notifications
 	const $globalNotifications = $("[data-firebase-notifications-active]");
 	if(isAndroid || isWeb){
 		$globalNotifications.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
 		$globalNotifications.on("change", function(e){
 			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
+			updateTopics();
 		});
 	} else {
 		$globalNotifications.closest("[data-firebase-notifications-global]").remove();
+	}
+
+	// wait for initialization
+	if(isWeb){
+		FirebaseMessagingWebapp.api.onFCMInitialized(function(){
+			updateTopics();
+		});
 	}
 
 	// ios notification settings link
@@ -30,15 +51,9 @@
 		$globaliOS.closest("[data-firebase-notifications-global]").remove();
 	}
 
-	const $topics = $("[data-firebase-notifications-topic]");
-	$topics.each(async function(){
-		const $el = $(this);
-		$el.prop(
-			"checked",
-			(await AppNotifications.isSubscribed(getTopic($el)))
-				?"checked":""
-		);
-	});
+
+	updateTopics();
+
 	$topics.on("change", function(e){
 		const $el = $(this);
 		const topic = getTopic($el);

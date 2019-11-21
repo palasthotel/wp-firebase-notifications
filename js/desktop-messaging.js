@@ -48,15 +48,11 @@
 	};
 
 	const onMessageListener = buildListener();
-	webapp.onMessage = onMessageListener.add;
-	webapp.offMessage= onMessageListener.remove;
 
 	// -----------------------------------
 	// initialize FCM
 	// -----------------------------------
 	const onInitListener = buildListener();
-	webapp.onFCMInitialized = onInitListener.add;
-	webapp.offFCMInitialized = onInitListener.remove;
 
 	function FCMApp(){
 
@@ -174,6 +170,10 @@
 		subscribe,
 		unsubscribe,
 		isSubscribed,
+		onFCMInitialized: onInitListener.add,
+		offFCMInitialized: onInitListener.remove,
+		onMessage: onMessageListener.add,
+		offMessage: onMessageListener.remove,
 	};
 
 	if(isNotificationsEnabled()){
