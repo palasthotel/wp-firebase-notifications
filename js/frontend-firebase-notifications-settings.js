@@ -10,7 +10,7 @@
 
 	// global web or android activate notifications
 	const $globalNotifications = $("[data-firebase-notifications-active]");
-	if(isAndroid){
+	if(isAndroid || isWeb){
 		$globalNotifications.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
 		$globalNotifications.on("change", function(e){
 			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
