@@ -9,6 +9,8 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
 use PHPUnit\Runner\Exception;
 
 /**
@@ -141,6 +143,10 @@ class Ajax {
 				wp_send_json_error("Firebase Service connection not working. Check the settings.");
 			}
 		} catch (\Exception $e){
+			wp_send_json_error($e->getMessage());
+		} catch ( MessagingException $e ) {
+			wp_send_json_error($e->getMessage());
+		} catch ( FirebaseException $e ) {
 			wp_send_json_error($e->getMessage());
 		}
 
