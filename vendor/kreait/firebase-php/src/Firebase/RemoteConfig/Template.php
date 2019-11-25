@@ -7,6 +7,7 @@ namespace Kreait\Firebase\RemoteConfig;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Kreait\Firebase\Util\JSON;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class Template implements \JsonSerializable
 {
@@ -25,6 +26,13 @@ class Template implements \JsonSerializable
      */
     private $conditions = [];
 
+    /** @var Version|null */
+    private $version;
+
+    private function __construct()
+    {
+    }
+
     public static function new(): self
     {
         $template = new self();
@@ -34,10 +42,13 @@ class Template implements \JsonSerializable
         return $template;
     }
 
+    /**
+     * @internal
+     */
     public static function fromResponse(ResponseInterface $response): self
     {
         $etagHeader = $response->getHeader('ETag');
-        $etag = array_shift($etagHeader) ?? '*';
+        $etag = \array_shift($etagHeader) ?: '*';
         $data = JSON::decode((string) $response->getBody(), true);
 
         return self::fromArray($data, $etag);
@@ -56,15 +67,42 @@ class Template implements \JsonSerializable
             $template->parameters[$name] = Parameter::fromArray([$name => $parameterData]);
         }
 
+        if (\is_array($data['version'] ?? null)) {
+            try {
+                $template->version = Version::fromArray($data['version']);
+            } catch (Throwable $e) {
+                $template->version = null;
+            }
+        }
+
         return $template;
     }
 
-    public function getEtag(): string
+    /**
+     * @internal
+     */
+    public function etag(): string
     {
         return $this->etag;
     }
 
-    public function withParameter(Parameter $parameter)
+    /**
+     * @return Parameter[]
+     */
+    public function parameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @return Version|null
+     */
+    public function version()
+    {
+        return $this->version;
+    }
+
+    public function withParameter(Parameter $parameter): Template
     {
         $this->assertThatAllConditionalValuesAreValid($parameter);
 
@@ -74,7 +112,7 @@ class Template implements \JsonSerializable
         return $template;
     }
 
-    public function withCondition(Condition $condition)
+    public function withCondition(Condition $condition): Template
     {
         $template = clone $this;
         $template->conditions[$condition->name()] = $condition;
@@ -85,10 +123,10 @@ class Template implements \JsonSerializable
     private function assertThatAllConditionalValuesAreValid(Parameter $parameter)
     {
         foreach ($parameter->conditionalValues() as $conditionalValue) {
-            if (!array_key_exists($conditionalValue->conditionName(), $this->conditions)) {
+            if (!\array_key_exists($conditionalValue->conditionName(), $this->conditions)) {
                 $message = 'The conditional value of the parameter named "%s" referes to a condition "%s" which does not exist.';
 
-                throw new InvalidArgumentException(sprintf($message, $parameter->name(), $conditionalValue->conditionName()));
+                throw new InvalidArgumentException(\sprintf($message, $parameter->name(), $conditionalValue->conditionName()));
             }
         }
     }
@@ -96,10 +134,10 @@ class Template implements \JsonSerializable
     public function jsonSerialize()
     {
         $result = [
-            'conditions' => array_values($this->conditions),
+            'conditions' => \array_values($this->conditions),
             'parameters' => $this->parameters,
         ];
 
-        return array_filter($result);
+        return \array_filter($result);
     }
 }

@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kreait\Firebase\ServiceAccount\Discovery;
 
 use Kreait\Firebase\Exception\ServiceAccountDiscoveryFailed;
 use Kreait\Firebase\ServiceAccount;
+use Throwable;
 
+/**
+ * @internal
+ */
 class FromPath
 {
     /**
@@ -12,6 +18,9 @@ class FromPath
      */
     private $path;
 
+    /**
+     * @internal
+     */
     public function __construct(string $path)
     {
         $this->path = $path;
@@ -19,14 +28,12 @@ class FromPath
 
     /**
      * @throws ServiceAccountDiscoveryFailed
-     *
-     * @return ServiceAccount
      */
     public function __invoke(): ServiceAccount
     {
         try {
             return ServiceAccount::fromJsonFile($this->path);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new ServiceAccountDiscoveryFailed($e->getMessage());
         }
     }

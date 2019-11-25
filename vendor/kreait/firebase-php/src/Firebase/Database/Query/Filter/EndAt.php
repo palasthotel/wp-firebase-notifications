@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kreait\Firebase\Database\Query\Filter;
 
 use Kreait\Firebase\Database\Query\Filter;
@@ -16,7 +18,7 @@ final class EndAt implements Filter
 
     public function __construct($value)
     {
-        if (!is_scalar($value)) {
+        if (!\is_scalar($value)) {
             throw new InvalidArgumentException('Only scalar values are allowed for "endAt" queries.');
         }
 

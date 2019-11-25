@@ -9,19 +9,10 @@ use Kreait\Firebase\Exception\InvalidArgumentException;
 /**
  * @deprecated 4.14 Use CloudMessage instead
  */
-class MessageToRegistrationToken implements Message
+class MessageToRegistrationToken extends CloudMessage
 {
-    use MessageTrait;
-
-    /**
-     * @var RegistrationToken
-     */
+    /** @var RegistrationToken */
     private $token;
-
-    private function __construct(RegistrationToken $token)
-    {
-        $this->token = $token;
-    }
 
     /**
      * @deprecated 4.14 Use CloudMessage::withTarget('token', $token) instead
@@ -29,71 +20,55 @@ class MessageToRegistrationToken implements Message
      *
      * @param RegistrationToken|string $token
      *
-     * @return MessageToRegistrationToken
+     * @return static
      */
-    public static function create($token): self
+    public static function create($token)
     {
+        \trigger_error(
+            __METHOD__.' is deprecated. Use \Kreait\Firebase\CloudMessage::withTarget() instead.',
+            \E_USER_DEPRECATED
+        );
+
         $token = $token instanceof RegistrationToken ? $token : RegistrationToken::fromValue($token);
 
-        return new self($token);
+        $message = static::withTarget('token', $token->value());
+        $message->token = $token;
+
+        return $message;
     }
 
     /**
      * @deprecated 4.14 Use CloudMessage::fromArray() instead
      * @see CloudMessage::fromArray()
      *
-     * @param array $data
-     *
      * @throws InvalidArgumentException
      *
-     * @return MessageToRegistrationToken
+     * @return static
      */
-    public static function fromArray(array $data): self
+    public static function fromArray(array $data)
     {
-        if (!array_key_exists('token', $data)) {
+        \trigger_error(
+            __METHOD__.' is deprecated. Use \Kreait\Firebase\CloudMessage::fromArray() instead.',
+            \E_USER_DEPRECATED
+        );
+
+        if (!($token = $data['token'] ?? null)) {
             throw new InvalidArgumentException('Missing field "token"');
         }
 
-        $message = self::create($data['token']);
+        $token = $token instanceof RegistrationToken ? $token : RegistrationToken::fromValue((string) $token);
 
-        if ($data['data'] ?? null) {
-            $message = $message->withData($data['data']);
-        }
-
-        if ($data['notification'] ?? null) {
-            $message = $message->withNotification(Notification::fromArray($data['notification']));
-        }
-
-        if ($data['android'] ?? null) {
-            $message = $message->withAndroidConfig(AndroidConfig::fromArray($data['android']));
-        }
-
-        if ($data['apns'] ?? null) {
-            $message = $message->withApnsConfig(ApnsConfig::fromArray($data['apns']));
-        }
-
-        if ($data['webpush'] ?? null) {
-            $message = $message->withWebPushConfig(WebPushConfig::fromArray($data['webpush']));
-        }
+        $message = parent::fromArray($data);
+        $message->token = $token;
 
         return $message;
     }
 
+    /**
+     * @deprecated 4.29.0 Use CloudMessage instead
+     */
     public function token(): string
     {
-        // TODO Change this to return a RegistrationToken instance in 5.0
         return (string) $this->token;
-    }
-
-    public function jsonSerialize()
-    {
-        return array_filter([
-            'token' => $this->token,
-            'data' => $this->data,
-            'notification' => $this->notification,
-            'android' => $this->androidConfig,
-            'apns' => $this->apnsConfig,
-            'webpush' => $this->webPushConfig,
-        ]);
     }
 }

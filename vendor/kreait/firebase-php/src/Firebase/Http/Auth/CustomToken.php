@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kreait\Firebase\Http\Auth;
 
 use function GuzzleHttp\Psr7\build_query;
@@ -17,7 +19,7 @@ final class CustomToken implements Auth
 
     public function __construct(string $uid, array $claims = null)
     {
-        $claims = array_filter($claims ?? [], function ($value) {
+        $claims = \array_filter($claims ?? [], static function ($value) {
             return $value !== null;
         });
 

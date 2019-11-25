@@ -27,6 +27,9 @@ class RemoteConfig
      */
     private $client;
 
+    /**
+     * @internal
+     */
     public function __construct(ApiClient $client)
     {
         $this->client = $client;
@@ -62,11 +65,9 @@ class RemoteConfig
     {
         $template = $template instanceof Template ? $template : Template::fromArray($template);
 
-        $response = $this->client->publishTemplate($template);
+        $etag = $this->client->publishTemplate($template)->getHeader('ETag');
 
-        $etag = $response->getHeader('ETag');
-
-        return array_shift($etag);
+        return \array_shift($etag) ?: '';
     }
 
     /**
@@ -75,8 +76,6 @@ class RemoteConfig
      * @param VersionNumber|mixed $versionNumber
      *
      * @throws VersionNotFound
-     *
-     * @return Version
      */
     public function getVersion($versionNumber): Version
     {
@@ -99,8 +98,6 @@ class RemoteConfig
      * @param VersionNumber|mixed $versionNumber
      *
      * @throws VersionNotFound
-     *
-     * @return Template
      */
     public function rollbackToVersion($versionNumber): Template
     {
@@ -123,6 +120,7 @@ class RemoteConfig
         $query = $query instanceof FindVersions ? $query : FindVersions::fromArray((array) $query);
         $pageToken = null;
         $count = 0;
+        $limit = $query->limit();
 
         do {
             $response = $this->client->listVersions($query, $pageToken);
@@ -132,7 +130,7 @@ class RemoteConfig
                 ++$count;
                 yield Version::fromArray($versionData);
 
-                if ($count === (int) $query->limit()) {
+                if ($count === $limit) {
                     return;
                 }
             }

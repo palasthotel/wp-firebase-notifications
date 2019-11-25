@@ -40,7 +40,7 @@ trait RequestWrapperTrait
     private $authCacheOptions;
 
     /**
-     * @var FetchAuthTokenInterface Fetches credentials.
+     * @var FetchAuthTokenInterface|null Fetches credentials.
      */
     private $credentialsFetcher;
 
@@ -125,6 +125,16 @@ trait RequestWrapperTrait
     public function keyFile()
     {
         return $this->keyFile;
+    }
+
+    /**
+     * Get the scopes
+     *
+     * @return array
+     */
+    public function scopes()
+    {
+        return $this->scopes;
     }
 
     /**

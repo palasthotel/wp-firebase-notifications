@@ -14,7 +14,7 @@
 return array (
   'generalDesc' => 
   array (
-    'NationalNumberPattern' => '1230\\d{7}|6\\d{9,10}|[2-9]\\d{8}',
+    'NationalNumberPattern' => '12300\\d{6}|6\\d{9,10}|[2-9]\\d{8}',
     'PossibleLength' => 
     array (
       0 => 9,
@@ -27,7 +27,7 @@ return array (
   ),
   'fixedLine' => 
   array (
-    'NationalNumberPattern' => '21962\\d{4}|(?:232[0-46-8]|80[1-9]\\d)\\d{5}|(?:22|3[2-5]|[47][1-35]|5[1-3578]|6[13-57]|8[1-9]|9[2-9])\\d{7}',
+    'NationalNumberPattern' => '(?:2(?:1962|3(?:2\\d\\d|300))|80[1-9]\\d\\d)\\d{4}|(?:22|3[2-5]|[47][1-35]|5[1-3578]|6[13-57]|8[1-9]|9[2-9])\\d{7}',
     'ExampleNumber' => '221234567',
     'PossibleLength' => 
     array (
@@ -39,7 +39,7 @@ return array (
   ),
   'mobile' => 
   array (
-    'NationalNumberPattern' => '21962\\d{4}|(?:232[0-46-8]|80[1-9]\\d)\\d{5}|(?:22|3[2-5]|[47][1-35]|5[1-3578]|6[13-57]|8[1-9]|9[2-9])\\d{7}',
+    'NationalNumberPattern' => '(?:2(?:1962|3(?:2\\d\\d|300))|80[1-9]\\d\\d)\\d{4}|(?:22|3[2-5]|[47][1-35]|5[1-3578]|6[13-57]|8[1-9]|9[2-9])\\d{7}',
     'ExampleNumber' => '221234567',
     'PossibleLength' => 
     array (
@@ -51,7 +51,7 @@ return array (
   ),
   'tollFree' => 
   array (
-    'NationalNumberPattern' => '(?:1230\\d|800)\\d{6}',
+    'NationalNumberPattern' => '(?:123|8)00\\d{6}',
     'ExampleNumber' => '800123456',
     'PossibleLength' => 
     array (

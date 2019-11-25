@@ -17,7 +17,7 @@ use libphonenumber\Leniency\AbstractLeniency;
  * http://www.unicode.org/cldr/charts/30/supplemental/territory_information.html
  *
  * @author Shaopeng Jia
- * @see https://github.com/googlei18n/libphonenumber
+ * @see https://github.com/google/libphonenumber
  */
 class PhoneNumberUtil
 {
@@ -530,7 +530,6 @@ class PhoneNumberUtil
     protected static function initMobileTokenMappings()
     {
         static::$MOBILE_TOKEN_MAPPINGS = array();
-        static::$MOBILE_TOKEN_MAPPINGS['52'] = '1';
         static::$MOBILE_TOKEN_MAPPINGS['54'] = '9';
     }
 
@@ -2372,15 +2371,6 @@ class PhoneNumberUtil
                     // called within Brazil. Without that, most of the carriers won't connect the call.
                     // Because of that, we return an empty string here.
                     : '';
-            } elseif ($isValidNumber && $regionCode == 'HU') {
-                // The national format for HU numbers doesn't contain the national prefix, because that is
-                // how numbers are normally written down. However, the national prefix is obligatory when
-                // dialing from a mobile phone, except for short numbers. As a result, we add it back here
-                // if it is a valid regular length phone number.
-                $formattedNumber = $this->getNddPrefixForRegion(
-                        $regionCode,
-                        true /* strip non-digits */
-                    ) . ' ' . $this->format($numberNoExt, PhoneNumberFormat::NATIONAL);
             } elseif ($countryCallingCode === static::NANPA_COUNTRY_CODE) {
                 // For NANPA countries, we output international format for numbers that can be dialed
                 // internationally, since that always works, except for numbers which might potentially be

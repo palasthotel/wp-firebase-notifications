@@ -1,18 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kreait\Firebase\Exception\Auth;
 
 use Kreait\Firebase\Exception\AuthException;
-use Throwable;
+use Kreait\Firebase\Exception\HasRequestAndResponse;
+use RuntimeException;
 
-class UserDisabled extends AuthException
+final class UserDisabled extends RuntimeException implements AuthException
 {
-    const IDENTIFER = 'USER_DISABLED';
-
-    public function __construct($code = 0, Throwable $previous = null)
-    {
-        $message = 'User disabled: The user account has been disabled by an administrator.';
-
-        parent::__construct($message, $code, $previous);
-    }
+    use HasRequestAndResponse;
 }

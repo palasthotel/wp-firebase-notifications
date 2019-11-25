@@ -11,8 +11,11 @@
  */
 
 return array (
+  22601 => 'Onatel',
+  22607 => 'Orange',
   22651 => 'Telmob',
   22652 => 'Telmob',
+  22653 => 'Onatel',
   22654 => 'Orange',
   22655 => 'Airtel',
   22656 => 'Airtel',

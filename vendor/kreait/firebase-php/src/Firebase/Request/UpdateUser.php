@@ -48,7 +48,7 @@ final class UpdateUser implements Request
         $request = self::withEditableProperties(new self(), $properties);
 
         foreach ($properties as $key => $value) {
-            switch (strtolower(preg_replace('/[^a-z]/i', '', $key))) {
+            switch (\mb_strtolower(\preg_replace('/[^a-z]/i', '', $key))) {
                 case 'deletephoto':
                 case 'deletephotourl':
                 case 'removephoto':
@@ -63,7 +63,7 @@ final class UpdateUser implements Request
                 case 'deleteattribute':
                 case 'deleteattributes':
                     foreach ((array) $value as $deleteAttribute) {
-                        switch (strtolower(preg_replace('/[^a-z]/i', '', $deleteAttribute))) {
+                        switch (\mb_strtolower(\preg_replace('/[^a-z]/i', '', $deleteAttribute))) {
                             case 'displayname':
                                 $request = $request->withRemovedDisplayName();
                                 break;
@@ -94,7 +94,7 @@ final class UpdateUser implements Request
                 case 'deleteproviders':
                 case 'removeprovider':
                 case 'removeproviders':
-                    $request = array_reduce((array) $value, function (self $request, $provider) {
+                    $request = \array_reduce((array) $value, static function (self $request, $provider) {
                         return $request->withRemovedProvider($provider);
                     }, $request);
                     break;
@@ -156,12 +156,16 @@ final class UpdateUser implements Request
 
         $data = $this->prepareJsonSerialize();
 
-        if ($this->customAttributes) {
-            $data['customAttributes'] = JSON::encode($this->customAttributes);
+        if (\is_array($this->customAttributes)) {
+            if (empty($this->customAttributes)) {
+                $data['customAttributes'] = '{}';
+            } else {
+                $data['customAttributes'] = JSON::encode($this->customAttributes);
+            }
         }
 
         if (!empty($this->attributesToDelete)) {
-            $data['deleteAttribute'] = array_unique($this->attributesToDelete);
+            $data['deleteAttribute'] = \array_unique($this->attributesToDelete);
         }
 
         if (!empty($this->providersToDelete)) {

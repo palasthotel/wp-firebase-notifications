@@ -10,13 +10,16 @@ use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 
-class PhoneNumber implements Value, \JsonSerializable
+class PhoneNumber implements \JsonSerializable, Value
 {
     /**
      * @var string
      */
     private $value;
 
+    /**
+     * @internal
+     */
     public function __construct(string $value)
     {
         $util = PhoneNumberUtil::getInstance();

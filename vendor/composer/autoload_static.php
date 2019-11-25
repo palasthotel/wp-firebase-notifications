@@ -4,14 +4,15 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInita63a21030b619b484481f0dbac07eb71
+class ComposerStaticInit8ce13d708fe62f5e18d2c6514b13a9d5
 {
     public static $files = array (
-        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '27592325262b385204a263c2ab632d6e' => __DIR__ . '/..' . '/kreait/clock/src/Clock.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'f7c6080b46f9fe41a46a657439674576' => __DIR__ . '/..' . '/kreait/firebase-php/src/Firebase.php',
@@ -35,12 +36,17 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Superbalist\\Flysystem\\GoogleStorage\\' => 36,
         ),
+        'R' => 
+        array (
+            'Riverline\\MultiPartParser\\' => 26,
+        ),
         'P' => 
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Cache\\' => 10,
+            'Prophecy\\' => 9,
             'Palasthotel\\FirebaseNotifications\\' => 34,
         ),
         'M' => 
@@ -54,7 +60,9 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         ),
         'K' => 
         array (
+            'Kreait\\Firebase\\JWT\\' => 20,
             'Kreait\\Firebase\\' => 16,
+            'Kreait\\Clock\\' => 13,
             'Kreait\\' => 7,
         ),
         'J' => 
@@ -68,6 +76,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
             'GuzzleHttp\\' => 11,
             'Google\\Cloud\\Storage\\' => 21,
             'Google\\Cloud\\Core\\' => 18,
+            'Google\\CRC32\\' => 13,
             'Google\\Auth\\' => 12,
             'Giggsey\\Locale\\' => 15,
         ),
@@ -88,8 +97,8 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'libphonenumber\\' => 
         array (
@@ -107,6 +116,10 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         array (
             0 => __DIR__ . '/..' . '/superbalist/flysystem-google-storage/src',
         ),
+        'Riverline\\MultiPartParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/riverline/multipart-parser/src/Riverline/MultiPartParser',
+        ),
         'Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
@@ -122,6 +135,10 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'Prophecy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
         ),
         'Palasthotel\\FirebaseNotifications\\' => 
         array (
@@ -139,9 +156,17 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         array (
             0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
         ),
+        'Kreait\\Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kreait/firebase-tokens/src/JWT',
+        ),
         'Kreait\\Firebase\\' => 
         array (
             0 => __DIR__ . '/..' . '/kreait/firebase-php/src/Firebase',
+        ),
+        'Kreait\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kreait/clock/src/Clock',
         ),
         'Kreait\\' => 
         array (
@@ -171,6 +196,10 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         array (
             0 => __DIR__ . '/..' . '/google/cloud-core/src',
         ),
+        'Google\\CRC32\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/crc32/src',
+        ),
         'Google\\Auth\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/auth/src',
@@ -185,7 +214,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         ),
         'Firebase\\Auth\\Token\\' => 
         array (
-            0 => __DIR__ . '/..' . '/kreait/firebase-tokens/src',
+            0 => __DIR__ . '/..' . '/kreait/firebase-tokens/src/Firebase/Auth/Token',
         ),
         'Fig\\Http\\Message\\' => 
         array (
@@ -207,13 +236,6 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
             'Rize\\UriTemplate' => 
             array (
                 0 => __DIR__ . '/..' . '/rize/uri-template/src',
-            ),
-        ),
-        'P' => 
-        array (
-            'Prophecy\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
             ),
         ),
     );
@@ -283,6 +305,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'PHPUnit\\Framework\\IncompleteTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestCase.php',
         'PHPUnit\\Framework\\IncompleteTestError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestError.php',
         'PHPUnit\\Framework\\InvalidCoversTargetException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/InvalidCoversTargetException.php',
+        'PHPUnit\\Framework\\InvalidParameterGroupException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/InvalidParameterGroupException.php',
         'PHPUnit\\Framework\\MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MissingCoversAnnotationException.php',
         'PHPUnit\\Framework\\MockObject\\BadMethodCallException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MockObject/Exception/BadMethodCallException.php',
         'PHPUnit\\Framework\\MockObject\\Builder\\Identity' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MockObject/Builder/Identity.php',
@@ -347,6 +370,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'PHPUnit\\Framework\\TestResult' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/TestResult.php',
         'PHPUnit\\Framework\\TestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/TestSuite.php',
         'PHPUnit\\Framework\\TestSuiteIterator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/TestSuiteIterator.php',
+        'PHPUnit\\Framework\\UnexpectedValueException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/UnexpectedValueException.php',
         'PHPUnit\\Framework\\UnintentionallyCoveredCodeError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/UnintentionallyCoveredCodeError.php',
         'PHPUnit\\Framework\\Warning' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Warning.php',
         'PHPUnit\\Framework\\WarningTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/WarningTestCase.php',
@@ -445,6 +469,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'PHP_Token_CLOSE_SQUARE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_CLOSE_TAG' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COALESCE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_COALESCE_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COLON' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COMMA' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COMMENT' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -490,6 +515,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'PHP_Token_FILE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FINAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FINALLY' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_FN' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FOREACH' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FUNCTION' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -580,6 +606,7 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'PHP_Token_UNSET_CAST' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_USE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_USE_FUNCTION' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_Util' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token/Util.php',
         'PHP_Token_VAR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_VARIABLE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_WHILE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -589,8 +616,15 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'Palasthotel\\FirebaseNotifications\\Ajax' => __DIR__ . '/../..' . '/classes/Ajax.php',
         'Palasthotel\\FirebaseNotifications\\CloudMessagingApi' => __DIR__ . '/../..' . '/classes/CloudMessagingApi.php',
+        'Palasthotel\\FirebaseNotifications\\Database' => __DIR__ . '/../..' . '/classes/Database.php',
+        'Palasthotel\\FirebaseNotifications\\DatabaseUpdates' => __DIR__ . '/../..' . '/classes/DatabaseUpdates.php',
+        'Palasthotel\\FirebaseNotifications\\Message' => __DIR__ . '/../..' . '/classes/Message.php',
         'Palasthotel\\FirebaseNotifications\\MetaBox' => __DIR__ . '/../..' . '/classes/MetaBox.php',
         'Palasthotel\\FirebaseNotifications\\NotificationsSettingsThemeTemplate' => __DIR__ . '/../..' . '/classes/NotificationsSettingsThemeTemplate.php',
+        'Palasthotel\\FirebaseNotifications\\Permissions' => __DIR__ . '/../..' . '/classes/Permissions.php',
+        'Palasthotel\\FirebaseNotifications\\Schedule' => __DIR__ . '/../..' . '/classes/Schedule.php',
+        'Palasthotel\\FirebaseNotifications\\Settings' => __DIR__ . '/../..' . '/classes/Settings.php',
+        'Palasthotel\\FirebaseNotifications\\ToolsPage' => __DIR__ . '/../..' . '/classes/ToolsPage.php',
         'Palasthotel\\FirebaseNotifications\\Topics' => __DIR__ . '/../..' . '/classes/Topics.php',
         'PharIo\\Manifest\\Application' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Application.php',
         'PharIo\\Manifest\\ApplicationName' => __DIR__ . '/..' . '/phar-io/manifest/src/values/ApplicationName.php',
@@ -772,10 +806,10 @@ class ComposerStaticInita63a21030b619b484481f0dbac07eb71
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInita63a21030b619b484481f0dbac07eb71::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInita63a21030b619b484481f0dbac07eb71::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInita63a21030b619b484481f0dbac07eb71::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInita63a21030b619b484481f0dbac07eb71::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8ce13d708fe62f5e18d2c6514b13a9d5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8ce13d708fe62f5e18d2c6514b13a9d5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit8ce13d708fe62f5e18d2c6514b13a9d5::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit8ce13d708fe62f5e18d2c6514b13a9d5::$classMap;
 
         }, null, ClassLoader::class);
     }

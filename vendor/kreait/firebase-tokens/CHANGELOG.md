@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## 1.9.2 - 2019-10-16
+
+- Fixed an issue that the Custom Token Generator was carrying state between consecutive calls (Thanks [@danizord](https://github.com/danizord) for finding and fixing the issue) 
+
+## 1.9.1 - 2019-08-26
+
+- Bumped `kreait/clock` to `^1.0.1` (1.0.0 had PHPUnit required as a non-dev dependency)
+
+## 1.9.0 - 2019-08-26
+
+- Re-implemented the functionality in the `Kreait\Firebase\JWT` namespace.
+- Added `Kreait\Firebase\JWT\CustomTokenGenerator` as the recommended replacement for `Firebase\Auth\Token\Generator`
+- Added `Kreait\Firebase\JWT\IdTokenVerifier` as the recommended replacement for `Firebase\Auth\Token\Verifier`
+- After updating, please refer to the [Migration Documentation](MIGRATE-1.x-to-2.0.md) to be ready for the 2.0 release of this library.
+
+## 1.8.1 - 2019-08-20
+
+- `Firebase\Auth\Token\Exception\InvalidToken` can now have any `Throwable` as the `$previous` parameter.
+
+## 1.8.0 - 2019-06-12
+
+- The "auth_time" and "iat" claims are now verified with a 5 minute leeway, 
+  this is the [same behaviour as in the Firebase Admin .NET SDK](https://github.com/firebase/firebase-admin-dotnet/pull/29) 
+  (thanks [@navee85](https://github.com/navee85))
+
 ## 1.7.2 - 2018-10-27
 
 - ID Tokens must have a valid "auth_time" claim.

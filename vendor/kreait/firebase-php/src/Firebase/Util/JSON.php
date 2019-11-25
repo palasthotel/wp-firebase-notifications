@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kreait\Firebase\Util;
 
 use Kreait\Firebase\Exception\InvalidArgumentException;
+use Throwable;
 
 class JSON
 {
@@ -11,6 +14,8 @@ class JSON
      *
      * Shamelessly copied from Guzzle.
      *
+     * @internal
+     *
      * @see \GuzzleHttp\json_encode()
      *
      * @param mixed $value   The value being encoded
@@ -18,8 +23,6 @@ class JSON
      * @param int    $depth   Set the maximum depth. Must be greater than zero
      *
      * @throws InvalidArgumentException if the JSON cannot be encoded
-     *
-     * @return string
      */
     public static function encode($value, $options = null, $depth = null): string
     {
@@ -27,9 +30,9 @@ class JSON
         $depth = $depth ?? 512;
 
         $json = \json_encode($value, $options, $depth);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (\json_last_error() !== \JSON_ERROR_NONE) {
             throw new InvalidArgumentException(
-                'json_encode error: '.json_last_error_msg());
+                'json_encode error: '.\json_last_error_msg());
         }
 
         return $json;
@@ -39,6 +42,8 @@ class JSON
      * Wrapper for json_decode that throws when an error occurs.
      *
      * Shamelessly copied from Guzzle.
+     *
+     * @internal
      *
      * @see \GuzzleHttp\json_encode()
      *
@@ -54,9 +59,9 @@ class JSON
     public static function decode($json, $assoc = null, $depth = null, $options = null)
     {
         $data = \json_decode($json, $assoc ?? false, $depth ?? 512, $options ?? 0);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (\json_last_error() !== \JSON_ERROR_NONE) {
             throw new InvalidArgumentException(
-                'json_decode error: '.json_last_error_msg());
+                'json_decode error: '.\json_last_error_msg());
         }
 
         return $data;
@@ -65,9 +70,9 @@ class JSON
     /**
      * Returns true if the given value is a valid JSON string.
      *
-     * @param mixed $value
+     * @internal
      *
-     * @return bool
+     * @param mixed $value
      */
     public static function isValid($value): bool
     {
@@ -75,13 +80,18 @@ class JSON
             self::decode($value);
 
             return true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return false;
         }
     }
 
+    /**
+     * @internal
+     *
+     * @param mixed $value
+     */
     public static function prettyPrint($value): string
     {
-        return self::encode($value, JSON_PRETTY_PRINT);
+        return self::encode($value, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
     }
 }

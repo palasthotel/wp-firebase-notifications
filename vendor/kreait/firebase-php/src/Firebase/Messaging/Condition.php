@@ -20,10 +20,14 @@ class Condition implements \JsonSerializable
 
     public static function fromValue(string $value): self
     {
-        $value = str_replace('"', "'", $value);
+        $value = \str_replace('"', "'", $value);
 
-        if ((substr_count($value, "'") % 2) !== 0) {
-            throw new InvalidArgument(sprintf('The condition "%s" contains an uneven amount of quotes.', $value));
+        if ((\mb_substr_count($value, "'") % 2) !== 0) {
+            throw new InvalidArgument(\sprintf('The condition "%s" contains an uneven amount of quotes.', $value));
+        }
+
+        if (\mb_substr_count(\mb_strtolower($value), 'in topics') > 5) {
+            throw new InvalidArgument(\sprintf('The condition "%s" containts more than 5 topics.', $value));
         }
 
         return new self($value);

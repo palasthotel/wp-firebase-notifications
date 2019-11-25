@@ -32,6 +32,9 @@ class Storage
      */
     private $filesystems = [];
 
+    /**
+     * @internal
+     */
     public function __construct(StorageClient $storageClient, string $defaultBucket)
     {
         $this->storageClient = $storageClient;
@@ -47,18 +50,23 @@ class Storage
     {
         $name = $name ?: $this->defaultBucket;
 
-        if (!array_key_exists($name, $this->buckets)) {
+        if (!\array_key_exists($name, $this->buckets)) {
             $this->buckets[$name] = $this->storageClient->bucket($name);
         }
 
         return $this->buckets[$name];
     }
 
+    /**
+     * @deprecated 4.33
+     */
     public function getFilesystem(string $bucketName = null): FilesystemInterface
     {
+        \trigger_error(__METHOD__.' is deprecated.', \E_USER_DEPRECATED);
+
         $bucket = $this->getBucket($bucketName);
 
-        if (!array_key_exists($name = $bucket->name(), $this->filesystems)) {
+        if (!\array_key_exists($name = $bucket->name(), $this->filesystems)) {
             $adapter = new GoogleStorageAdapter($this->storageClient, $bucket);
             $this->filesystems[$name] = new Filesystem($adapter);
         }

@@ -6,13 +6,26 @@ namespace Kreait\Firebase\Value;
 
 use Kreait\Firebase\Value;
 
-class Provider implements Value, \JsonSerializable
+class Provider implements \JsonSerializable, Value
 {
+    const ANONYMOUS = 'anonymous';
+    const CUSTOM = 'custom';
+    const FACEBOOK = 'facebook.com';
+    const FIREBASE = 'firebase';
+    const GITHUB = 'github.com';
+    const GOOGLE = 'google.com';
+    const PASSWORD = 'password';
+    const PHONE = 'phone';
+    const TWITTER = 'twitter.com';
+
     /**
      * @var string
      */
     private $value;
 
+    /**
+     * @internal
+     */
     public function __construct(string $value)
     {
         $this->value = $value;

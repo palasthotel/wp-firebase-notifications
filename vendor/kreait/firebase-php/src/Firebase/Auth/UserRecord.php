@@ -21,9 +21,9 @@ class UserRecord implements \JsonSerializable
     public $email;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    public $emailVerified;
+    public $emailVerified = false;
 
     /**
      * @var string|null
@@ -74,12 +74,12 @@ class UserRecord implements \JsonSerializable
     {
     }
 
-    public static function fromResponseData(array $data)
+    public static function fromResponseData(array $data): self
     {
         $record = new self();
         $record->uid = $data['localId'];
         $record->email = $data['email'] ?? null;
-        $record->emailVerified = $data['emailVerified'] ?? null;
+        $record->emailVerified = $data['emailVerified'] ?? false;
         $record->displayName = $data['displayName'] ?? null;
         $record->photoUrl = $data['photoUrl'] ?? null;
         $record->phoneNumber = $data['phoneNumber'] ?? null;
@@ -106,24 +106,26 @@ class UserRecord implements \JsonSerializable
 
     private static function userInfoFromResponseData(array $data): array
     {
-        return array_map(function (array $userInfoData) {
+        return \array_map(static function (array $userInfoData) {
             return UserInfo::fromResponseData($userInfoData);
         }, $data['providerUserInfo'] ?? []);
     }
 
+    /**
+     * @deprecated 4.33
+     */
     public function toArray(): array
     {
-        return get_object_vars($this);
+        return \get_object_vars($this);
     }
 
     public function jsonSerialize()
     {
-        $data = $this->toArray();
-        $data['metadata'] = $this->metadata->jsonSerialize();
+        $data = \get_object_vars($this);
 
-        if ($data['tokensValidAfterTime']) {
-            $data['tokensValidAfterTime'] = $data['tokensValidAfterTime']->format(DATE_ATOM);
-        }
+        $data['tokensValidAfterTime'] = $this->tokensValidAfterTime
+            ? $this->tokensValidAfterTime->format(\DATE_ATOM)
+            : null;
 
         return $data;
     }

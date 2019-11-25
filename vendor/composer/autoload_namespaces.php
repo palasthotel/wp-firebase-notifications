@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Rize\\UriTemplate' => array($vendorDir . '/rize/uri-template/src'),
-    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
 );

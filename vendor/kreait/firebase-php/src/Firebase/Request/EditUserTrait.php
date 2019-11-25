@@ -11,6 +11,9 @@ use Kreait\Firebase\Value\PhoneNumber;
 use Kreait\Firebase\Value\Uid;
 use Kreait\Firebase\Value\Url;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait EditUserTrait
 {
     /**
@@ -60,7 +63,6 @@ trait EditUserTrait
 
     /**
      * @param static $request
-     * @param array $properties
      *
      * @throws InvalidArgumentException when invalid properties have been provided
      *
@@ -69,7 +71,7 @@ trait EditUserTrait
     protected static function withEditableProperties($request, array $properties)
     {
         foreach ($properties as $key => $value) {
-            switch (strtolower(preg_replace('/[^a-z]/i', '', $key))) {
+            switch (\mb_strtolower(\preg_replace('/[^a-z]/i', '', $key))) {
                 case 'uid':
                 case 'localid':
                     $request = $request->withUid($value);
@@ -130,14 +132,14 @@ trait EditUserTrait
     }
 
     /**
-     * @param Uid|string $uid
+     * @param Uid|mixed $uid
      *
      * @return static
      */
     public function withUid($uid)
     {
         $request = clone $this;
-        $request->uid = $uid instanceof Uid ? $uid : new Uid($uid);
+        $request->uid = $uid instanceof Uid ? $uid : new Uid((string) $uid);
 
         return $request;
     }
@@ -184,8 +186,6 @@ trait EditUserTrait
     }
 
     /**
-     * @param string $displayName
-     *
      * @return static
      */
     public function withDisplayName(string $displayName)
@@ -206,8 +206,7 @@ trait EditUserTrait
         if ($phoneNumber) {
             $phoneNumber = $phoneNumber instanceof PhoneNumber
                 ? $phoneNumber
-                : new PhoneNumber($phoneNumber)
-            ;
+                : new PhoneNumber($phoneNumber);
         }
         $request = clone $this;
         $request->phoneNumber = $phoneNumber;
@@ -284,8 +283,7 @@ trait EditUserTrait
         $request = clone $this;
         $request->clearTextPassword = $clearTextPassword instanceof ClearTextPassword
             ? $clearTextPassword
-            : new ClearTextPassword($clearTextPassword)
-        ;
+            : new ClearTextPassword($clearTextPassword);
 
         return $request;
     }
@@ -299,7 +297,7 @@ trait EditUserTrait
             $disableUser = false;
         }
 
-        $data = array_filter([
+        $data = \array_filter([
             'localId' => $this->uid,
             'disableUser' => $disableUser,
             'displayName' => $this->displayName,
@@ -308,7 +306,7 @@ trait EditUserTrait
             'phoneNumber' => $this->phoneNumber,
             'photoUrl' => $this->photoUrl,
             'password' => $this->clearTextPassword,
-        ], function ($value) {
+        ], static function ($value) {
             return $value !== null;
         });
 

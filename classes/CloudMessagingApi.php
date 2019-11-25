@@ -60,6 +60,8 @@ class CloudMessagingApi {
 	 * @param Message $msg
 	 *
 	 * @return array
+	 * @throws \Kreait\Firebase\Exception\FirebaseException
+	 * @throws \Kreait\Firebase\Exception\MessagingException
 	 * @throws \Exception
 	 */
 	function send( $msg ) {
