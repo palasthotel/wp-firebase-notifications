@@ -5,7 +5,7 @@
 		ajax_url
 	} = api;
 
-	api.send = async (plattforms, conditions, title, body, payload = {}, schedule_timestamp = null ) => {
+	api.send = async function(plattforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
 		if(isEmpty(plattforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
 			throw "Missing arguments...";
 		}
@@ -23,7 +23,7 @@
 		});
 	};
 
-	api.delete = async (message_id) => {
+	api.delete = async function (message_id){
 		return post(actions.delete, {message_id})
 	};
 
@@ -41,7 +41,7 @@
 	 * @return {Promise<*>}
 	 */
 	async function post(action, params) {
-		return new Promise((resolve, reject) => {
+		return new Promise(function(resolve, reject){
 			$.ajax(
 				ajax_url + "?action=" + action,
 				{

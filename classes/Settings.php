@@ -21,8 +21,21 @@ class Settings {
 	 */
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;
-		add_action('admin_init', array($this,'custom_settings'));
 		add_filter('plugin_action_links_' . $plugin->basename, array($this, 'add_action_links'));
+		add_action('admin_init', array($this,'custom_settings'));
+		add_action('admin_enqueue_scripts', array($this, 'load_wp_media_files') );
+	}
+
+	/**
+	 * action link to settings on plugins list page
+	 * @param $links
+	 *
+	 * @return array
+	 */
+	public function add_action_links($links){
+		return array_merge($links, array(
+			'<a href="'.admin_url('options-writing.php#'.Plugin::DOMAIN).'">Settings</a>'
+		));
 	}
 
 	/**
@@ -41,7 +54,7 @@ class Settings {
 		add_settings_field(
 			Plugin::OPTION_CONFIG,
 			__('Google Services', Plugin::DOMAIN),
-			array($this, 'render_url_field'),
+			array($this, 'render_services_config_field'),
 			'writing',
 			'firebase-notifications-settings'
 		);
@@ -62,6 +75,32 @@ class Settings {
 			'writing',
 			Plugin::OPTION_POST_TYPES
 		);
+
+
+		add_settings_field(
+			Plugin::OPTION_WEBAPP_CONFIG,
+			__('Webapp', Plugin::DOMAIN),
+			array($this, 'render_webapp_config_field'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_WEBAPP_CONFIG
+		);
+
+		add_settings_field(
+			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON,
+			__('Notification Icon', Plugin::DOMAIN),
+			array($this, 'render_notification_icon_field'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON
+		);
+
 	}
 
 	/**
@@ -103,9 +142,56 @@ class Settings {
 	}
 
 	/**
+	 * @param bool $assoc
+	 *
+	 * @return object|array|null
+	 */
+	public function getWebappConfig($assoc = false){
+		$config = get_option(Plugin::OPTION_WEBAPP_CONFIG, "");
+		return json_decode($config, $assoc);
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getNotificationIconImageId(){
+		return get_option(Plugin::OPTION_WEBAPP_NOTIFICATION_ICON, "");
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNotificationIconURL(){
+		$iconId = $this->plugin->settings->getNotificationIconImageId();
+		$iconUrl = "";
+		if(!empty($iconId)){
+			$url = wp_get_attachment_image_url($iconId);
+			if($url !== false) $iconUrl = $url;
+		}
+		return $iconUrl;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isWebappConfigValid(){
+		$config = $this->getWebappConfig();
+		if($config == null) return false;
+		if(!isset($config->apiKey)) return false;
+		if(!isset($config->authDomain)) return false;
+		if(!isset($config->projectId)) return false;
+		if(!isset($config->storageBucket)) return false;
+		if(!isset($config->messagingSenderId)) return false;
+		if(!isset($config->appId)) return false;
+		if(!isset($config->measurementId)) return false;
+		return true;
+	}
+
+	/**
 	 * render the setting field
 	 */
-	public function render_url_field(){
+	public function render_services_config_field(){
 		$config = $this->getConfig();
 		if($config == null){
 			$config = "";
@@ -160,14 +246,163 @@ class Settings {
 	}
 
 	/**
-	 * action link to settings on plugins list page
-	 * @param $links
-	 *
-	 * @return array
+	 * render the setting field
 	 */
-	public function add_action_links($links){
-		return array_merge($links, array(
-			'<a href="'.admin_url('options-writing.php#'.Plugin::DOMAIN).'">Settings</a>'
-		));
+	public function render_webapp_config_field(){
+		$config = $this->getWebappConfig();
+		if($config == null){
+			$config = "";
+		} else {
+			$config = json_encode($config, JSON_PRETTY_PRINT);
+		}
+		?>
+		<ol class="description">
+			<li>Goto <a href="https://console.firebase.google.com">Firebase Console</a></li>
+			<li>Choose your project</li>
+			<li>Goto "Project Settings"</li>
+			<li>Scroll down to "My Apps"</li>
+			<li>Select an existing or add a new "Web app"</li>
+			<li>Choose "Configuration" for the Firebase SDK snippet.</li>
+			<li>Copy and past it here.</li>
+		</ol>
+		<textarea
+				style="width: 100%"
+				rows="13"
+				id="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
+				name="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
+		><?php echo $config ?></textarea>
+		<script>
+			jQuery(function($){
+				const variableDefRegex = /^( *(const|let|var) firebaseConfig = *{)/gm;
+				const regex = /(\w+):( +|")/gm;
+				const endsWithSemicolonRegex = /(;)$/gm;
+				const subst = `"$1":`;
+				$("#<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>").on("keyup", function(){
+					let val = this.value;
+					val = val.replace(variableDefRegex, "{", val);
+					val = val.replace(endsWithSemicolonRegex, "", val);
+					this.value = val.replace(regex, subst);
+				});
+			});
+		</script>
+		<?php
+		echo '<p class="description">';
+		if($this->isWebappConfigValid()){
+			echo "✅ Found Webapp configuration.";
+		} else {
+			echo "🚨 There is no webapp configuration.";
+		}
+		echo '</p>'
+		?>
+		<p>After that you have to add two cloud function so users can subscribe to topics</p>
+		<?php
 	}
+
+	function load_wp_media_files( $page ) {
+		// change to the $page where you want to enqueue the script
+		if( $page == 'options-writing.php' ) {
+			// Enqueue WordPress media scripts
+			wp_enqueue_media();
+		}
+	}
+
+	function render_notification_icon_field(){
+		?>
+		<div
+			style="border: 1px solid #a3a3a3; height: 192px; width: 192px; margin-bottom: 10px;"
+		>
+			<img
+					id="firebase-notifications-icon-preview"
+					src=""
+			/>
+		</div>
+		<div>
+		<button
+				class="button button-small button-secondary"
+				id="firebase-notifications-icon-add"
+		>
+			Add image
+		</button>
+		<button
+				class="button button-small button-secondary"
+				id="firebase-notifications-icon-remove"
+			>
+			Remove image
+		</button>
+		</div>
+		<input
+				name="<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>"
+				value="<?php echo $this->getNotificationIconImageId(); ?>"
+				type="hidden"
+		/>
+		<p class="description">Square image with 192px x 192px.</p>
+		<script>
+			jQuery(function($) {
+				const $imagePreview = $("#firebase-notifications-icon-preview");
+				const $buttonAdd = $('#firebase-notifications-icon-add');
+				const $buttonRemove = $('#firebase-notifications-icon-remove');
+				const $input = $("[name=<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>]");
+
+				$buttonRemove.click(function(e){
+					e.preventDefault();
+					updateState("","");
+				});
+
+				let image_frame = null;
+				$buttonAdd.click(function(e) {
+					e.preventDefault();
+
+					if(image_frame){
+						image_frame.open();
+					}
+					// Define image_frame as wp.media object
+					image_frame = wp.media({
+						title: 'Select Notification Icon',
+						multiple : false,
+						library : {
+							type : 'image',
+						}
+					});
+
+					image_frame.on('close',function() {
+						const selection =  image_frame.state().get('selection');
+						selection.each(function(attachment){ // should be a single value array
+							updateState(attachment['id'], attachment.get('url'));
+						});
+					});
+
+					image_frame.on('open',function() {
+						const selection = image_frame.state().get('selection');
+						const attachment = wp.media.attachment($input.val());
+						selection.add( attachment ? [ attachment ] : [] );
+					});
+
+					image_frame.open();
+				});
+
+				function updateState(id, url){
+					$input.val(id);
+
+					if(typeof url === typeof "" && url !== ""){
+						$imagePreview.attr("src", url);
+						$imagePreview.show();
+						$buttonRemove.show();
+					} else {
+						$buttonRemove.hide();
+						$imagePreview.hide();
+					}
+				}
+
+				// update application state to initial state
+				updateState(
+					"<?php echo $this->getNotificationIconImageId() ?>",
+					"<?php echo wp_get_attachment_image_url($this->getNotificationIconImageId(), 'full'); ?>"
+				);
+
+			});
+		</script>
+<?php
+	}
+
+
 }
