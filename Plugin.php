@@ -7,7 +7,7 @@
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 5.0
- * Tested up to: 5.2.4
+ * Tested up to: 5.3.2
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  * Text Domain:       firebase-notifications
  * Domain Path:       /languages
