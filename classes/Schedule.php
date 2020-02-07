@@ -40,7 +40,7 @@ class Schedule {
 				$result = $this->plugin->cloudMessagingApi->send($message);
 				$message->result = $result;
 				$success = $this->plugin->database->setSent( $message->id, $result);
-				if($success){
+				if(!$success){
 					\error_log("Error: Could not send scheduled message $message->id", 4);
 				}
 			} catch (\Exception $e){
