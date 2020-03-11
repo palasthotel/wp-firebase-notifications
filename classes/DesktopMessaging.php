@@ -22,6 +22,7 @@ class DesktopMessaging {
 		$this->plugin = $plugin;
 
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', array( $this, 'add_endpoint' ) );
 		add_filter( 'query_vars', array( $this, 'add_query_vars' ), 0 );
 		add_action( 'parse_request', array( $this, 'sniff_requests' ), 0 );
 
@@ -72,9 +73,12 @@ class DesktopMessaging {
 			)
 		);
 
-		// ------------------
-		// service worker endpoint
-		// ------------------
+	}
+
+	/**
+	 * service worker endpoint
+	 */
+	public function add_endpoint(){
 		add_rewrite_rule(
 			'^firebase-messaging-sw\.js$',
 			'index.php?' . self::PARAM_KEY . '=' . self::PARAM_VALUE,

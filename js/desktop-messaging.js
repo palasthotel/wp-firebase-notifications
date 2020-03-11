@@ -82,9 +82,9 @@
 				_token = token;
 				onInitListener.each();
 			})
-			.catch(function(){
+			.catch(function(e){
 				// permission denied
-				console.error("Denied messaging");
+				console.error("Denied messaging", e);
 			});
 
 		// wait for messages
