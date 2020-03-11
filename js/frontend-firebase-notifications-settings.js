@@ -21,13 +21,23 @@
 		});
 	}
 
+	// sync topics interval
+	let updateInterval = null;
+	function restartUpdateInterval(){
+		clearInterval(updateInterval);
+		updateInterval = setInterval(function(){
+			updateTopics();
+		}, 3000);
+	}
+	restartUpdateInterval();
+
 	// global web or android activate notifications
 	const $globalNotifications = $("[data-firebase-notifications-active]");
 	if(isAndroid || isWeb){
 		$globalNotifications.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
 		$globalNotifications.on("change", function(e){
 			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
-			updateTopics();
+			restartUpdateInterval();
 		});
 	} else {
 		$globalNotifications.closest("[data-firebase-notifications-global]").remove();
@@ -36,7 +46,7 @@
 	// wait for initialization
 	if(isWeb){
 		FirebaseMessagingWebapp.api.onFCMInitialized(function(){
-			updateTopics();
+			restartUpdateInterval();
 		});
 	}
 
@@ -50,9 +60,6 @@
 	} else {
 		$globaliOS.closest("[data-firebase-notifications-global]").remove();
 	}
-
-
-	updateTopics();
 
 	$topics.on("change", function(e){
 		const $el = $(this);

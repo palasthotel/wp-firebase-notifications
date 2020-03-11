@@ -139,11 +139,9 @@
 	function setSubscribed (topic){ localStorage.setItem(_getSubscriptionKey(topic), _isActiveValue); }
 	function setUnsubscribed (topic){ localStorage.removeItem(_getSubscriptionKey(topic)); }
 
-
 	const cloudFunctionsBaseUrl = "https://us-central1-"+firebaseConfig.projectId+".cloudfunctions.net";
 
 	async function request(action, topic){
-		console.log("request get token");
 		const token = firebaseInstance().getToken();
 		if(!token) throw "No request token";
 		return fetch(
