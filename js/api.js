@@ -6,18 +6,20 @@
 	} = api;
 
 	api.send = function(plattforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
-		if(isEmpty(plattforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
-			throw "Missing arguments...";
-		}
-
-		return post(actions.send, {
-			title, body, plattforms, conditions,
-			schedule: (schedule_timestamp)? Math.round(schedule_timestamp/1000): null,
-			payload
-		});
+		return new Promise((resolve, reject)=>{
+			if(isEmpty(plattforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
+				reject("Missing arguments...");
+				return;
+			}
+			post(actions.send, {
+				title, body, plattforms, conditions,
+				schedule: (schedule_timestamp)? Math.round(schedule_timestamp/1000): null,
+				payload
+			}).then(resolve).catch(reject);
+		})
 	};
 
-	api.delete = async function (message_id){
+	api.delete = function (message_id){
 		return post(actions.delete, {message_id})
 	};
 
