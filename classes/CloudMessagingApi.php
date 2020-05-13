@@ -9,7 +9,11 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use Exception;
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging;
 use Kreait\Firebase\ServiceAccount;
 
 /**
@@ -18,9 +22,13 @@ use Kreait\Firebase\ServiceAccount;
 class CloudMessagingApi {
 
 	/**
-	 * @var \Kreait\Firebase
+	 * @var ServiceAccount
 	 */
-	private $firebase;
+	private $serviceAccount;
+    /**
+     * @var Messaging
+     */
+	private $messaging;
 
 	/**
 	 * CloudMessagingApi constructor.
@@ -35,24 +43,34 @@ class CloudMessagingApi {
 	 * @return bool
 	 */
 	public function hasConfiguration(){
-		return $this->getFirebase() != null;
+		return $this->getServiceAccount() != null;
 	}
 
 	/**
-	 * @return \Kreait\Firebase
+	 * @return ServiceAccount
 	 */
-	public function getFirebase(){
-		if($this->firebase == null){
+	public function getServiceAccount(){
+		if($this->serviceAccount == null){
 
 			$config = $this->plugin->settings->getConfig(true);
 			if($config == null) return null;
-
-			$serviceAccount =ServiceAccount::fromArray($config);
-			$this->firebase = ( new Factory )->withServiceAccount( $serviceAccount )
-			                                 ->create();
+			$this->serviceAccount = ServiceAccount::fromValue($config);
 		}
-		return $this->firebase;
+		return $this->serviceAccount;
 	}
+
+    /**
+     * @return Messaging
+     */
+	public function getMessaging(){
+	    if($this->messaging == null){
+            $this->messaging = ( new Factory )->withServiceAccount(
+                $this->getServiceAccount()
+            )->createMessaging();
+        }
+
+        return $this->messaging;
+    }
 
 	/**
 	 * send message via firebase cloud messaging
@@ -60,9 +78,9 @@ class CloudMessagingApi {
 	 * @param Message $msg
 	 *
 	 * @return array
-	 * @throws \Kreait\Firebase\Exception\FirebaseException
-	 * @throws \Kreait\Firebase\Exception\MessagingException
-	 * @throws \Exception
+	 * @throws FirebaseException
+	 * @throws MessagingException
+	 * @throws Exception
 	 */
 	function send( $msg ) {
 		$arr = $msg->getCloudMessageArray();
@@ -72,6 +90,6 @@ class CloudMessagingApi {
 				"info" => __("No message was sent", "CloudMessagingApi class", Plugin::DOMAIN),
 			);
 		}
-		return $this->getFirebase()->getMessaging()->send($arr);
+		return $this->getMessaging()->send($arr);
 	}
 }

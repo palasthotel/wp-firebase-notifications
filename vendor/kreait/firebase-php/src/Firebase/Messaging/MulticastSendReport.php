@@ -74,10 +74,8 @@ final class MulticastSendReport implements Countable
                 $target = MessageTarget::with(MessageTarget::TOPIC, (string) $topic);
             } elseif ($condition = $requestData['message']['condition'] ?? null) {
                 $target = MessageTarget::with(MessageTarget::CONDITION, (string) $condition);
-            }
-
-            if ($target === null) {
-                continue;
+            } else {
+                $target = MessageTarget::with(MessageTarget::UNKNOWN, 'unknown');
             }
 
             if ($response->getStatusCode() < 400) {
@@ -115,21 +113,62 @@ final class MulticastSendReport implements Countable
 
     public function successes(): self
     {
-        return self::withItems(\array_filter($this->items, static function (SendReport $item) {
+        return $this->filter(static function (SendReport $item) {
             return $item->isSuccess();
-        }));
+        });
     }
 
     public function failures(): self
     {
-        return self::withItems(\array_filter($this->items, static function (SendReport $item) {
+        return $this->filter(static function (SendReport $item) {
             return $item->isFailure();
-        }));
+        });
     }
 
     public function hasFailures(): bool
     {
         return $this->failures()->count() > 0;
+    }
+
+    public function filter(callable $callback): self
+    {
+        return self::withItems(\array_filter($this->items, $callback));
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function map(callable $callback): array
+    {
+        return \array_map($callback, $this->items);
+    }
+
+    /**
+     * Returns all provided registration tokens that were not reachable.
+     *
+     * @return string[]
+     */
+    public function unknownTokens(): array
+    {
+        return $this->filter(static function (SendReport $report) {
+            return $report->messageWasSentToUnknownToken();
+        })->map(static function (SendReport $report) {
+            return $report->target()->value();
+        });
+    }
+
+    /**
+     * Returns all provided registration tokens that were invalid.
+     *
+     * @return string[]
+     */
+    public function invalidTokens(): array
+    {
+        return $this->filter(static function (SendReport $report) {
+            return $report->messageTargetWasInvalid();
+        })->map(static function (SendReport $report) {
+            return $report->target()->value();
+        });
     }
 
     public function count(): int

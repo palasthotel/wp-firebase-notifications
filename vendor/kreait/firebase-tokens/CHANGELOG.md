@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## 1.9.2 - 2019-10-16
+## 1.10.0 - 2020-01-14
 
-- Fixed an issue that the Custom Token Generator was carrying state between consecutive calls (Thanks [@danizord](https://github.com/danizord) for finding and fixing the issue) 
+- Added support for Guzzle 7
+- Improved error handling and error messages
 
 ## 1.9.1 - 2019-08-26
 

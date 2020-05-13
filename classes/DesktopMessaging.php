@@ -46,14 +46,14 @@ class DesktopMessaging {
 		// ------------------
 		wp_register_script(
 			"firebase-core",
-			$this->plugin->url . "/js/firebase-app.7.3.0.js",
+			$this->plugin->url . "/js/firebase-app.7.14.3.js",
 			array(),
 			"7.3.0",
 			true
 		);
 		wp_register_script(
 			"firebase-messaging",
-			$this->plugin->url . "/js/firebase-messaging.7.3.0.js",
+			$this->plugin->url . "/js/firebase-messaging.7.14.3.js",
 			array( "firebase-core" ),
 			"7.3.0",
 			true

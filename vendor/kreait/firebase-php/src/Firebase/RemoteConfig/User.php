@@ -10,19 +10,13 @@ use Psr\Http\Message\UriInterface;
 
 final class User
 {
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $name;
 
-    /**
-     * @var Email|null
-     */
+    /** @var Email|null */
     private $email;
 
-    /**
-     * @var UriInterface|null
-     */
+    /** @var UriInterface|null */
     private $imageUri;
 
     private function __construct()
@@ -31,6 +25,8 @@ final class User
 
     /**
      * @internal
+     *
+     * @param array<string, string> $data
      */
     public static function fromArray(array $data): self
     {
@@ -42,26 +38,17 @@ final class User
         return $new;
     }
 
-    /**
-     * @return string|null
-     */
-    public function name()
+    public function name(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @return Email|null
-     */
-    public function email()
+    public function email(): ?Email
     {
         return $this->email;
     }
 
-    /**
-     * @return UriInterface|null
-     */
-    public function imageUri()
+    public function imageUri(): ?UriInterface
     {
         return $this->imageUri;
     }

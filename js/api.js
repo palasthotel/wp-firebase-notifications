@@ -5,16 +5,10 @@
 		ajax_url
 	} = api;
 
-	api.send = async function(plattforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
+	api.send = function(plattforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
 		if(isEmpty(plattforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
 			throw "Missing arguments...";
 		}
-
-		console.log(schedule_timestamp);
-		console.log(plattforms);
-		console.log(conditions);
-		console.log(title, body);
-		console.log(payload);
 
 		return post(actions.send, {
 			title, body, plattforms, conditions,

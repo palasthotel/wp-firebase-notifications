@@ -8,30 +8,25 @@ use Kreait\Firebase\Exception\InvalidArgumentException;
 
 class Parameter implements \JsonSerializable
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $description = '';
 
-    /**
-     * @var DefaultValue
-     */
+    /** @var DefaultValue */
     private $defaultValue;
 
-    /**
-     * @var ConditionalValue[]
-     */
+    /** @var ConditionalValue[] */
     private $conditionalValues = [];
 
     private function __construct()
     {
     }
 
+    /**
+     * @param DefaultValue|string|mixed $defaultValue
+     */
     public static function named(string $name, $defaultValue = null): self
     {
         if ($defaultValue === null) {
@@ -62,6 +57,9 @@ class Parameter implements \JsonSerializable
         return $parameter;
     }
 
+    /**
+     * @param DefaultValue|string $defaultValue
+     */
     public function withDefaultValue($defaultValue): self
     {
         $defaultValue = $defaultValue instanceof DefaultValue ? $defaultValue : DefaultValue::with($defaultValue);
@@ -93,13 +91,16 @@ class Parameter implements \JsonSerializable
         return $this->conditionalValues;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         \reset($data);
         $parameterData = \current($data);
 
         $parameter = new self();
-        $parameter->name = \key($data);
+        $parameter->name = (string) \key($data);
         $parameter->defaultValue = DefaultValue::fromArray($parameterData['defaultValue'] ?? []);
 
         foreach ((array) ($parameterData['conditionalValues'] ?? []) as $key => $conditionalValueData) {
@@ -113,7 +114,10 @@ class Parameter implements \JsonSerializable
         return $parameter;
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
     {
         $conditionalValues = [];
         foreach ($this->conditionalValues() as $conditionalValue) {

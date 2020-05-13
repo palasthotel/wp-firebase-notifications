@@ -6,7 +6,6 @@ namespace Kreait\Firebase\JWT\Contract;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use LogicException;
 
 trait ExpirableTrait
 {
@@ -31,12 +30,6 @@ trait ExpirableTrait
 
     public function expiresAt(): DateTimeImmutable
     {
-        // @codeCoverageIgnoreStart
-        if (!$this->expirationTime) {
-            throw new LogicException(static::class.' allows calling '.__METHOD__.' before setting it.');
-        }
-        // @codeCoverageIgnoreEnd
-
         return $this->expirationTime;
     }
 }

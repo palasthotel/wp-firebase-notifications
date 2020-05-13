@@ -20,16 +20,12 @@ use Psr\Http\Message\UriInterface;
  */
 class Database
 {
-    const SERVER_TIMESTAMP = ['.sv' => 'timestamp'];
+    public const SERVER_TIMESTAMP = ['.sv' => 'timestamp'];
 
-    /**
-     * @var ApiClient
-     */
+    /** @var ApiClient */
     private $client;
 
-    /**
-     * @var UriInterface
-     */
+    /** @var UriInterface */
     private $uri;
 
     /**
@@ -48,7 +44,7 @@ class Database
      *
      * @throws InvalidArgumentException
      */
-    public function getReference(string $path = null): Reference
+    public function getReference(?string $path = null): Reference
     {
         if ($path === null || \trim($path) === '') {
             $path = '/';
@@ -98,31 +94,18 @@ class Database
     }
 
     /**
-     * Retrieve Firebase Database Rules.
-     *
-     * @deprecated 4.32.0 Use \Kreait\Firebase\Database::getRuleSet() instead
-     * @see getRuleSet()
-     */
-    public function getRules(): RuleSet
-    {
-        \trigger_error(
-            __METHOD__.' is deprecated. Use \Kreait\Firebase\Database::getRuleSet() instead.',
-            \E_USER_DEPRECATED
-        );
-
-        return $this->getRuleSet();
-    }
-
-    /**
      * Update Firebase Database Rules.
      *
      * @see https://firebase.google.com/docs/database/rest/app-management#updating-firebase-realtime-database-rules
      */
-    public function updateRules(RuleSet $ruleSet)
+    public function updateRules(RuleSet $ruleSet): void
     {
         $this->client->updateRules($this->uri->withPath('.settings/rules'), $ruleSet);
     }
 
+    /**
+     * @return mixed
+     */
     public function runTransaction(callable $callable)
     {
         $transaction = new Transaction($this->client);

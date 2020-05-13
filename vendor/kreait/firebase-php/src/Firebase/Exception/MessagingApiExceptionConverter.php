@@ -45,7 +45,7 @@ class MessagingApiExceptionConverter
         return new MessagingError($exception->getMessage(), $exception->getCode(), $exception);
     }
 
-    public function convertResponse(ResponseInterface $response, Throwable $previous = null): MessagingException
+    public function convertResponse(ResponseInterface $response, ?Throwable $previous = null): MessagingException
     {
         $code = $response->getStatusCode();
 
@@ -78,13 +78,7 @@ class MessagingApiExceptionConverter
                 break;
         }
 
-        $convertedError = $convertedError->withErrors($errors);
-
-        if ($response) {
-            $convertedError = $convertedError->withResponse($response);
-        }
-
-        return $convertedError;
+        return $convertedError->withErrors($errors);
     }
 
     private function convertGuzzleRequestException(RequestException $e): MessagingException

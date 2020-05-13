@@ -8,22 +8,23 @@ use Kreait\Firebase\Exception\InvalidArgumentException;
 
 final class MessageTarget
 {
-    const CONDITION = 'condition';
-    const TOKEN = 'token';
-    const TOPIC = 'topic';
+    public const CONDITION = 'condition';
+    public const TOKEN = 'token';
+    public const TOPIC = 'topic';
 
-    const TYPES = [
-        self::CONDITION, self::TOKEN, self::TOPIC,
+    /**
+     * @internal
+     */
+    public const UNKNOWN = 'unknown';
+
+    public const TYPES = [
+        self::CONDITION, self::TOKEN, self::TOPIC, self::UNKNOWN,
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $type;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $value;
 
     private function __construct()
@@ -53,6 +54,9 @@ final class MessageTarget
                 break;
             case self::TOPIC:
                 $new->value = (string) Topic::fromValue($value);
+                break;
+            case self::UNKNOWN:
+                $new->value = $value;
                 break;
             default:
                 throw new InvalidArgumentException("Invalid target type '{$type}', valid types: ".\implode(', ', self::TYPES));

@@ -16,30 +16,33 @@
         "source": "https://github.com/kreait/firebase-php"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.2",
         "ext-ctype": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "giggsey/libphonenumber-for-php": "^8.9",
-        "google/auth": "^0.11.0|^1.0",
+        "google/auth": "^1.8",
+        "google/cloud-core": "^1.36",
         "google/cloud-storage": "^1.14",
-        "guzzlehttp/guzzle": "^6.2.1",
+        "guzzlehttp/guzzle": "^6.2.1|^7.0@beta",
         "kreait/clock": "^1.0.1",
-        "kreait/firebase-tokens": "^1.8.1",
-        "kreait/gcp-metadata": "^1.0.1",
+        "kreait/firebase-tokens": "^1.10",
         "lcobucci/jwt": "^3.3.1",
         "mtdowling/jmespath.php": "^2.3",
+        "psr/cache": "^1.0",
         "psr/simple-cache": "^1.0",
-        "riverline/multipart-parser": "^2.0",
-        "superbalist/flysystem-google-storage": "^7.0"
+        "riverline/multipart-parser": "^2.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "jangregor/phpstan-prophecy": "^0.1.2",
-        "phpstan/phpstan-phpunit": "^0.9.2",
-        "phpunit/phpunit": "^6.0",
-        "symfony/var-dumper": "^3.3"
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "google/cloud-firestore": "^1.11",
+        "jangregor/phpstan-prophecy": "^0.6.2",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^0.12.15",
+        "phpstan/phpstan-phpunit": "^0.12.6",
+        "phpunit/phpunit": "^8.5",
+        "symfony/var-dumper": "^5.0"
     },
     "suggest": {
         "google/cloud-firestore": "^1.0 to use the Firestore component"
@@ -47,10 +50,7 @@
     "autoload": {
         "psr-4": {
             "Kreait\\Firebase\\": "src/Firebase"
-        },
-        "files": [
-            "src/Firebase.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -58,14 +58,18 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "platform": {
-            "php": "7.0.33"
-        }
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "4.x-dev"
+            "dev-master": "5.x-dev",
+            "dev-4.x": "4.x-dev"
         }
-    }
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/jeromegamez"
+        }
+    ]
 }

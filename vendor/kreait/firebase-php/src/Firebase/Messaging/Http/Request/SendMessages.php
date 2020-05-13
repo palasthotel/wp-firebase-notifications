@@ -14,7 +14,7 @@ use Psr\Http\Message\RequestInterface;
 
 final class SendMessages implements HasSubRequests, RequestInterface
 {
-    const MAX_AMOUNT_OF_MESSAGES = 100;
+    public const MAX_AMOUNT_OF_MESSAGES = 500;
 
     use WrappedPsr7Request;
 
@@ -31,7 +31,7 @@ final class SendMessages implements HasSubRequests, RequestInterface
         foreach ($messages as $message) {
             $subRequests[] = (new SendMessage($projectId, $message))
                 // see https://github.com/firebase/firebase-admin-node/blob/master/src/messaging/batch-request.ts#L104
-                ->withHeader('Content-ID', ++$index)
+                ->withHeader('Content-ID', (string) ++$index)
                 ->withHeader('Content-Transfer-Encoding', 'binary')
                 ->withHeader('Content-Type', 'application/http');
         }
@@ -40,10 +40,5 @@ final class SendMessages implements HasSubRequests, RequestInterface
             'https://fcm.googleapis.com/batch',
             new Requests(...$subRequests)
         );
-    }
-
-    public function subRequests(): Requests
-    {
-        return $this->wrappedRequest->subRequests();
     }
 }

@@ -821,9 +821,14 @@ class Bucket
      *           current bucket's logs.
      *     @type string $storageClass The bucket's storage class. This defines
      *           how objects in the bucket are stored and determines the SLA and
-     *           the cost of storage. Acceptable values include
-     *           `"MULTI_REGIONAL"`, `"REGIONAL"`, `"NEARLINE"`, `"COLDLINE"`,
-     *           `"STANDARD"` and `"DURABLE_REDUCED_AVAILABILITY"`.
+     *           the cost of storage. Acceptable values include the following
+     *           strings: `"STANDARD"`, `"NEARLINE"`, `"COLDLINE"` and
+     *           `"ARCHIVE"`. Legacy values including `"MULTI_REGIONAL"`,
+     *           `"REGIONAL"` and `"DURABLE_REDUCED_AVAILABILITY"` are also
+     *           available, but should be avoided for new implementations. For
+     *           more information, refer to the
+     *           [Storage Classes](https://cloud.google.com/storage/docs/storage-classes)
+     *           documentation. **Defaults to** `"STANDARD"`.
      *     @type array $versioning The bucket's versioning configuration.
      *     @type array $website The bucket's website configuration.
      *     @type array $billing The bucket's billing configuration.
@@ -1165,11 +1170,19 @@ class Bucket
     /**
      * Manage the IAM policy for the current Bucket.
      *
-     * Please note that this method may not yet be available in your project.
+     * To request a policy with conditions, pass an array with
+     * '[requestedPolicyVersion => 3]' as argument to the policy() and
+     * reload() methods.
      *
      * Example:
      * ```
      * $iam = $bucket->iam();
+     *
+     * // Returns the stored policy, or fetches the policy if none exists.
+     * $policy = $iam->policy(['requestedPolicyVersion' => 3]);
+     *
+     * // Fetches a policy from the server.
+     * $policy = $iam->reload(['requestedPolicyVersion' => 3]);
      * ```
      *
      * @codingStandardsIgnoreStart
@@ -1177,6 +1190,7 @@ class Bucket
      * @see https://cloud.google.com/storage/docs/json_api/v1/buckets/getIamPolicy Get Bucket IAM Policy
      * @see https://cloud.google.com/storage/docs/json_api/v1/buckets/setIamPolicy Set Bucket IAM Policy
      * @see https://cloud.google.com/storage/docs/json_api/v1/buckets/testIamPermissions Test Bucket Permissions
+     * @see https://cloud.google.com/iam/docs/policies#versions policy versioning.
      * @codingStandardsIgnoreEnd
      *
      * @return Iam
@@ -1343,6 +1357,94 @@ class Bucket
             $expires,
             $resource,
             null,
+            $options
+        );
+    }
+
+    /**
+     * Create a signed upload policy for uploading objects.
+     *
+     * This method generates and signs a policy document. You can use policy
+     * documents to allow visitors to a website to upload files to Google Cloud
+     * Storage without giving them direct write access.
+     *
+     * Google Cloud PHP does not support v2 post policies.
+     *
+     * Example:
+     * ```
+     * $policy = $bucket->generateSignedPostPolicyV4($objectName, new \DateTime('tomorrow'), [
+     *     'conditions' => [
+     *         ['content-length-range', 0, 255]
+     *     ],
+     *     'fields' => [
+     *          'x-goog-meta-hello' => 'world',
+     *          'success_action_redirect' => 'https://google.com'
+     *     ]
+     * ]);
+     *
+     * echo '<form action="' . $policy['url'] . '" method="post" enctype="multipart/form-data">';
+     * foreach ($policy['fields'] as $name => $value) {
+     *     echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
+     * }
+     *
+     * echo 'Upload a file!<br>';
+     * echo '<input type="file" name="file">';
+     * echo '<button type="submit">Submit!</button>';
+     * echo '</form>';
+     * ```
+     *
+     * @see https://cloud.google.com/storage/docs/xml-api/post-object#policydocument Policy Documents
+     *
+     * @param string $objectName The path to the file in Google Cloud Storage,
+     *        relative to the bucket.
+     * @param Timestamp|\DateTimeInterface|int $expires Specifies when the URL
+     *        will expire. May provide an instance of {@see Google\Cloud\Core\Timestamp},
+     *        [http://php.net/datetimeimmutable](`\DateTimeImmutable`), or a
+     *        UNIX timestamp as an integer.
+     * @param array $options [optional] {
+     *     Configuration options
+     *
+     *     @type string $bucketBoundHostname The hostname for the bucket, for
+     *           instance `cdn.example.com`. May be used for Google Cloud Load
+     *           Balancers or for custom bucket CNAMEs. **Defaults to**
+     *           `storage.googleapis.com`.
+     *     @type array $conditions A list of arrays containing policy matching
+     *           conditions (e.g. `eq`, `starts-with`, `content-length-range`).
+     *     @type array $fields Additional form fields (do not include
+     *           `x-goog-signature`, `file`, `policy` or fields with an
+     *           `x-ignore` prefix), given as key/value pairs.
+     *     @type bool $forceOpenssl If true, OpenSSL will be used regardless of
+     *           whether phpseclib is available. **Defaults to** `false`.
+     *     @type array $keyFile Keyfile data to use in place of the keyfile with
+     *           which the client was constructed. If `$options.keyFilePath` is
+     *           set, this option is ignored.
+     *     @type string $keyFilePath A path to a valid Keyfile to use in place
+     *           of the keyfile with which the client was constructed.
+     *     @type string $scheme Either `http` or `https`. Only used if a custom
+     *           hostname is provided via `$options.bucketBoundHostname`. If a
+     *           custom bucketBoundHostname is provided, **defaults to** `http`.
+     *           In all other cases, **defaults to** `https`.
+     *     @type string|array $scopes One or more authentication scopes to be
+     *           used with a key file. This option is ignored unless
+     *           `$options.keyFile` or `$options.keyFilePath` is set.
+     *     @type bool $virtualHostedStyle If `true`, URL will be of form
+     *           `mybucket.storage.googleapis.com`. If `false`,
+     *           `storage.googleapis.com/mybucket`. **Defaults to** `false`.
+     * }
+     * @return array An associative array, containing (string) `uri` and
+     *        (array) `fields` keys.
+     */
+    public function generateSignedPostPolicyV4($objectName, $expires, array $options = [])
+    {
+        // May be overridden for testing.
+        $signingHelper = $this->pluck('helper', $options, false)
+            ?: SigningHelper::getHelper();
+
+        $resource = sprintf('/%s/%s', $this->identity['bucket'], $objectName);
+        return $signingHelper->v4PostPolicy(
+            $this->connection,
+            $expires,
+            $resource,
             $options
         );
     }

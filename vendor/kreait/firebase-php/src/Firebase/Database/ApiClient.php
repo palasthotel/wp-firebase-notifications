@@ -53,6 +53,8 @@ class ApiClient implements ClientInterface
      * @param UriInterface|string $uri
      *
      * @throws DatabaseException
+     *
+     * @return array<string, mixed>
      */
     public function getWithETag($uri): array
     {
@@ -115,7 +117,7 @@ class ApiClient implements ClientInterface
      *
      * @throws DatabaseException
      */
-    public function removeWithEtag($uri, string $etag)
+    public function removeWithEtag($uri, string $etag): void
     {
         $this->requestApi('DELETE', $uri, [
             'headers' => [
@@ -158,27 +160,29 @@ class ApiClient implements ClientInterface
      *
      * @throws DatabaseException
      */
-    public function remove($uri)
+    public function remove($uri): void
     {
         $this->requestApi('DELETE', $uri);
     }
 
     /**
      * @param UriInterface|string $uri
+     * @param array<mixed> $values
      *
      * @throws DatabaseException
      */
-    public function update($uri, array $values)
+    public function update($uri, array $values): void
     {
         $this->requestApi('PATCH', $uri, ['json' => $values]);
     }
 
     /**
      * @param UriInterface|string $uri
+     * @param array<string, mixed>|null $options
      *
      * @throws DatabaseException
      */
-    private function requestApi(string $method, $uri, array $options = null): ResponseInterface
+    private function requestApi(string $method, $uri, ?array $options = null): ResponseInterface
     {
         $options = $options ?? [];
 
