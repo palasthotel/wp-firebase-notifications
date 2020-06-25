@@ -67,7 +67,6 @@ jQuery(function($){
 	$topics.on("change", function(e){
 		const $el = $(this);
 		const topic = getTopic($el);
-		console.log("Firebase topic from Plugin!", topic, e)
 		if($el.is(":checked")){
 			execute(AppNotifications.subscribe,topic);
 			// AppNotifications.subscribe(topic);
