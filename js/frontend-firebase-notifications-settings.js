@@ -1,4 +1,6 @@
-(async function($,firebaseNotifications){
+jQuery(function($){
+
+	const firebaseNotifications = window.FirebaseNotifications;
 
 	if(!firebaseNotifications.isApp) return;
 
@@ -11,13 +13,11 @@
 	// topics
 	const $topics = $("[data-firebase-notifications-topic]");
 	function updateTopics(){
-		$topics.each(async function(){
+		$topics.each(function(){
 			const $el = $(this);
-			$el.prop(
-				"checked",
-				(await AppNotifications.isSubscribed(getTopic($el)))
-					?"checked":""
-			);
+			AppNotifications.isSubscribed(getTopic($el)).then(function(value){
+				$el.prop("checked", value ? "checked":"");
+			});
 		});
 	}
 
@@ -34,7 +34,9 @@
 	// global web or android activate notifications
 	const $globalNotifications = $("[data-firebase-notifications-active]");
 	if(isAndroid || isWeb){
-		$globalNotifications.prop("checked", (await AppNotifications.isNotificationsEnabled())? "checked": "");
+		AppNotifications.isNotificationsEnabled().then(function(value){
+			$globalNotifications.prop("checked", value ? "checked": "");
+		})
 		$globalNotifications.on("change", function(e){
 			AppNotifications.setNotificationsEnabled($(this).is(":checked"));
 			restartUpdateInterval();
@@ -53,9 +55,10 @@
 	// ios notification settings link
 	const $globaliOS = $("[data-firebase-notifications-link]");
 	if(isiOS){
-		setInterval(async function(){
-			const url = await iOSNotifications.getSettingsURL();
-			if(url != null) $globaliOS.attr("href", url);
+		setInterval(function(){
+			iOSNotifications.getSettingsURL().then(function(url){
+				if(url != null) $globaliOS.attr("href", url);
+			});
 		}, 1000);
 	} else {
 		$globaliOS.closest("[data-firebase-notifications-global]").remove();
@@ -87,4 +90,5 @@
 		return $el.attr("data-firebase-notifications-topic");
 	}
 
-})(jQuery, window.FirebaseNotifications);
+
+});
