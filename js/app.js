@@ -15,7 +15,7 @@
 						if(isiOS) resolve(ios.isNotificationsEnabled());
 						else if(isAndroid) resolve(android.isNotificationsEnabled());
 						else if(isWeb) resolve(web.api.isNotificationsEnabled()); // browser handles it?
-						console.error("No interface found. Could not check if notifications are enabled");
+						else console.error("No interface found. Could not check if notifications are enabled");
 					})
 				},
 				setNotificationsEnabled: function(setEnabled){
@@ -23,7 +23,7 @@
 						if(isiOS) resolve(ios.setNotificationsEnabled(setEnabled === true));
 						else if(isAndroid) resolve(android.setNotificationsEnabled(setEnabled === true));
 						else if(isWeb) resolve(web.api.setNotificationsEnabled(setEnabled)); // browser handles it?
-						console.error("No interface found. Could not set notifications endabled to "+ setEnabled);
+						else console.error("No interface found. Could not set notifications endabled to "+ setEnabled);
 					})
 				},
 				subscribe: function(topic){
@@ -31,7 +31,7 @@
 						if(isiOS) resolve(ios.subscribe(topic));
 						else if(isAndroid) resolve(android.subscribe(topic));
 						else if(isWeb) resolve(web.api.subscribe(topic));
-						console.error("No interface found. Could not subscribe to "+ topic);
+						else console.error("No interface found. Could not subscribe to "+ topic);
 					})
 
 				},
@@ -40,7 +40,7 @@
 						if(isiOS) resolve(ios.unsubscribe(topic));
 						if(isAndroid) resolve(android.unsubscribe(topic));
 						if(isWeb) resolve(web.api.unsubscribe(topic));
-						console.error("No interface found. Could not unsubscribe from "+ topic);
+						else console.error("No interface found. Could not unsubscribe from "+ topic);
 					})
 				},
 				isSubscribed: function(topic){
@@ -48,7 +48,7 @@
 						if(isiOS) resolve(ios.isSubscribed(topic));
 						else if(isAndroid) resolve(android.isSubscribed(topic));
 						else if(isWeb) resolve(web.api.isSubscribed(topic));
-						console.error("No interface found. Could not check if is subscribed to "+ topic);
+						else console.error("No interface found. Could not check if is subscribed to "+ topic);
 					})
 				}
 			},

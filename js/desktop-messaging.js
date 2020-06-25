@@ -54,7 +54,11 @@
 	// -----------------------------------
 	const onInitListener = buildListener();
 
+	let initialized = false;
 	function FCMApp(){
+
+		if(initialized) return
+		initialized = true
 
 		console.log("initialize FCMApp");
 		// -----------------------------------
@@ -116,6 +120,11 @@
 		return _FCMAppInstance;
 	}
 
+	function getToken() {
+		if(!firebaseInstance()) return false;
+		return firebaseInstance().getToken()
+	}
+
 	// -----------------------------------
 	// topic subscription api
 	// -----------------------------------
@@ -132,7 +141,8 @@
 		return localStorage.getItem("fcm-is-enabled") === _isActiveValue;
 	}
 	function _getSubscriptionKey (topic){
-		const token = firebaseInstance().getToken();
+		const token = getToken();
+		if(!token) return "";
 		return "fcm-"+token+"-is-subscribed-"+topic;
 	}
 	function isSubscribed (topic){ return isNotificationsEnabled() && localStorage.getItem(_getSubscriptionKey(topic)) === "1";}
@@ -142,7 +152,7 @@
 	const cloudFunctionsBaseUrl = "https://us-central1-"+firebaseConfig.projectId+".cloudfunctions.net";
 
 	async function request(action, topic){
-		const token = firebaseInstance().getToken();
+		const token = getToken();
 		if(!token) throw "No request token";
 		return fetch(
 			cloudFunctionsBaseUrl+"/"+action+"?token="+token+"&topic="+topic,
