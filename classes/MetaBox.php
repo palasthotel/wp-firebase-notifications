@@ -48,8 +48,8 @@ class MetaBox {
 	public function render( $post ) {
 
 		// post needs to be published first
-		if( "publish" != $post->post_status){
-			printf("<p>%s</p>",__("Post needs to be published.", Plugin::DOMAIN));
+		if( "auto-draft" === $post->post_status){
+			printf("<p>%s</p>",__("Post needs to be saved.", Plugin::DOMAIN));
 			return;
 		}
 
