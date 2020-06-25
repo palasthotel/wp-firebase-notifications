@@ -262,7 +262,7 @@ class MetaBox {
 			<p class="firebase--notifications__schedule">
 				<label><input type="radio" name="firebase_schedule" checked value="now" /> <?php _e("Now", Plugin::DOMAIN); ?></label>
 				<label><input type="radio" name="firebase_schedule" value="plan" /> <?php _e("Plan", Plugin::DOMAIN); ?></label>
-				<label><input type="datetime-local" name="firebase_schedule_datetime" value=""/></label>
+				<label><input type="datetime-local" name="firebase_schedule_datetime" value="" placeholder="yyyy-mm-ddThh:ii"/></label>
 
 			</p>
 		</div>
