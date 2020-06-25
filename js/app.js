@@ -36,10 +36,11 @@
 
 				},
 				unsubscribe: function(topic){
+
 					return new Promise(function(resolve){
 						if(isiOS) resolve(ios.unsubscribe(topic));
-						if(isAndroid) resolve(android.unsubscribe(topic));
-						if(isWeb) resolve(web.api.unsubscribe(topic));
+						else if(isAndroid) resolve(android.unsubscribe(topic));
+						else if(isWeb) resolve(web.api.unsubscribe(topic));
 						else console.error("No interface found. Could not unsubscribe from "+ topic);
 					})
 				},
