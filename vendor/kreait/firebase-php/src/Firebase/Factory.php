@@ -25,6 +25,7 @@ use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Storage\StorageClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
 use function GuzzleHttp\Psr7\uri_for;
 use Kreait\Clock;
 use Kreait\Clock\SystemClock;
@@ -41,6 +42,8 @@ use Kreait\Firebase\Value\Email;
 use Kreait\Firebase\Value\Url;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Psr\SimpleCache\CacheInterface;
 use Throwable;
 
@@ -85,7 +88,7 @@ class Factory
     protected $discoveryIsDisabled = false;
 
     /** @var bool */
-    protected $debug = false;
+    protected $guzzleDebugModeIsEnabled = false;
 
     /** @var string|null */
     protected $httpProxy;
@@ -99,6 +102,12 @@ class Factory
     /** @var Clock */
     protected $clock;
 
+    /** @var callable|null */
+    protected $httpLogMiddleware;
+
+    /** @var callable|null */
+    protected $httpDebugLogMiddleware;
+
     public function __construct()
     {
         $this->clock = new SystemClock();
@@ -107,7 +116,7 @@ class Factory
     }
 
     /**
-     * @param string|array<string, string> $value
+     * @param string|array<string, string>|ServiceAccount $value
      */
     public function withServiceAccount($value): self
     {
@@ -180,10 +189,42 @@ class Factory
         return $factory;
     }
 
-    public function withEnabledDebug(): self
+    public function withEnabledDebug(?LoggerInterface $logger = null): self
     {
         $factory = clone $this;
-        $factory->debug = true;
+
+        if ($logger) {
+            $factory = $factory->withHttpDebugLogger($logger);
+        } else {
+            Firebase\Util\Deprecation::trigger(__METHOD__.' without a '.LoggerInterface::class);
+            // @codeCoverageIgnoreStart
+            $factory->guzzleDebugModeIsEnabled = true;
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $factory;
+    }
+
+    public function withHttpLogger(LoggerInterface $logger, ?MessageFormatter $formatter = null, ?string $logLevel = null, ?string $errorLogLevel = null): self
+    {
+        $formatter = $formatter ?: new MessageFormatter();
+        $logLevel = $logLevel ?: LogLevel::INFO;
+        $errorLogLevel = $errorLogLevel ?: LogLevel::NOTICE;
+
+        $factory = clone $this;
+        $factory->httpLogMiddleware = Middleware::log($logger, $formatter, $logLevel, $errorLogLevel);
+
+        return $factory;
+    }
+
+    public function withHttpDebugLogger(LoggerInterface $logger, ?MessageFormatter $formatter = null, ?string $logLevel = null, ?string $errorLogLevel = null): self
+    {
+        $formatter = $formatter ?: new MessageFormatter(MessageFormatter::DEBUG);
+        $logLevel = $logLevel ?: LogLevel::INFO;
+        $errorLogLevel = $errorLogLevel ?: LogLevel::NOTICE;
+
+        $factory = clone $this;
+        $factory->httpDebugLogMiddleware = Middleware::log($logger, $formatter, $logLevel, $errorLogLevel);
 
         return $factory;
     }
@@ -210,7 +251,7 @@ class Factory
             return $this->serviceAccount;
         }
 
-        if ($credentials = \getenv('FIREBASE_CREDENTIALS')) {
+        if ($credentials = Util::getenv('FIREBASE_CREDENTIALS')) {
             return $this->serviceAccount = ServiceAccount::fromValue($credentials);
         }
 
@@ -218,7 +259,7 @@ class Factory
             return null;
         }
 
-        if ($credentials = \getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
+        if ($credentials = Util::getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
             try {
                 return $this->serviceAccount = ServiceAccount::fromValue($credentials);
             } catch (InvalidArgumentException $e) {
@@ -263,11 +304,11 @@ class Factory
             return $this->projectId = ProjectId::fromString($projectId);
         }
 
-        if ($projectId = \getenv('GOOGLE_CLOUD_PROJECT')) {
+        if ($projectId = Util::getenv('GOOGLE_CLOUD_PROJECT')) {
             return $this->projectId = ProjectId::fromString((string) $projectId);
         }
 
-        if ($projectId = \getenv('GCLOUD_PROJECT')) {
+        if ($projectId = Util::getenv('GCLOUD_PROJECT')) {
             return $this->projectId = ProjectId::fromString((string) $projectId);
         }
 
@@ -489,9 +530,11 @@ class Factory
     {
         $config = $config ?? [];
 
-        if ($this->debug) {
+        // @codeCoverageIgnoreStart
+        if ($this->guzzleDebugModeIsEnabled) {
             $config['debug'] = true;
         }
+        // @codeCoverageIgnoreEnd
 
         if ($this->httpProxy) {
             $config['proxy'] = $this->httpProxy;
@@ -501,6 +544,16 @@ class Factory
 
         if (!($handler instanceof HandlerStack)) {
             $handler = HandlerStack::create($handler);
+        }
+
+        if ($handler instanceof HandlerStack) {
+            if ($this->httpLogMiddleware) {
+                $handler->push($this->httpLogMiddleware, 'http_logs');
+            }
+
+            if ($this->httpDebugLogMiddleware) {
+                $handler->push($this->httpDebugLogMiddleware, 'http_debug_logs');
+            }
         }
 
         if ($credentials = $this->getGoogleAuthTokenCredentials()) {
