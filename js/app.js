@@ -9,6 +9,9 @@
 			isiOS,
 			isWeb,
 			isApp: isAndroid || isiOS || isWeb,
+			isSupported: function(){
+				return isiOS || isAndroid || (isWeb && web.isSupported);
+			},
 			fn: {
 				isNotificationsEnabled: function(){
 					return new Promise(function(resolve){

@@ -1,9 +1,18 @@
 <?php
 get_header();
 ?>
-	<div>
-
-
+    <style>
+        body.firebase-notifications__is-not-supported [data-firebase-notifications]{
+            display: none;
+        }
+        [data-firebase-notifications-is-not-supported]{
+            display: none;
+        }
+        body.firebase-notifications__is-not-supported [data-firebase-notifications-is-not-supported]{
+            display: block;
+        }
+    </style>
+	<div data-firebase-notifications>
 		<label data-firebase-notifications-global>
 			<input
 					type="checkbox"
@@ -32,6 +41,9 @@ get_header();
 		}
 		?>
 	</div>
+    <div data-firebase-notifications-is-not-supported>
+        <p>Your browser is not compatible with our browser notifications.</p>
+    </div>
 <?php
 
 get_sidebar();

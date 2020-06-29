@@ -4,6 +4,12 @@ jQuery(function($){
 
 	if(!firebaseNotifications.isApp) return;
 
+	if(!firebaseNotifications.isSupported()){
+		//check browser compatibility
+		$("body").addClass("firebase-notifications__is-not-supported");
+		return;
+	}
+
 	const isAndroid = firebaseNotifications.isAndroid;
 	const isiOS = firebaseNotifications.isiOS;
 	const isWeb = firebaseNotifications.isWeb;
@@ -11,13 +17,17 @@ jQuery(function($){
 	const AppNotifications = firebaseNotifications.fn;
 
 	// topics
+	const changingTopics = {}; // topics that are subscribed or unsubscribed right now
 	const $topics = $("[data-firebase-notifications-topic]");
 	function updateTopics(){
 		$topics.each(function(){
 			const $el = $(this);
-			AppNotifications.isSubscribed(getTopic($el)).then(function(value){
-				$el.prop("checked", value ? "checked":"");
-			});
+			const topic = getTopic($el);
+			if(changingTopics[topic] !== true){
+				AppNotifications.isSubscribed(getTopic($el)).then(function(value){
+					$el.prop("checked", value ? "checked":"");
+				});
+			}
 		});
 	}
 
@@ -27,7 +37,7 @@ jQuery(function($){
 		clearInterval(updateInterval);
 		updateInterval = setInterval(function(){
 			updateTopics();
-		}, 3000);
+		}, 600);
 	}
 	restartUpdateInterval();
 
@@ -67,13 +77,16 @@ jQuery(function($){
 	$topics.on("change", function(e){
 		const $el = $(this);
 		const topic = getTopic($el);
+		changingTopics[topic] = true;
 		if($el.is(":checked")){
-			execute(AppNotifications.subscribe,topic);
-			// AppNotifications.subscribe(topic);
+			execute(AppNotifications.subscribe,topic).then(function(){
+				changingTopics[topic] = false;
+			});
 			if(isAndroid || isWeb) $globalNotifications.prop("checked", "checked").trigger("change");
 		} else {
-			execute(AppNotifications.unsubscribe,topic);
-			// AppNotifications.unsubscribe(topic);
+			execute(AppNotifications.unsubscribe,topic).then(function(){
+				changingTopics[topic] = false;
+			});
 		}
 
 	});
@@ -81,7 +94,7 @@ jQuery(function($){
 	function execute(promisingFunction, topic){
 		const $row = $("[data-firebase-notifications-wrapper-of=\""+topic+"\"]");
 		$row.attr("data-firebase-notifications-is-loading", true);
-		promisingFunction(topic).then(function(){
+		return promisingFunction(topic).then(function(){
 			$row.removeAttr("data-firebase-notifications-is-loading");
 		});
 	}

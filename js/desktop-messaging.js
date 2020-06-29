@@ -171,6 +171,8 @@
 		});
 	}
 
+	webapp.isSupported = firebase.messaging.isSupported();
+
 	// exposed api
 	webapp.api = {
 		setNotificationsEnabled,
