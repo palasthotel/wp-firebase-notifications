@@ -259,12 +259,17 @@ class MetaBox {
 		</div>
 		<div class="fn__base-control--field">
 			<label class="fn__base-control--label"><?php _e("Schedule", Plugin::DOMAIN); ?></label>
-			<p class="firebase--notifications__schedule">
+			<div class="firebase--notifications__schedule">
 				<label><input type="radio" name="firebase_schedule" checked value="now" /> <?php _e("Now", Plugin::DOMAIN); ?></label>
 				<label><input type="radio" name="firebase_schedule" value="plan" /> <?php _e("Plan", Plugin::DOMAIN); ?></label>
-				<label><input type="datetime-local" name="firebase_schedule_datetime" value="" placeholder="yyyy-mm-ddThh:ii"/></label>
-
-			</p>
+                <?php
+                $futureDateExample = date("Y-m-d H:i", time() + 60*60*24);
+                ?>
+				<label title="yyyy-mm-dd hh:ii for example <?php echo $futureDateExample; ?>">
+                    <input type="datetime-local" name="firebase_schedule_datetime" value="" placeholder="yyyy-mm-dd hh:ii"/><br/>
+                    <span class="description">yyyy-mm-dd hh:ii for example "<?php echo $futureDateExample; ?>"</span>
+                </label>
+			</div>
 		</div>
 		<?php
 

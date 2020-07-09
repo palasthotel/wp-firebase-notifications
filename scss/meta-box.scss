@@ -13,8 +13,10 @@
 		padding: 6px 8px;
 	}
 	.firebase--notifications__schedule{
+		display: flex;
 		line-height: 2.4;
 		label{
+			display: block;
 			margin-right: 20px;
 		}
 	}
