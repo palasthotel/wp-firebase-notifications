@@ -18,6 +18,8 @@ use PHPUnit\Runner\Exception;
  * @property Plugin plugin
  * @property string api_handle
  * @property string action_delete
+ * @property string action_subscribe
+ * @property string action_unsubscribe
  */
 class Ajax {
 
@@ -31,8 +33,14 @@ class Ajax {
 		$this->api_handle = Plugin::DOMAIN."-api";
 		$this->action_send = Plugin::DOMAIN."_send";
 		$this->action_delete = Plugin::DOMAIN."_delete";
+		$this->action_subscribe = Plugin::DOMAIN."_subscribe";
+		$this->action_unsubscribe = Plugin::DOMAIN."_unsubscribe";
 		add_action("wp_ajax_$this->action_send", array($this, 'send'));
 		add_action("wp_ajax_$this->action_delete", array($this, 'delete'));
+		add_action('wp_ajax_'.$this->action_subscribe, array($this, 'subscribe'));
+		add_action('wp_ajax_nopriv_'.$this->action_subscribe, array($this, 'subscribe'));
+		add_action('wp_ajax_'.$this->action_unsubscribe, array($this, 'unsubscribe'));
+		add_action('wp_ajax_nopriv_'.$this->action_unsubscribe, array($this, 'unsubscribe'));
 	}
 
 	/**
@@ -161,6 +169,47 @@ class Ajax {
 
 		$this->plugin->database->delete($message_id);
 		wp_send_json_success($message_id);
+	}
+
+	public function subscribe(){
+		$this->setSubscription(true);
+	}
+
+	public function unsubscribe(){
+		$this->setSubscription(false);
+	}
+
+	/**
+	 * @param $isActive
+	 */
+	public function setSubscription($isActive){
+		if(!isset($_GET) || !isset($_GET["topic"]) || !isset($_GET["token"])){
+			wp_send_json_error("Missing important data.");
+			exit;
+		}
+		$token = $_GET["token"];
+		$topic = sanitize_text_field($_GET["topic"]);
+		if($isActive){
+			$result = $this->plugin->cloudMessagingApi->subscribe($topic, $token);
+		} else {
+			$result = $this->plugin->cloudMessagingApi->unsubscribe($topic, $token);
+		}
+
+		if(
+			false != $result
+			&&
+			is_array($result)
+			&&
+			isset($result["results"])
+			&&
+			count($result["results"]) > 0
+		){
+			wp_send_json_success();
+		} else {
+			wp_send_json_error("Could not perform action");
+		}
+
+
 	}
 
 }

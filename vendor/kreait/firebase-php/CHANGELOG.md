@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+## [5.7.0]  2020-07-19
+### Added
+* Added `Kreait\Firebase\RemoteConfig\DefaultValue` now has an added `value()` method to 
+  retrieve a default value's value.
+* When a given service account could not be processed, the error message now includes 
+  more details.
+
+## [5.6.0] - 2020-07-02
+### Added
+* User Records now contain the date and time when a user's password has last been updated.
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/user-management.html#user-records))
+### Changed
+* Message data added to a with `CloudMessage::withData()` now rejects binary data to avoid broken
+  messages being sent to the Firebase API.
+  ([#441](https://github.com/kreait/firebase-php/issues/441))
+### Fixed
+* It was not possible to instantiate a Custom Token Generator on GAE/GCE due to missing
+  auto discovery.
+
 ## [5.5.0] - 2020-06-19
 ### Added
 * It is now possible to log outgoing HTTP requests and responses to the Firebase APIs. 
@@ -55,7 +74,9 @@ to upgrade from a 4.x release to 5.0 without changes to your code.**
 * Support for PHP `<7.2`
 * Deprecated methods and classes
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/5.5.0...HEAD
+[Unreleased]: https://github.com/kreait/firebase-php/compare/5.7.0...HEAD
+[5.7.0]: https://github.com/kreait/firebase-php/compare/5.6.0...5.7.0
+[5.6.0]: https://github.com/kreait/firebase-php/compare/5.5.0...5.6.0
 [5.5.0]: https://github.com/kreait/firebase-php/compare/5.4.0...5.5.0
 [5.4.0]: https://github.com/kreait/firebase-php/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/kreait/firebase-php/compare/5.2.0...5.3.0

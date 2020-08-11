@@ -46,14 +46,14 @@ class DesktopMessaging {
 		// ------------------
 		wp_register_script(
 			"firebase-core",
-			$this->plugin->url . "/js/firebase-app.7.14.3.js",
+			$this->plugin->url . "/js/firebase-app.7.17.2.js",
 			array(),
 			"7.3.0",
 			true
 		);
 		wp_register_script(
 			"firebase-messaging",
-			$this->plugin->url . "/js/firebase-messaging.7.14.3.js",
+			$this->plugin->url . "/js/firebase-messaging.7.17.2.js",
 			array( "firebase-core" ),
 			"7.3.0",
 			true
@@ -70,6 +70,10 @@ class DesktopMessaging {
 			array(
 				"config" => $this->plugin->settings->getWebappConfig( true ),
 				"iconUrl" => $this->plugin->settings->getNotificationIconURL(),
+				"ajax" => array(
+					"subscribe" => admin_url("admin-ajax.php?action=".$this->plugin->ajax->action_subscribe),
+					"unsubscribe" => admin_url("admin-ajax.php?action=".$this->plugin->ajax->action_unsubscribe),
+				)
 			)
 		);
 

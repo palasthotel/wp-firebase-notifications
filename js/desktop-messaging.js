@@ -149,24 +149,25 @@
 	function setSubscribed (topic){ localStorage.setItem(_getSubscriptionKey(topic), _isActiveValue); }
 	function setUnsubscribed (topic){ localStorage.removeItem(_getSubscriptionKey(topic)); }
 
-	const cloudFunctionsBaseUrl = "https://us-central1-"+firebaseConfig.projectId+".cloudfunctions.net";
-
-	async function request(action, topic){
+	async function request(url, topic){
 		const token = getToken();
 		if(!token) throw "No request token";
 		return fetch(
-			cloudFunctionsBaseUrl+"/"+action+"?token="+token+"&topic="+topic,
-			{mode: 'no-cors',}
+			url+"&token="+token+"&topic="+topic,
+			{
+				cache: 'no-cache',
+				method: 'POST',
+			}
 		);
 	}
 
 	function subscribe (topic){
-		return request("subscribe", topic).then(function(){
+		return request(webapp.ajax.subscribe, topic).then(function(){
 			setSubscribed(topic);
 		});
 	}
 	function unsubscribe(topic) {
-		return request("unsubscribe", topic).then(function(){
+		return request(webapp.ajax.unsubscribe, topic).then(function(){
 			setUnsubscribed(topic);
 		});
 	}

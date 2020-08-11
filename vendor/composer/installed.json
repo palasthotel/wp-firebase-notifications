@@ -1,21 +1,21 @@
 [
     {
         "name": "doctrine/instantiator",
-        "version": "1.3.0",
-        "version_normalized": "1.3.0.0",
+        "version": "1.3.1",
+        "version_normalized": "1.3.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/instantiator.git",
-            "reference": "ae466f726242e637cebdd526a7d991b9433bacf1"
+            "reference": "f350df0268e904597e3bd9c4685c53e0e333feea"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/instantiator/zipball/ae466f726242e637cebdd526a7d991b9433bacf1",
-            "reference": "ae466f726242e637cebdd526a7d991b9433bacf1",
+            "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f350df0268e904597e3bd9c4685c53e0e333feea",
+            "reference": "f350df0268e904597e3bd9c4685c53e0e333feea",
             "shasum": ""
         },
         "require": {
-            "php": "^7.1"
+            "php": "^7.1 || ^8.0"
         },
         "require-dev": {
             "doctrine/coding-standard": "^6.0",
@@ -26,7 +26,7 @@
             "phpstan/phpstan-shim": "^0.11",
             "phpunit/phpunit": "^7.0"
         },
-        "time": "2019-10-21T16:45:58+00:00",
+        "time": "2020-05-29T17:27:14+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -165,23 +165,23 @@
     },
     {
         "name": "giggsey/libphonenumber-for-php",
-        "version": "8.12.3",
-        "version_normalized": "8.12.3.0",
+        "version": "8.12.7.1",
+        "version_normalized": "8.12.7.1",
         "source": {
             "type": "git",
             "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-            "reference": "efe098354b5dd49a5457d9e35aa92298de736343"
+            "reference": "fda8a51ad0769d82ce7023255e52e9c45efc1e75"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/efe098354b5dd49a5457d9e35aa92298de736343",
-            "reference": "efe098354b5dd49a5457d9e35aa92298de736343",
+            "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/fda8a51ad0769d82ce7023255e52e9c45efc1e75",
+            "reference": "fda8a51ad0769d82ce7023255e52e9c45efc1e75",
             "shasum": ""
         },
         "require": {
-            "ext-mbstring": "*",
             "giggsey/locale": "^1.7",
-            "php": ">=5.3.2"
+            "php": ">=5.3.2",
+            "symfony/polyfill-mbstring": "^1.17"
         },
         "require-dev": {
             "pear/pear-core-minimal": "^1.9",
@@ -192,7 +192,7 @@
             "phpunit/phpunit": "^4.8.36|^5.0",
             "symfony/console": "^2.8|^3.0"
         },
-        "time": "2020-05-06T11:46:14+00:00",
+        "time": "2020-07-25T15:34:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -235,17 +235,17 @@
     },
     {
         "name": "giggsey/locale",
-        "version": "1.8",
-        "version_normalized": "1.8.0.0",
+        "version": "1.9",
+        "version_normalized": "1.9.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/giggsey/Locale.git",
-            "reference": "85a1b251bad11c986fec2a051b10d4b80a5caa1b"
+            "reference": "b07f1eace8072ccc61445ad8fbd493ff9d783043"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/giggsey/Locale/zipball/85a1b251bad11c986fec2a051b10d4b80a5caa1b",
-            "reference": "85a1b251bad11c986fec2a051b10d4b80a5caa1b",
+            "url": "https://api.github.com/repos/giggsey/Locale/zipball/b07f1eace8072ccc61445ad8fbd493ff9d783043",
+            "reference": "b07f1eace8072ccc61445ad8fbd493ff9d783043",
             "shasum": ""
         },
         "require": {
@@ -263,7 +263,7 @@
             "symfony/finder": "^2.8|^3.0|^4.0",
             "symfony/process": "^2.8|^3.0|^4.0"
         },
-        "time": "2019-10-09T18:53:14+00:00",
+        "time": "2020-07-07T11:16:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -286,39 +286,39 @@
     },
     {
         "name": "google/auth",
-        "version": "v1.8.0",
-        "version_normalized": "1.8.0.0",
+        "version": "v1.11.1",
+        "version_normalized": "1.11.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/googleapis/google-auth-library-php.git",
-            "reference": "c7b295feb248f138f462a1e6b7d635e4244204c5"
+            "reference": "bb959e91bd8ffbd352ab76cbf11d656ce6435088"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/c7b295feb248f138f462a1e6b7d635e4244204c5",
-            "reference": "c7b295feb248f138f462a1e6b7d635e4244204c5",
+            "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/bb959e91bd8ffbd352ab76cbf11d656ce6435088",
+            "reference": "bb959e91bd8ffbd352ab76cbf11d656ce6435088",
             "shasum": ""
         },
         "require": {
             "firebase/php-jwt": "~2.0|~3.0|~4.0|~5.0",
-            "guzzlehttp/guzzle": "~5.3.1|~6.0",
+            "guzzlehttp/guzzle": "^5.3.1|^6.2.1|^7.0",
             "guzzlehttp/psr7": "^1.2",
             "php": ">=5.4",
             "psr/cache": "^1.0",
             "psr/http-message": "^1.0"
         },
         "require-dev": {
-            "friendsofphp/php-cs-fixer": "^1.11",
             "guzzlehttp/promises": "0.1.1|^1.3",
             "kelvinmo/simplejwt": "^0.2.5",
             "phpseclib/phpseclib": "^2",
             "phpunit/phpunit": "^4.8.36|^5.7",
-            "sebastian/comparator": ">=1.2.3"
+            "sebastian/comparator": ">=1.2.3",
+            "squizlabs/php_codesniffer": "^3.5"
         },
         "suggest": {
             "phpseclib/phpseclib": "May be used in place of OpenSSL for signing strings or for token management. Please require version ^2."
         },
-        "time": "2020-03-26T19:47:36+00:00",
+        "time": "2020-07-27T18:33:35+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -340,22 +340,22 @@
     },
     {
         "name": "google/cloud-core",
-        "version": "v1.36.2",
-        "version_normalized": "1.36.2.0",
+        "version": "v1.38.0",
+        "version_normalized": "1.38.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/googleapis/google-cloud-php-core.git",
-            "reference": "4ae49980a6c32758824838ca96205a1b22c8fc7a"
+            "reference": "5379a3a2ffae2b6ad7eb55a4fa56acdd694a460e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/4ae49980a6c32758824838ca96205a1b22c8fc7a",
-            "reference": "4ae49980a6c32758824838ca96205a1b22c8fc7a",
+            "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/5379a3a2ffae2b6ad7eb55a4fa56acdd694a460e",
+            "reference": "5379a3a2ffae2b6ad7eb55a4fa56acdd694a460e",
             "shasum": ""
         },
         "require": {
             "google/auth": "^1.6",
-            "guzzlehttp/guzzle": "^5.3|^6.0",
+            "guzzlehttp/guzzle": "^5.3|^6.0|^7.0",
             "guzzlehttp/promises": "^1.3",
             "guzzlehttp/psr7": "^1.2",
             "monolog/monolog": "^1.1|^2.0",
@@ -376,7 +376,7 @@
             "opis/closure": "May be used to serialize closures to process jobs in the batch daemon. Please require version ^3.",
             "symfony/lock": "Required for the Spanner cached based session pool. Please require the following commit: 3.3.x-dev#1ba6ac9"
         },
-        "time": "2020-04-22T21:58:25+00:00",
+        "time": "2020-07-21T18:59:47+00:00",
         "bin": [
             "bin/google-cloud-batch"
         ],
@@ -403,21 +403,21 @@
     },
     {
         "name": "google/cloud-storage",
-        "version": "v1.20.1",
-        "version_normalized": "1.20.1.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-            "reference": "876b5563555014563a3d8b2842674d95dacf95e1"
+            "reference": "9412bf831a3fdd895378203b7e42b782deee8795"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/876b5563555014563a3d8b2842674d95dacf95e1",
-            "reference": "876b5563555014563a3d8b2842674d95dacf95e1",
+            "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/9412bf831a3fdd895378203b7e42b782deee8795",
+            "reference": "9412bf831a3fdd895378203b7e42b782deee8795",
             "shasum": ""
         },
         "require": {
-            "google/cloud-core": "^1.35",
+            "google/cloud-core": "^1.37",
             "google/crc32": "^0.1.0"
         },
         "require-dev": {
@@ -432,7 +432,7 @@
             "google/cloud-pubsub": "May be used to register a topic to receive bucket notifications.",
             "phpseclib/phpseclib": "May be used in place of OpenSSL for creating signed Cloud Storage URLs. Please require version ^2."
         },
-        "time": "2020-04-07T20:58:05+00:00",
+        "time": "2020-07-21T18:59:47+00:00",
         "type": "library",
         "extra": {
             "component": {
@@ -500,39 +500,46 @@
     },
     {
         "name": "guzzlehttp/guzzle",
-        "version": "6.5.3",
-        "version_normalized": "6.5.3.0",
+        "version": "7.0.1",
+        "version_normalized": "7.0.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "aab4ebd862aa7d04f01a4b51849d657db56d882e"
+            "reference": "2d9d3c186a6637a43193e66b097c50e4451eaab2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/aab4ebd862aa7d04f01a4b51849d657db56d882e",
-            "reference": "aab4ebd862aa7d04f01a4b51849d657db56d882e",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/2d9d3c186a6637a43193e66b097c50e4451eaab2",
+            "reference": "2d9d3c186a6637a43193e66b097c50e4451eaab2",
             "shasum": ""
         },
         "require": {
             "ext-json": "*",
             "guzzlehttp/promises": "^1.0",
             "guzzlehttp/psr7": "^1.6.1",
-            "php": ">=5.5",
-            "symfony/polyfill-intl-idn": "^1.11"
+            "php": "^7.2.5",
+            "psr/http-client": "^1.0"
+        },
+        "provide": {
+            "psr/http-client-implementation": "1.0"
         },
         "require-dev": {
+            "ergebnis/composer-normalize": "^2.0",
             "ext-curl": "*",
-            "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
+            "php-http/client-integration-tests": "dev-phpunit8",
+            "phpunit/phpunit": "^8.5.5",
             "psr/log": "^1.1"
         },
         "suggest": {
+            "ext-curl": "Required for CURL handler support",
+            "ext-intl": "Required for Internationalized Domain Name (IDN) support",
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2020-04-18T10:38:46+00:00",
+        "time": "2020-06-27T10:33:25+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "6.5-dev"
+                "dev-master": "7.0-dev"
             }
         },
         "installation-source": "dist",
@@ -553,6 +560,11 @@
                 "name": "Michael Dowling",
                 "email": "mtdowling@gmail.com",
                 "homepage": "https://github.com/mtdowling"
+            },
+            {
+                "name": "Márk Sági-Kazár",
+                "email": "mark.sagikazar@gmail.com",
+                "homepage": "https://sagikazarmark.hu"
             }
         ],
         "description": "Guzzle is a PHP HTTP client library",
@@ -563,6 +575,8 @@
             "framework",
             "http",
             "http client",
+            "psr-18",
+            "psr-7",
             "rest",
             "web service"
         ]
@@ -739,17 +753,17 @@
     },
     {
         "name": "kreait/firebase-php",
-        "version": "5.5.0",
-        "version_normalized": "5.5.0.0",
+        "version": "5.7.0",
+        "version_normalized": "5.7.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kreait/firebase-php.git",
-            "reference": "e0fa0873e69198f6d0b4e8715d16d9db2368c541"
+            "reference": "265e7ad53d2fe1fcfbbb387e2f70b48761ce7e79"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kreait/firebase-php/zipball/e0fa0873e69198f6d0b4e8715d16d9db2368c541",
-            "reference": "e0fa0873e69198f6d0b4e8715d16d9db2368c541",
+            "url": "https://api.github.com/repos/kreait/firebase-php/zipball/265e7ad53d2fe1fcfbbb387e2f70b48761ce7e79",
+            "reference": "265e7ad53d2fe1fcfbbb387e2f70b48761ce7e79",
             "shasum": ""
         },
         "require": {
@@ -761,7 +775,7 @@
             "google/auth": "^1.8",
             "google/cloud-core": "^1.36",
             "google/cloud-storage": "^1.14",
-            "guzzlehttp/guzzle": "^6.2.1|^7.0@beta",
+            "guzzlehttp/guzzle": "^6.2.1|^7.0",
             "kreait/clock": "^1.0.1",
             "kreait/firebase-tokens": "^1.10",
             "lcobucci/jwt": "^3.3.1",
@@ -786,7 +800,7 @@
         "suggest": {
             "google/cloud-firestore": "^1.0 to use the Firestore component"
         },
-        "time": "2020-06-19T12:17:44+00:00",
+        "time": "2020-07-19T15:55:17+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -892,17 +906,17 @@
     },
     {
         "name": "lcobucci/jwt",
-        "version": "3.3.1",
-        "version_normalized": "3.3.1.0",
+        "version": "3.3.2",
+        "version_normalized": "3.3.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/lcobucci/jwt.git",
-            "reference": "a11ec5f4b4d75d1fcd04e133dede4c317aac9e18"
+            "reference": "56f10808089e38623345e28af2f2d5e4eb579455"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/lcobucci/jwt/zipball/a11ec5f4b4d75d1fcd04e133dede4c317aac9e18",
-            "reference": "a11ec5f4b4d75d1fcd04e133dede4c317aac9e18",
+            "url": "https://api.github.com/repos/lcobucci/jwt/zipball/56f10808089e38623345e28af2f2d5e4eb579455",
+            "reference": "56f10808089e38623345e28af2f2d5e4eb579455",
             "shasum": ""
         },
         "require": {
@@ -917,7 +931,7 @@
             "phpunit/phpunit": "^5.7 || ^7.3",
             "squizlabs/php_codesniffer": "~2.3"
         },
-        "time": "2019-05-24T18:30:49+00:00",
+        "time": "2020-05-22T08:21:12+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -949,21 +963,21 @@
     },
     {
         "name": "monolog/monolog",
-        "version": "2.0.2",
-        "version_normalized": "2.0.2.0",
+        "version": "2.1.1",
+        "version_normalized": "2.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Seldaek/monolog.git",
-            "reference": "c861fcba2ca29404dc9e617eedd9eff4616986b8"
+            "reference": "f9eee5cec93dfb313a38b6b288741e84e53f02d5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c861fcba2ca29404dc9e617eedd9eff4616986b8",
-            "reference": "c861fcba2ca29404dc9e617eedd9eff4616986b8",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f9eee5cec93dfb313a38b6b288741e84e53f02d5",
+            "reference": "f9eee5cec93dfb313a38b6b288741e84e53f02d5",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2",
+            "php": ">=7.2",
             "psr/log": "^1.0.1"
         },
         "provide": {
@@ -974,11 +988,11 @@
             "doctrine/couchdb": "~1.0@dev",
             "elasticsearch/elasticsearch": "^6.0",
             "graylog2/gelf-php": "^1.4.2",
-            "jakub-onderka/php-parallel-lint": "^0.9",
             "php-amqplib/php-amqplib": "~2.4",
             "php-console/php-console": "^3.1.3",
+            "php-parallel-lint/php-parallel-lint": "^1.0",
             "phpspec/prophecy": "^1.6.1",
-            "phpunit/phpunit": "^8.3",
+            "phpunit/phpunit": "^8.5",
             "predis/predis": "^1.1",
             "rollbar/rollbar": "^1.3",
             "ruflin/elastica": ">=0.90 <3.0",
@@ -998,7 +1012,7 @@
             "rollbar/rollbar": "Allow sending log messages to Rollbar",
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
         },
-        "time": "2019-12-20T14:22:59+00:00",
+        "time": "2020-07-23T08:41:23+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1032,35 +1046,35 @@
     },
     {
         "name": "mtdowling/jmespath.php",
-        "version": "2.5.0",
-        "version_normalized": "2.5.0.0",
+        "version": "2.6.0",
+        "version_normalized": "2.6.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/jmespath/jmespath.php.git",
-            "reference": "52168cb9472de06979613d365c7f1ab8798be895"
+            "reference": "42dae2cbd13154083ca6d70099692fef8ca84bfb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/52168cb9472de06979613d365c7f1ab8798be895",
-            "reference": "52168cb9472de06979613d365c7f1ab8798be895",
+            "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/42dae2cbd13154083ca6d70099692fef8ca84bfb",
+            "reference": "42dae2cbd13154083ca6d70099692fef8ca84bfb",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.4.0",
-            "symfony/polyfill-mbstring": "^1.4"
+            "php": "^5.4 || ^7.0 || ^8.0",
+            "symfony/polyfill-mbstring": "^1.17"
         },
         "require-dev": {
-            "composer/xdebug-handler": "^1.2",
-            "phpunit/phpunit": "^4.8.36|^7.5.15"
+            "composer/xdebug-handler": "^1.4",
+            "phpunit/phpunit": "^4.8.36 || ^7.5.15"
         },
-        "time": "2019-12-30T18:03:34+00:00",
+        "time": "2020-07-31T21:01:56+00:00",
         "bin": [
             "bin/jp.php"
         ],
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.5-dev"
+                "dev-master": "2.6-dev"
             }
         },
         "installation-source": "dist",
@@ -1091,21 +1105,21 @@
     },
     {
         "name": "myclabs/deep-copy",
-        "version": "1.9.5",
-        "version_normalized": "1.9.5.0",
+        "version": "1.10.1",
+        "version_normalized": "1.10.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/myclabs/DeepCopy.git",
-            "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef"
+            "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/b2c28789e80a97badd14145fda39b545d83ca3ef",
-            "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef",
+            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
+            "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
             "shasum": ""
         },
         "require": {
-            "php": "^7.1"
+            "php": "^7.1 || ^8.0"
         },
         "replace": {
             "myclabs/deep-copy": "self.version"
@@ -1115,7 +1129,7 @@
             "doctrine/common": "^2.6",
             "phpunit/phpunit": "^7.1"
         },
-        "time": "2020-01-17T21:11:47+00:00",
+        "time": "2020-06-29T13:22:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1247,27 +1261,27 @@
     },
     {
         "name": "phpdocumentor/reflection-common",
-        "version": "2.1.0",
-        "version_normalized": "2.1.0.0",
+        "version": "2.2.0",
+        "version_normalized": "2.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
-            "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b"
+            "reference": "1d01c49d4ed62f25aa84a747ad35d5a16924662b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
-            "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
+            "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/1d01c49d4ed62f25aa84a747ad35d5a16924662b",
+            "reference": "1d01c49d4ed62f25aa84a747ad35d5a16924662b",
             "shasum": ""
         },
         "require": {
-            "php": ">=7.1"
+            "php": "^7.2 || ^8.0"
         },
-        "time": "2020-04-27T09:25:28+00:00",
+        "time": "2020-06-27T09:03:43+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.x-dev"
+                "dev-2.x": "2.x-dev"
             }
         },
         "installation-source": "dist",
@@ -1298,31 +1312,30 @@
     },
     {
         "name": "phpdocumentor/reflection-docblock",
-        "version": "5.1.0",
-        "version_normalized": "5.1.0.0",
+        "version": "5.2.0",
+        "version_normalized": "5.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-            "reference": "cd72d394ca794d3466a3b2fc09d5a6c1dc86b47e"
+            "reference": "3170448f5769fe19f456173d833734e0ff1b84df"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/cd72d394ca794d3466a3b2fc09d5a6c1dc86b47e",
-            "reference": "cd72d394ca794d3466a3b2fc09d5a6c1dc86b47e",
+            "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/3170448f5769fe19f456173d833734e0ff1b84df",
+            "reference": "3170448f5769fe19f456173d833734e0ff1b84df",
             "shasum": ""
         },
         "require": {
-            "ext-filter": "^7.1",
-            "php": "^7.2",
-            "phpdocumentor/reflection-common": "^2.0",
-            "phpdocumentor/type-resolver": "^1.0",
-            "webmozart/assert": "^1"
+            "ext-filter": "*",
+            "php": "^7.2 || ^8.0",
+            "phpdocumentor/reflection-common": "^2.2",
+            "phpdocumentor/type-resolver": "^1.3",
+            "webmozart/assert": "^1.9.1"
         },
         "require-dev": {
-            "doctrine/instantiator": "^1",
-            "mockery/mockery": "^1"
+            "mockery/mockery": "~1.3.2"
         },
-        "time": "2020-02-22T12:28:44+00:00",
+        "time": "2020-07-20T20:05:34+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1353,32 +1366,31 @@
     },
     {
         "name": "phpdocumentor/type-resolver",
-        "version": "1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "1.3.0",
+        "version_normalized": "1.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpDocumentor/TypeResolver.git",
-            "reference": "7462d5f123dfc080dfdf26897032a6513644fc95"
+            "reference": "e878a14a65245fbe78f8080eba03b47c3b705651"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/7462d5f123dfc080dfdf26897032a6513644fc95",
-            "reference": "7462d5f123dfc080dfdf26897032a6513644fc95",
+            "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/e878a14a65245fbe78f8080eba03b47c3b705651",
+            "reference": "e878a14a65245fbe78f8080eba03b47c3b705651",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2",
+            "php": "^7.2 || ^8.0",
             "phpdocumentor/reflection-common": "^2.0"
         },
         "require-dev": {
-            "ext-tokenizer": "^7.2",
-            "mockery/mockery": "~1"
+            "ext-tokenizer": "*"
         },
-        "time": "2020-02-18T18:59:58+00:00",
+        "time": "2020-06-27T10:12:23+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.x-dev"
+                "dev-1.x": "1.x-dev"
             }
         },
         "installation-source": "dist",
@@ -1401,35 +1413,35 @@
     },
     {
         "name": "phpspec/prophecy",
-        "version": "v1.10.3",
-        "version_normalized": "1.10.3.0",
+        "version": "1.11.1",
+        "version_normalized": "1.11.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpspec/prophecy.git",
-            "reference": "451c3cd1418cf640de218914901e51b064abb093"
+            "reference": "b20034be5efcdab4fb60ca3a29cba2949aead160"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/451c3cd1418cf640de218914901e51b064abb093",
-            "reference": "451c3cd1418cf640de218914901e51b064abb093",
+            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/b20034be5efcdab4fb60ca3a29cba2949aead160",
+            "reference": "b20034be5efcdab4fb60ca3a29cba2949aead160",
             "shasum": ""
         },
         "require": {
-            "doctrine/instantiator": "^1.0.2",
-            "php": "^5.3|^7.0",
-            "phpdocumentor/reflection-docblock": "^2.0|^3.0.2|^4.0|^5.0",
-            "sebastian/comparator": "^1.2.3|^2.0|^3.0|^4.0",
-            "sebastian/recursion-context": "^1.0|^2.0|^3.0|^4.0"
+            "doctrine/instantiator": "^1.2",
+            "php": "^7.2",
+            "phpdocumentor/reflection-docblock": "^5.0",
+            "sebastian/comparator": "^3.0 || ^4.0",
+            "sebastian/recursion-context": "^3.0 || ^4.0"
         },
         "require-dev": {
-            "phpspec/phpspec": "^2.5 || ^3.2",
-            "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5 || ^7.1"
+            "phpspec/phpspec": "^6.0",
+            "phpunit/phpunit": "^8.0"
         },
-        "time": "2020-03-05T15:02:03+00:00",
+        "time": "2020-07-08T12:44:21+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.10.x-dev"
+                "dev-master": "1.11.x-dev"
             }
         },
         "installation-source": "dist",
@@ -1858,6 +1870,57 @@
             "cache",
             "psr",
             "psr-6"
+        ]
+    },
+    {
+        "name": "psr/http-client",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-client.git",
+            "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+            "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.0 || ^8.0",
+            "psr/http-message": "^1.0"
+        },
+        "time": "2020-06-29T06:28:15+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Client\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for HTTP clients",
+        "homepage": "https://github.com/php-fig/http-client",
+        "keywords": [
+            "http",
+            "http-client",
+            "psr",
+            "psr-18"
         ]
     },
     {
@@ -2743,17 +2806,17 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "e94c8b1bbe2bc77507a1056cdb06451c75b427f9"
+            "reference": "1c302646f6efc070cd46856e600e5e0684d6b454"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e94c8b1bbe2bc77507a1056cdb06451c75b427f9",
-            "reference": "e94c8b1bbe2bc77507a1056cdb06451c75b427f9",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/1c302646f6efc070cd46856e600e5e0684d6b454",
+            "reference": "1c302646f6efc070cd46856e600e5e0684d6b454",
             "shasum": ""
         },
         "require": {
@@ -2762,11 +2825,15 @@
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2020-05-12T16:14:59+00:00",
+        "time": "2020-07-14T12:35:20+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.17-dev"
+                "dev-master": "1.18-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -2802,82 +2869,18 @@
         ]
     },
     {
-        "name": "symfony/polyfill-intl-idn",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/polyfill-intl-idn.git",
-            "reference": "3bff59ea7047e925be6b7f2059d60af31bb46d6a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/3bff59ea7047e925be6b7f2059d60af31bb46d6a",
-            "reference": "3bff59ea7047e925be6b7f2059d60af31bb46d6a",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3",
-            "symfony/polyfill-mbstring": "^1.3",
-            "symfony/polyfill-php72": "^1.10"
-        },
-        "suggest": {
-            "ext-intl": "For best performance"
-        },
-        "time": "2020-05-12T16:47:27+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.17-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Intl\\Idn\\": ""
-            },
-            "files": [
-                "bootstrap.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Laurent Bassin",
-                "email": "laurent@bassin.info"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony polyfill for intl's idn_to_ascii and idn_to_utf8 functions",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "compatibility",
-            "idn",
-            "intl",
-            "polyfill",
-            "portable",
-            "shim"
-        ]
-    },
-    {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "fa79b11539418b02fc5e1897267673ba2c19419c"
+            "reference": "a6977d63bf9a0ad4c65cd352709e230876f9904a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fa79b11539418b02fc5e1897267673ba2c19419c",
-            "reference": "fa79b11539418b02fc5e1897267673ba2c19419c",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/a6977d63bf9a0ad4c65cd352709e230876f9904a",
+            "reference": "a6977d63bf9a0ad4c65cd352709e230876f9904a",
             "shasum": ""
         },
         "require": {
@@ -2886,11 +2889,15 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2020-05-12T16:47:27+00:00",
+        "time": "2020-07-14T12:35:20+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.17-dev"
+                "dev-master": "1.18-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -2927,84 +2934,27 @@
         ]
     },
     {
-        "name": "symfony/polyfill-php72",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/polyfill-php72.git",
-            "reference": "f048e612a3905f34931127360bdd2def19a5e582"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/f048e612a3905f34931127360bdd2def19a5e582",
-            "reference": "f048e612a3905f34931127360bdd2def19a5e582",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "time": "2020-05-12T16:47:27+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.17-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Php72\\": ""
-            },
-            "files": [
-                "bootstrap.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "compatibility",
-            "polyfill",
-            "portable",
-            "shim"
-        ]
-    },
-    {
         "name": "theseer/tokenizer",
-        "version": "1.1.3",
-        "version_normalized": "1.1.3.0",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/theseer/tokenizer.git",
-            "reference": "11336f6f84e16a720dae9d8e6ed5019efa85a0f9"
+            "reference": "75a63c33a8577608444246075ea0af0d052e452a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/theseer/tokenizer/zipball/11336f6f84e16a720dae9d8e6ed5019efa85a0f9",
-            "reference": "11336f6f84e16a720dae9d8e6ed5019efa85a0f9",
+            "url": "https://api.github.com/repos/theseer/tokenizer/zipball/75a63c33a8577608444246075ea0af0d052e452a",
+            "reference": "75a63c33a8577608444246075ea0af0d052e452a",
             "shasum": ""
         },
         "require": {
             "ext-dom": "*",
             "ext-tokenizer": "*",
             "ext-xmlwriter": "*",
-            "php": "^7.0"
+            "php": "^7.2 || ^8.0"
         },
-        "time": "2019-06-13T22:48:21+00:00",
+        "time": "2020-07-12T23:59:07+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -3027,30 +2977,31 @@
     },
     {
         "name": "webmozart/assert",
-        "version": "1.8.0",
-        "version_normalized": "1.8.0.0",
+        "version": "1.9.1",
+        "version_normalized": "1.9.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/webmozart/assert.git",
-            "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6"
+            "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/webmozart/assert/zipball/ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
-            "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
+            "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+            "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
             "shasum": ""
         },
         "require": {
-            "php": "^5.3.3 || ^7.0",
+            "php": "^5.3.3 || ^7.0 || ^8.0",
             "symfony/polyfill-ctype": "^1.8"
         },
         "conflict": {
+            "phpstan/phpstan": "<0.12.20",
             "vimeo/psalm": "<3.9.1"
         },
         "require-dev": {
             "phpunit/phpunit": "^4.8.36 || ^7.5.13"
         },
-        "time": "2020-04-18T12:12:48+00:00",
+        "time": "2020-07-08T17:02:28+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

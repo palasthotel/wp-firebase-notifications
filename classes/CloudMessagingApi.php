@@ -92,4 +92,52 @@ class CloudMessagingApi {
 		}
 		return $this->getMessaging()->send($arr);
 	}
+
+	/**
+	 * @param string $token
+	 *
+	 * @return Messaging\TopicSubscriptions
+	 * @throws FirebaseException
+	 */
+	public function getSubscriptions($token){
+		$instance = $this->getMessaging()->getAppInstance($token);
+		return $instance->topicSubscriptions();
+	}
+
+	/**
+	 * @param string $topic
+	 * @param string $token
+	 *
+	 * @return array|false
+	 */
+	public function subscribe($topic, $token){
+
+		try{
+			return $this->getMessaging()->subscribeToTopic($topic, $token);
+		} catch ( MessagingException $e ) {
+			error_log($e->getMessage());
+			return false;
+		} catch ( FirebaseException $e ) {
+			error_log($e->getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * @param string $topic
+	 * @param string $token
+	 *
+	 * @return array|false
+	 */
+	public function unsubscribe($topic, $token){
+		try {
+			return $this->getMessaging()->unsubscribeFromTopic( $topic, $token );
+		} catch ( MessagingException $e ) {
+			error_log($e->getMessage());
+			return false;
+		} catch ( FirebaseException $e ) {
+			error_log($e->getMessage());
+			return false;
+		}
+	}
 }
