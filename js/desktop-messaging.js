@@ -184,6 +184,7 @@
 		offFCMInitialized: onInitListener.remove,
 		onMessage: onMessageListener.add,
 		offMessage: onMessageListener.remove,
+		getToken,
 	};
 
 	if(isNotificationsEnabled()){
