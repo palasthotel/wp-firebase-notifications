@@ -172,6 +172,18 @@
 		});
 	}
 
+	function topics(){
+		const token = getToken();
+		if(!token) throw "No request token";
+		return fetch(
+			webapp.ajax.topics+"&token="+token,
+			{
+				cache: 'no-cache',
+				method: 'POST',
+			}
+		).then(res=>res.json());
+	}
+
 	webapp.isSupported = firebase.messaging.isSupported();
 
 	// exposed api
@@ -181,6 +193,7 @@
 		subscribe,
 		unsubscribe,
 		isSubscribed,
+		topics,
 		onFCMInitialized: onInitListener.add,
 		offFCMInitialized: onInitListener.remove,
 		onMessage: onMessageListener.add,

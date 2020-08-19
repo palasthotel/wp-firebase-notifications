@@ -11,6 +11,7 @@ namespace Palasthotel\FirebaseNotifications;
 
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
+use Kreait\Firebase\Messaging\TopicSubscription;
 use PHPUnit\Runner\Exception;
 
 /**
@@ -20,6 +21,7 @@ use PHPUnit\Runner\Exception;
  * @property string action_delete
  * @property string action_subscribe
  * @property string action_unsubscribe
+ * @property string action_topics
  */
 class Ajax {
 
@@ -35,12 +37,15 @@ class Ajax {
 		$this->action_delete = Plugin::DOMAIN."_delete";
 		$this->action_subscribe = Plugin::DOMAIN."_subscribe";
 		$this->action_unsubscribe = Plugin::DOMAIN."_unsubscribe";
+		$this->action_topics = Plugin::DOMAIN."_topics";
 		add_action("wp_ajax_$this->action_send", array($this, 'send'));
 		add_action("wp_ajax_$this->action_delete", array($this, 'delete'));
 		add_action('wp_ajax_'.$this->action_subscribe, array($this, 'subscribe'));
 		add_action('wp_ajax_nopriv_'.$this->action_subscribe, array($this, 'subscribe'));
 		add_action('wp_ajax_'.$this->action_unsubscribe, array($this, 'unsubscribe'));
 		add_action('wp_ajax_nopriv_'.$this->action_unsubscribe, array($this, 'unsubscribe'));
+		add_action('wp_ajax_'.$this->action_topics, array($this, 'topics'));
+		add_action('wp_ajax_nopriv_'.$this->action_topics, array($this, 'topics'));
 	}
 
 	/**
@@ -208,8 +213,26 @@ class Ajax {
 		} else {
 			wp_send_json_error("Could not perform action");
 		}
+	}
 
+	public function topics(){
+		if(!isset($_GET) || !isset($_GET["token"])){
+			wp_send_json_error("Missing important data.");
+			exit;
+		}
+		$response = $this->plugin->cloudMessagingApi->getSubscriptions($_GET["token"]);
+		if(!is_countable($response)){
+			wp_send_json_error("Response is not countable");
+		}
+		$result=[];
+		foreach ($response as $subscription){
+			/**
+			 * @var TopicSubscription $subscription
+			 */
+			$result[] = $subscription->jsonSerialize();
 
+		}
+		wp_send_json_success($result);
 	}
 
 }

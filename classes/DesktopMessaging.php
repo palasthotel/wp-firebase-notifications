@@ -73,6 +73,7 @@ class DesktopMessaging {
 				"ajax" => array(
 					"subscribe" => admin_url("admin-ajax.php?action=".$this->plugin->ajax->action_subscribe),
 					"unsubscribe" => admin_url("admin-ajax.php?action=".$this->plugin->ajax->action_unsubscribe),
+					"topics" => admin_url("admin-ajax.php?action=".$this->plugin->ajax->action_topics),
 				)
 			)
 		);
