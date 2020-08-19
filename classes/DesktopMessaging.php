@@ -118,9 +118,8 @@ class DesktopMessaging {
 		if ( isset( $wp->query_vars[ self::PARAM_KEY ] ) && $wp->query_vars[ self::PARAM_KEY ] == self::PARAM_VALUE ) {
 			header( 'Content-Type: application/javascript' );
 			ob_start();
-			$id = $this->plugin->settings->getWebappConfig()->messagingSenderId;
+			echo "const messagingConfig = ".json_encode($this->plugin->settings->getWebappConfig()).";\n";
 			$iconUrl = $this->plugin->settings->getNotificationIconURL();
-			echo "const messagingSenderId = '$id'\n";
 			echo "const notificationIconUrl = '$iconUrl'\n";
 			echo file_get_contents( $this->plugin->path . "/js/firebase-messaging-sw.js" );
 			exit;
