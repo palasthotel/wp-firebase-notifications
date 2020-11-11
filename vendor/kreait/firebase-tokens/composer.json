@@ -12,11 +12,11 @@
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": "^7.0|^8.0",
         "ext-json": "*",
         "ext-openssl": "*",
         "fig/http-message-util": "^1.1",
-        "guzzlehttp/guzzle": "^6.2.1|^7.0@beta",
+        "guzzlehttp/guzzle": "^6.2.1|^7.0",
         "kreait/clock": "^1.0.1",
         "lcobucci/jwt": "^3.2",
         "psr/cache": "^1.0",
@@ -34,7 +34,7 @@
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpstan/phpstan-phpunit": "^0.9.4|^0.11.2",
         "phpunit/phpunit": "^6.5.14|^7.5.17",
-        "symfony/cache": "^3.4|^4.4|^5.0",
+        "symfony/cache": "^3.4.26|^4.4|^5.0",
         "symfony/var-dumper": "^3.4|^4.4|^5.0"
     },
     "autoload": {
@@ -51,5 +51,11 @@
     },
     "config": {
         "sort-packages": true
-    }
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/jeromegamez"
+        }
+    ]
 }

@@ -66,7 +66,7 @@ class Auth
     private $signInHandler;
 
     /**
-     * @param iterable<ApiClient|TokenGenerator|Verifier|SignInHandler>|ApiClient|TokenGenerator|Verifier|SignInHandler $x
+     * @param iterable<ApiClient|TokenGenerator|Verifier|SignInHandler>|ApiClient|TokenGenerator|Verifier|SignInHandler ...$x
      *
      * @internal
      */
@@ -94,17 +94,43 @@ class Auth
      */
     public function getUser($uid): UserRecord
     {
-        $uid = $uid instanceof Uid ? $uid : new Uid($uid);
+        $userRecords = $this->getUsers([$uid]);
 
-        $response = $this->client->getAccountInfo((string) $uid);
+        if ($userRecord = $userRecords[(string) $uid] ?? null) {
+            return $userRecord;
+        }
+
+        throw new UserNotFound("No user with uid '{$uid}' found.");
+    }
+
+    /**
+     * @param array<Uid|string> $uids
+     *
+     * @throws Exception\AuthException
+     * @throws Exception\FirebaseException
+     *
+     * @return array<string, UserRecord|null>
+     */
+    public function getUsers(array $uids): array
+    {
+        $uids = \array_map(static function ($uid) {
+            $uid = $uid instanceof Uid ? $uid : new Uid($uid);
+
+            return (string) $uid;
+        }, $uids);
+
+        $users = \array_fill_keys($uids, null);
+
+        $response = $this->client->getAccountInfo($uids);
 
         $data = JSON::decode((string) $response->getBody(), true);
 
-        if (empty($data['users'][0])) {
-            throw new UserNotFound("No user with uid '{$uid}' found.");
+        foreach ($data['users'] ?? [] as $userData) {
+            $userRecord = UserRecord::fromResponseData($userData);
+            $users[$userRecord->uid] = $userRecord;
         }
 
-        return UserRecord::fromResponseData($data['users'][0]);
+        return $users;
     }
 
     /**
@@ -448,6 +474,7 @@ class Auth
     /**
      * @deprecated 5.4.0 use {@see setCustomUserClaims}($id, array $claims) instead
      * @see setCustomUserClaims
+     * @codeCoverageIgnore
      *
      * @param Uid|string $uid
      * @param array<string, mixed> $attributes
@@ -591,7 +618,28 @@ class Auth
      */
     public function verifyPasswordResetCode(string $oobCode): void
     {
-        $this->client->verifyPasswordResetCode($oobCode);
+        // Not returning the email on purpose to not break BC
+        $this->verifyPasswordResetCodeAndReturnEmail($oobCode);
+    }
+
+    /**
+     * Verifies the given password reset code and returns the associated user's email address.
+     *
+     * @see https://firebase.google.com/docs/reference/rest/auth#section-verify-password-reset-code
+     *
+     * @throws ExpiredOobCode
+     * @throws InvalidOobCode
+     * @throws OperationNotAllowed
+     * @throws Exception\AuthException
+     * @throws Exception\FirebaseException
+     */
+    public function verifyPasswordResetCodeAndReturnEmail(string $oobCode): Email
+    {
+        $response = $this->client->verifyPasswordResetCode($oobCode);
+
+        $email = JSON::decode((string) $response->getBody(), true)['email'];
+
+        return new Email($email);
     }
 
     /**
@@ -612,15 +660,39 @@ class Auth
      */
     public function confirmPasswordReset(string $oobCode, $newPassword, bool $invalidatePreviousSessions = true): void
     {
+        // Not returning the email on purpose to not break BC
+        $this->confirmPasswordResetAndReturnEmail($oobCode, $newPassword, $invalidatePreviousSessions);
+    }
+
+    /**
+     * Applies the password reset requested via the given OOB code and returns the associated user's email address.
+     *
+     * @see https://firebase.google.com/docs/reference/rest/auth#section-confirm-reset-password
+     *
+     * @param string $oobCode the email action code sent to the user's email for resetting the password
+     * @param ClearTextPassword|string $newPassword
+     * @param bool $invalidatePreviousSessions Invalidate sessions initialized with the previous credentials
+     *
+     * @throws ExpiredOobCode
+     * @throws InvalidOobCode
+     * @throws OperationNotAllowed
+     * @throws UserDisabled
+     * @throws Exception\AuthException
+     * @throws Exception\FirebaseException
+     */
+    public function confirmPasswordResetAndReturnEmail(string $oobCode, $newPassword, bool $invalidatePreviousSessions = true): Email
+    {
         $newPassword = $newPassword instanceof ClearTextPassword ? $newPassword : new ClearTextPassword($newPassword);
 
         $response = $this->client->confirmPasswordReset($oobCode, (string) $newPassword);
 
-        $email = JSON::decode((string) $response->getBody(), true)['email'] ?? null;
+        $email = JSON::decode((string) $response->getBody(), true)['email'];
 
-        if ($invalidatePreviousSessions && $email) {
+        if ($invalidatePreviousSessions) {
             $this->revokeRefreshTokens($this->getUserByEmail($email)->uid);
         }
+
+        return new Email($email);
     }
 
     /**
@@ -662,7 +734,7 @@ class Auth
 
     /**
      * @param UserRecord|Uid|string $user
-     * @param array<string, mixed> $claims
+     * @param array<string, mixed>|null $claims
      *
      * @throws FailedToSignIn
      */
@@ -747,13 +819,30 @@ class Auth
         throw new FailedToSignIn('Failed to sign in anonymously: No ID token or UID available');
     }
 
+    public function signInWithTwitterOauthCredential(string $accessToken, string $oauthTokenSecret, ?string $redirectUrl = null): SignInResult
+    {
+        return $this->signInWithIdpAccessToken(Provider::TWITTER, $accessToken, $redirectUrl, $oauthTokenSecret);
+    }
+
+    public function signInWithGoogleIdToken(string $idToken, ?string $redirectUrl = null): SignInResult
+    {
+        return $this->signInWithIdpIdToken(Provider::GOOGLE, $idToken, $redirectUrl);
+    }
+
+    public function signInWithFacebookAccessToken(string $accessToken, ?string $redirectUrl = null): SignInResult
+    {
+        return $this->signInWithIdpAccessToken(Provider::FACEBOOK, $accessToken, $redirectUrl);
+    }
+
     /**
+     * @see https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithIdp
+     *
      * @param Provider|string $provider
      * @param UriInterface|string|null $redirectUrl
      *
      * @throws FailedToSignIn
      */
-    public function signInWithIdpAccessToken($provider, string $accessToken, $redirectUrl = null): SignInResult
+    public function signInWithIdpAccessToken($provider, string $accessToken, $redirectUrl = null, ?string $oauthTokenSecret = null): SignInResult
     {
         $provider = $provider instanceof Provider ? (string) $provider : $provider;
         $redirectUrl = $redirectUrl ?? 'http://localhost';
@@ -762,7 +851,11 @@ class Auth
             $redirectUrl = (string) $redirectUrl;
         }
 
-        $action = SignInWithIdpCredentials::withAccessToken($provider, $accessToken);
+        if ($oauthTokenSecret) {
+            $action = SignInWithIdpCredentials::withAccessTokenAndOauthTokenSecret($provider, $accessToken, $oauthTokenSecret);
+        } else {
+            $action = SignInWithIdpCredentials::withAccessToken($provider, $accessToken);
+        }
 
         if ($redirectUrl) {
             $action = $action->withRequestUri($redirectUrl);

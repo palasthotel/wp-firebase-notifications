@@ -76,11 +76,11 @@ final class CloudMessage implements Message
         }
 
         if ($data['notification'] ?? null) {
-            $new = $new->withNotification(Notification::fromArray($data['notification']));
+            $new = $new->withNotification($data['notification']);
         }
 
         if ($data['android'] ?? null) {
-            $new = $new->withAndroidConfig(AndroidConfig::fromArray($data['android']));
+            $new = $new->withAndroidConfig($data['android']);
         }
 
         if ($data['apns'] ?? null) {
@@ -88,11 +88,11 @@ final class CloudMessage implements Message
         }
 
         if ($data['webpush'] ?? null) {
-            $new = $new->withWebPushConfig(WebPushConfig::fromArray($data['webpush']));
+            $new = $new->withWebPushConfig($data['webpush']);
         }
 
         if ($data['fcm_options'] ?? null) {
-            $new = $new->withFcmOptions(FcmOptions::fromArray($data['fcm_options']));
+            $new = $new->withFcmOptions($data['fcm_options']);
         }
 
         return $new;
@@ -181,6 +181,18 @@ final class CloudMessage implements Message
     {
         $new = clone $this;
         $new->fcmOptions = $options instanceof FcmOptions ? $options : FcmOptions::fromArray($options);
+
+        return $new;
+    }
+
+    /**
+     * Enables default notifications sounds on iOS and Android devices.
+     */
+    public function withDefaultSounds(): self
+    {
+        $new = clone $this;
+        $new->apnsConfig = ($new->apnsConfig ?: ApnsConfig::new())->withDefaultSound();
+        $new->androidConfig = ($new->androidConfig ?: AndroidConfig::new())->withDefaultSound();
 
         return $new;
     }
