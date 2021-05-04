@@ -13,7 +13,7 @@
 			}
 			post(actions.send, {
 				title, body, plattforms, conditions,
-				schedule: (schedule_timestamp)? Math.round(schedule_timestamp/1000): null,
+				schedule: schedule_timestamp,
 				payload
 			}).then(resolve).catch(reject);
 		})

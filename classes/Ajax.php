@@ -134,11 +134,7 @@ class Ajax {
 		// schedule
 		if(isset($_REQUEST["schedule"]) && !empty($_REQUEST["schedule"])){
 			$schedule_timestamp = intval($_REQUEST["schedule"]);
-			$in_seconds = $schedule_timestamp - time();
-			if($in_seconds < 60*60 ){
-				wp_send_json_error("Schedule date needs to be at least one hour in the future.");
-			}
-			$this->plugin->database->setSchedule($message->id, $in_seconds);
+			$this->plugin->database->setSchedule($message->id, $schedule_timestamp);
 			$message = $this->plugin->database->getMessage($message->id);
 			wp_send_json_success($message);
 			return;

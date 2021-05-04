@@ -85,14 +85,14 @@ class Database {
 
 	/**
 	 * @param int $message_id
-	 * @param int $in_seconds
+	 * @param int $schedule_timestamp
 	 *
 	 * @return false|int
 	 */
-	function setSchedule($message_id, $in_seconds){
+	function setSchedule($message_id, $schedule_timestamp){
 		$datetime = new \DateTime();
 		$datetime->setTimezone(new \DateTimeZone("UTC"));
-		$datetime->add(New \DateInterval('PT'.$in_seconds.'S'));
+		$datetime->setTimestamp($schedule_timestamp);
 		$result = $this->wpdb->query(
 			$this->wpdb->prepare(
 				"UPDATE $this->tablename SET publish = %s WHERE id = %d",
@@ -171,11 +171,11 @@ class Database {
 	/**
 	 * @return Message[]
 	 */
-	function getNextScheduledMessages(){
+	function getNextScheduledMessages() {
 		return array_map(
-			array($this, "mapMessage"),
+			array( $this, "mapMessage" ),
 			$this->wpdb->get_results(
-				"SELECT * FROM $this->tablename WHERE sent IS NULL AND publish IS NOT NULL AND publish <= NOW()"
+				"SELECT * FROM $this->tablename WHERE sent IS NULL AND publish IS NOT NULL AND publish <= UTC_TIMESTAMP()"
 			)
 		);
 	}

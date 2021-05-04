@@ -118,8 +118,8 @@ class MetaBox {
 						"conditions" => __("Please define your topic conditions.", Plugin::DOMAIN),
 						"plattforms" => __("At least one plattform needs to be activated.", Plugin::DOMAIN),
 						"schedule" => array(
-							"invalid" =>  __("Please provide a valid schedule date that is at least one hour in the future.", Plugin::DOMAIN),
-							"in_the_past" => __("Schedule date must be at least one hour in the future.", Plugin::DOMAIN),
+							"invalid" =>  __("Please provide a valid schedule date that is at least a few minutes in the future.", Plugin::DOMAIN),
+							"in_the_past" => __("Schedule date must be at least a few minutes in the future.", Plugin::DOMAIN),
 						)
 					),
 				),

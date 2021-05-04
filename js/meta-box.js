@@ -215,8 +215,9 @@
 			return $schedule_datetime.val();
 		}
 		function getScheduleTimestamp() {
-			const d = new Date($schedule_datetime.val());
-			return d.getTime()-d.getTimezoneOffset();
+			const date = new Date($schedule_datetime.val());
+			// convert miliseconds to full seconds
+			return Math.round(date.getTime() / 1000);
 		}
 		
 		function resetConditionValid(){
@@ -295,9 +296,9 @@
 					showError(i18n.errors.schedule.invalid);
 					return;
 				}
-				else if (schedule <= ((new Date()).getTime() + 60 * 60)) {
-					showError(i18n.errors.schedule.in_the_past);
-					return;
+				else if (schedule <= (new Date()).getTime() / 1000) {
+						showError(i18n.errors.schedule.in_the_past);
+						return;
 				}
 			}
 
