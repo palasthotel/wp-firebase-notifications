@@ -88,6 +88,7 @@ class CloudMessagingApi {
 			return array(
 				"WP_DEBUG" => true,
 				"info" => __("No message was sent", "CloudMessagingApi class", Plugin::DOMAIN),
+				"msg" => $msg
 			);
 		}
 		return $this->getMessaging()->send($arr);
