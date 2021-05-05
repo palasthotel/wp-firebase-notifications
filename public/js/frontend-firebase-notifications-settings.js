@@ -19,13 +19,20 @@ jQuery(function($){
 	// topics
 	const changingTopics = {}; // topics that are subscribed or unsubscribed right now
 	const $topics = $("[data-firebase-notifications-topic]");
+
 	function updateTopics(){
 		$topics.each(function(){
 			const $el = $(this);
 			const topic = getTopic($el);
-			if(changingTopics[topic] !== true){
-				AppNotifications.isSubscribed(getTopic($el)).then(function(value){
-					$el.prop("checked", value ? "checked":"");
+			if (changingTopics[topic] !== true) {
+				AppNotifications.isSubscribed(getTopic($el)).then(function (value) {
+					// we get a string returned, so we're working around this
+					if (value === 'false' || value === false) {
+						value = false;
+					} else if (value === 'false' || value === false) {
+						value = true;
+					}
+					$el.prop("checked", value ? "checked" : "");
 				});
 			}
 		});
@@ -37,13 +44,13 @@ jQuery(function($){
 		clearInterval(updateInterval);
 		updateInterval = setInterval(function(){
 			updateTopics();
-		}, 600);
+		}, 2000);
 	}
 	restartUpdateInterval();
 
 	// global web or android activate notifications
 	const $globalNotifications = $("[data-firebase-notifications-active]");
-	if(isAndroid || isWeb){
+	if (!isiOS && (isAndroid || isWeb)) {
 		AppNotifications.isNotificationsEnabled().then(function(value){
 			$globalNotifications.prop("checked", value ? "checked": "");
 		})
@@ -65,28 +72,47 @@ jQuery(function($){
 	// ios notification settings link
 	const $globaliOS = $("[data-firebase-notifications-link]");
 	if(isiOS){
-		setInterval(function(){
+		/*
+		setInterval(function() {
 			iOSNotifications.getSettingsURL().then(function(url){
 				if(url != null) $globaliOS.attr("href", url);
 			});
 		}, 1000);
+		*/
 	} else {
 		$globaliOS.closest("[data-firebase-notifications-global]").remove();
 	}
 
-	$topics.on("change", function(e){
+	$topics.on("change", function (e) {
 		const $el = $(this);
 		const topic = getTopic($el);
+		const topicId = topic;
 		changingTopics[topic] = true;
-		if($el.is(":checked")){
-			execute(AppNotifications.subscribe,topic).then(function(){
-				changingTopics[topic] = false;
-			});
-			if(isAndroid || isWeb) $globalNotifications.prop("checked", "checked").trigger("change");
+		if ($el.is(":checked")) {
+			execute(AppNotifications.subscribe, topic)
+				.then(function () {
+					changingTopics[topic] = false;
+					const subscribed = true;
+					document.dispatchEvent(new CustomEvent('firebase_notifications_subscription_change', {detail: {subscribed, topicId}}))
+				})
+				.catch((error) => {
+					console.log('not subscribed');
+					console.log(error)
+					addErrorMessage();
+				});
+			if (isAndroid || isWeb) $globalNotifications.prop("checked", "checked").trigger("change");
 		} else {
-			execute(AppNotifications.unsubscribe,topic).then(function(){
-				changingTopics[topic] = false;
-			});
+			execute(AppNotifications.unsubscribe, topic)
+				.then(function () {
+					changingTopics[topic] = false;
+					const subscribed = false;
+					document.dispatchEvent(new CustomEvent('firebase_notifications_subscription_change', {detail: {subscribed, topicId}}))
+				})
+				.catch((error) => {
+					console.log('not unsubscribed');
+					console.log(error)
+					addErrorMessage();
+				});
 		}
 
 	});
