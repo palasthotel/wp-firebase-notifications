@@ -15,9 +15,23 @@
 			fn: {
 				isNotificationsEnabled: function(){
 					return new Promise(function(resolve, reject){
-						if(isiOS) resolve(ios.isNotificationsEnabled());
-						else if(isAndroid) resolve(android.isNotificationsEnabled());
-						else if(isWeb) resolve(web.api.isNotificationsEnabled()); // browser handles it?
+						// iOS has a more convoluted approach, so the status is differentiated between:
+						//   open, allowed, denied
+						if (isiOS) {
+							ios.getNotificationsStatus()
+								.then(status => {
+									if ('allowed' === status) {
+										resolve(true);
+									} else {
+										resolve(false);
+									}
+								})
+								.catch(err => {
+									console.error("Problem getting notification status from iOS", err)
+								})
+						}
+						else if (isAndroid) resolve(android.isNotificationsEnabled());
+						else if (isWeb) resolve(web.api.isNotificationsEnabled()); // browser handles it?
 						else {
 							console.error("No interface found. Could not check if notifications are enabled");
 							reject();
@@ -26,7 +40,22 @@
 				},
 				setNotificationsEnabled: function(setEnabled){
 					return new Promise(function(resolve, reject){
-						if(isiOS) resolve(ios.setNotificationsEnabled(setEnabled === true));
+						if (isiOS) {
+							ios.getNotificationsStatus()
+								.then(status => {
+									if ('open' === status) {
+										ios.requestNotificationsPermission() // Promise which resolves to one of => open, allowed, denied
+											.then(newStatus => {
+												resolve(newStatus);
+											});
+									} else {
+										resolve(ios.openSettingsPage());
+									}
+								})
+								.catch(err => {
+									console.error("Problem getting notification status from iOS", err)
+								})
+						}
 						else if(isAndroid) resolve(android.setNotificationsEnabled(setEnabled === true));
 						else if(isWeb) resolve(web.api.setNotificationsEnabled(setEnabled)); // browser handles it?
 						else {
