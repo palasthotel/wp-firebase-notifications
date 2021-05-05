@@ -34,7 +34,7 @@
 			],
 			"input": "scss/tools-page.scss",
 			"type": "watch",
-			"output": "css/tools-page.css",
+			"output": "public/css/tools-page.css",
 			"observe": {
 				"path": "scss"
 			}
@@ -73,7 +73,7 @@
 			],
 			"input": "scss/meta-box.scss",
 			"type": "watch",
-			"output": "css/meta-box.css",
+			"output": "public/css/meta-box.css",
 			"observe": {
 				"path": "scss"
 			}
