@@ -12,12 +12,10 @@ namespace Palasthotel\FirebaseNotifications;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\TopicSubscription;
-use PHPUnit\Runner\Exception;
 
 /**
  * @property string action_send
  * @property Plugin plugin
- * @property string api_handle
  * @property string action_delete
  * @property string action_subscribe
  * @property string action_unsubscribe
@@ -32,7 +30,6 @@ class Ajax {
 	 */
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;
-		$this->api_handle = Plugin::DOMAIN."-api";
 		$this->action_send = Plugin::DOMAIN."_send";
 		$this->action_delete = Plugin::DOMAIN."_delete";
 		$this->action_subscribe = Plugin::DOMAIN."_subscribe";
@@ -46,30 +43,6 @@ class Ajax {
 		add_action('wp_ajax_nopriv_'.$this->action_unsubscribe, array($this, 'unsubscribe'));
 		add_action('wp_ajax_'.$this->action_topics, array($this, 'topics'));
 		add_action('wp_ajax_nopriv_'.$this->action_topics, array($this, 'topics'));
-	}
-
-	/**
-	 * enqueue javascript for api
-	 */
-	public function enqueueApiJs(){
-		wp_enqueue_script(
-			$this->api_handle,
-			$this->plugin->url."/js/api.js",
-			array('jquery'),
-			filemtime( $this->plugin->path . "/js/api.js"),
-			true
-		);
-		wp_localize_script(
-			$this->api_handle,
-			"FirebaseNotificationsApi",
-			array(
-				"ajax_url" => admin_url( 'admin-ajax.php' ),
-				"actions" => array(
-					"send" => $this->plugin->ajax->action_send,
-					"delete" => $this->plugin->ajax->action_delete,
-				),
-			)
-		);
 	}
 
 	/**

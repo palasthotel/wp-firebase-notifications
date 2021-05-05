@@ -93,19 +93,8 @@ class ToolsPage {
 	}
 
 	public function renderHistory(){
-		$this->plugin->ajax->enqueueApiJs();
-		wp_enqueue_script(
-			"firebase-notifications-tools-page-js",
-			$this->plugin->url."/js/tools-page.js",
-			array("jquery", $this->plugin->ajax->api_handle),
-			filemtime($this->plugin->path."/js/tools-page.js")
-		);
-		wp_enqueue_style(
-			"firebase-notifications-tools-page-css",
-			$this->plugin->url."/css/tools-page.css",
-			null,
-			filemtime($this->plugin->path."/css/tools-page.css")
-		);
+	    $this->plugin->assets->enqueueToolsPageScript();
+	    $this->plugin->assets->enqueueToolsPageStyle();
 		$date_format = get_option( 'date_format' );
 		$time_format = get_option( 'time_format' );
 		$timezone = new \DateTimeZone(get_option("timezone_string", "UTC"));

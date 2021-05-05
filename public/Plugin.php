@@ -33,15 +33,21 @@ require_once dirname( __FILE__ ) . "/vendor/autoload.php";
  * @property Permissions permissions
  * @property Schedule schedule
  * @property DesktopMessaging desktopMessaging
+ * @property Assets assets
  */
 class Plugin extends \Palasthotel\WordPress\Plugin {
 
 	const DOMAIN = "firebase-notifications";
 
 	const TEMPLATE = "firebase-notifications-settings.php";
+	const HANDLE_ADMIN_API_JS = "firebase-notifications-admin-api-script";
 	const HANDLE_MESSAGING_JS = "firebase-notifications-script";
-	const HANDLE_APP_JS = "firebase-notifications-app";
-	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend";
+	const HANDLE_FRONTEND_API_JS = "firebase-notifications-frontend-api-script";
+	const HANDLE_FRONTEND_JS = "firebase-notifications-settings-frontend-script";
+	const HANDLE_META_BOX_SCRIPT = "firebase-notifications-meta-box-script";
+	const HANDLE_META_BOX_STYLE = "firebase-notifications-meta-box-style";
+	const HANDLE_TOOLS_PAGE_SCRIPT = "firebase-notifications-tools-page-script";
+	const HANDLE_TOOLS_PAGE_STYLE = "firebase-notifications-tools-page-style";
 
 	const FILTER_CURRENT_USER_CAN_SEND_MESSAGE = "firebase_notifications_current_user_can_send_message";
 	const FILTER_TOPICS = "firebase_notifications_topics";
@@ -77,6 +83,7 @@ class Plugin extends \Palasthotel\WordPress\Plugin {
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
 
+		$this->assets                             = new Assets( $this );
 		$this->cloudMessagingApi                  = new CloudMessagingApi( $this );
 		$this->database                           = new Database();
 		$this->databaseUpdates                    = new DatabaseUpdates( $this->database );

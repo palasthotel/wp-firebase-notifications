@@ -45,9 +45,6 @@ class NotificationsSettingsThemeTemplate {
 
 		add_filter( 'query_vars', array( $this, 'add_query_vars' ), 0 );
 		add_action( 'init', array( $this, 'add_endpoint' ) );
-
-		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-
 		add_action( 'template_include', array( $this, 'change_template' ) );
 
 	}
@@ -90,9 +87,9 @@ class NotificationsSettingsThemeTemplate {
 		if ( isset( $wp->query_vars[ self::PARAM_KEY ] ) && $wp->query_vars[ self::PARAM_KEY ] == self::PARAM_VALUE ) {
 
 			if(isset($_GET["IS-APP-TEST"]) && $_GET["IS-APP-TEST"] == "true"){
-				$this->enqueueTestScript();
+				$this->plugin->assets->enqueueFrontendTestScript();
 			}
-			$this->enqueueAppScript();
+			$this->plugin->assets->enqueueFrontendScript();
 
 			//Check theme directory first
 			$newTemplate = locate_template( array( Plugin::TEMPLATE ) );
@@ -108,44 +105,6 @@ class NotificationsSettingsThemeTemplate {
 		}
 
 		return $template;
-	}
-
-	public function enqueue_scripts(){
-		$deps = array();
-		if($this->plugin->settings->isWebappConfigValid()){
-			$deps[] = Plugin::HANDLE_MESSAGING_JS;
-		}
-		wp_register_script(
-			Plugin::HANDLE_APP_JS,
-			$this->plugin->url . "/js/app.js",
-			$deps,
-			filemtime( $this->plugin->path . "/js/app.js"),
-			true
-		);
-	}
-
-	public function enqueueAppScript(){
-		$this->enqueueJS(
-			Plugin::HANDLE_FRONTEND_JS,
-			"frontend-firebase-notifications-settings.js",
-			array( "jquery", Plugin::HANDLE_APP_JS )
-		);
-	}
-	public function enqueueTestScript(){
-		$this->enqueueJS(
-			Plugin::HANDLE_FRONTEND_JS."_test",
-			"test.frontend-firebase-notifications.js"
-		);
-	}
-
-	private function enqueueJS($handle, $filename, $deps = array()){
-		wp_enqueue_script(
-			$handle,
-			$this->plugin->url . "/js/$filename",
-			$deps,
-			filemtime( $this->plugin->path . "/js/$filename"),
-			true
-		);
 	}
 
 
