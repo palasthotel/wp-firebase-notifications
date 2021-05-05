@@ -191,7 +191,12 @@
 		$conditions.trigger("keyup");
 
 		$box.on("click",".firebase-notifications__topic--copy", function(){
-			if($conditionsValid.hasClass("is-invalid")) return;
+			if($conditions.val() !== "" && $conditionsValid.hasClass("is-invalid")){
+				if(!confirm(i18n.confirms.overwrite_conditions)){
+					return;
+				}
+				$conditions.val("");
+			}
 			let conditionsValue = $conditions.val();
 			if(conditionsValue.length > 0){
 				conditionsValue += " OR ";
