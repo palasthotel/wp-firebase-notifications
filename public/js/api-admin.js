@@ -5,14 +5,14 @@
 		ajax_url
 	} = api;
 
-	api.send = function(plattforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
+	api.send = function(platforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
 		return new Promise((resolve, reject)=>{
-			if(isEmpty(plattforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
+			if(isEmpty(platforms) || isEmpty(conditions) || isEmpty(title) || isEmpty(body)){
 				reject("Missing arguments...");
 				return;
 			}
 			post(actions.send, {
-				title, body, plattforms, conditions,
+				title, body, platforms, conditions,
 				schedule: schedule_timestamp,
 				payload
 			}).then(resolve).catch(reject);

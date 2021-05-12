@@ -124,18 +124,18 @@
 		CountableWrapper($title, restrictions.title.long, restrictions.title.too_long, restrictions.title.short);
 		const $message = $("#firebase-notifications__body").on("keyup", resetNormalState);
 		CountableWrapper($message, restrictions.text.long, restrictions.text.too_long, restrictions.text.short);
-		const $plattforms = $box.find("[name='plattform[]']");
+		const $platforms = $box.find("[data-platform]");
 
-		$plattforms.on("change", function(){
-			const values = getPlattforms();
+		$platforms.on("change", function(){
+			const values = getPlatforms();
 			if(values.length){
 				resetNormalState();
 			} else {
-				showPlattformsError();
+				showPlatformsError();
 			}
 		});
-		const $schedule = $box.find("[name=firebase_schedule]");
-		const $schedule_datetime = $box.find("[name=firebase_schedule_datetime]");
+		const $schedule = $box.find("[data-firebase-schedule]");
+		const $schedule_datetime = $box.find("[data-firebase-schedule-datetime]");
 		$schedule.on("change", function(){
 			if(this.value === "plan"){
 				$box.find("input[type=submit]").val(i18n.submit.plan);
@@ -152,9 +152,15 @@
 
 		// json encoded topic configuration
 		const $conditionsValid = $("#firebase-notifications_conditions--valid");
-		const $conditions = $("#firebase-notifications__conditions").on("keyup", function(){
+		const $conditions = $("#firebase-notifications__conditions");
+		const $conditionsParsed = $("#firebase-notifications__conditions-parsed");
+		const CONDITIONS_NAME = $conditions.attr("name");
+		const CONDITIONS_PARSED_NAME = $conditionsParsed.attr("name");
+		$conditions.on("keyup", function(){
 			resetNormalState();
 			resetConditionValid();
+			$conditions.attr("name", "");
+			$conditionsParsed.attr("name", "");
 
 			// expression string
 			const expression = $conditions.val();
@@ -179,8 +185,11 @@
 					setConditionsValid()
 				} else {
 					setConditionsNotInLimitations();
+					return;
 				}
-
+				$conditions.attr("name", CONDITIONS_NAME);
+				$conditionsParsed.attr("name", CONDITIONS_PARSED_NAME);
+				$conditionsParsed.val(JSON.stringify(result));
 			} catch (e) {
 				conditions = null;
 				setConditionsInvalid();
@@ -206,9 +215,9 @@
 
 		const $error = $box.find(".error-display");
 
-		function getPlattforms() {
+		function getPlatforms() {
 			const values = [];
-			$plattforms.each((index,el)=>{
+			$platforms.each((index,el)=>{
 				const $el = $(el);
 				if($el.is(":checked")) values.push($el.val());
 			});
@@ -243,8 +252,8 @@
 		function resetNormalState() {
 			$box.removeClass("has-error");
 		}
-		function showPlattformsError(){
-			showError(i18n.errors.plattforms);
+		function showPlatformsError(){
+			showError(i18n.errors.platforms);
 		}
 		function showError(errorMessage){
 			$box.removeClass("is-sending").addClass("has-error");
@@ -255,7 +264,7 @@
 			$title.attr("readonly", "readonly");
 			$message.attr("readonly", "readonly");
 			$conditions.attr("readonly", "readonly");
-			$plattforms.attr("disabled", "disabled");
+			$platforms.attr("disabled", "disabled");
 			$schedule_datetime.attr("readonly", "readonly");
 			$schedule.attr("disabled", "disabled");
 			hooks.trigger("lockUI");
@@ -264,7 +273,7 @@
 			$title.removeAttr("readonly");
 			$message.removeAttr("readonly");
 			$conditions.removeAttr("readonly");
-			$plattforms.removeAttr("disabled");
+			$platforms.removeAttr("disabled");
 			$schedule_datetime.removeAttr("readonly");
 			$schedule.removeAttr("disabled");
 			hooks.trigger("unlockUI");
@@ -276,7 +285,7 @@
 
 			const title = $title.val();
 			const body = $message.val();
-			const plattforms = getPlattforms();
+			const platforms = getPlatforms();
 			const payload = metaBox.payload;
 			const schedule = (isScheduled())? getScheduleTimestamp():null;
 
@@ -292,8 +301,8 @@
 				showError(i18n.errors.conditions);
 				return;
 			}
-			if(!plattforms.length){
-				showPlattformsError();
+			if(!platforms.length){
+				showPlatformsError();
 				return;
 			}
 
@@ -326,7 +335,7 @@
 			$box.addClass("is-sending");
 			lockUI();
 
-			api.send( plattforms, conditions, title, body, payload, schedule )
+			api.send( platforms, conditions, title, body, payload, schedule )
 				.then((response)=>{
 					isSending = false;
 					$box.removeClass("is-sending");
@@ -340,7 +349,6 @@
 						hasError = true;
 						return;
 					}
-					console.log(response.data);
 					if(schedule){
 						$box.addClass("was-scheduled");
 					} else {
@@ -351,7 +359,7 @@
 				.catch((error)=>{
 					isSending = false;
 					hasError = true;
-					console.error(error);
+					console.error("firebase", error);
 					showError(error.textStatus);
 				});
 

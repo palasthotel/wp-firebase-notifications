@@ -3,10 +3,18 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
+
 /**
  * @property Plugin plugin
  */
 class MetaBox {
+
+	/**
+	 * @var bool
+	 */
+	private $wasPublished = false;
 
 	/**
 	 * MetaBox constructor.
@@ -16,6 +24,8 @@ class MetaBox {
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
+		add_action( "save_post", [$this, 'save_post']);
+		add_action( "transition_post_status", [$this, 'transition_post_status'], 10 , 2);
 		add_action( Plugin::ACTION_SAVED_MESSAGE, array( $this, 'saved_message' ) );
 	}
 
@@ -93,7 +103,7 @@ class MetaBox {
 					"title"      => __( "Give me a message title, please.", Plugin::DOMAIN ),
 					"body"       => __( "Type some body content.", Plugin::DOMAIN ),
 					"conditions" => __( "Please define your topic conditions.", Plugin::DOMAIN ),
-					"plattforms" => __( "At least one plattform needs to be activated.", Plugin::DOMAIN ),
+					"platforms" => __( "At least one platform needs to be activated.", Plugin::DOMAIN ),
 					"schedule"   => array(
 						"invalid"     => __( "Please provide a valid schedule date that is at least a few minutes in the future.", Plugin::DOMAIN ),
 						"in_the_past" => __( "Schedule date must be at least a few minutes in the future.", Plugin::DOMAIN ),
@@ -105,9 +115,17 @@ class MetaBox {
 				"post_id"   => $post->ID,
 				"permalink" => get_permalink( $post ),
 			),
-
 		) );
 		do_action( Plugin::ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT, Plugin::HANDLE_META_BOX_SCRIPT );
+		$draftTitle = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TITLE, true);
+		$draftBody = get_post_meta($post->ID, Plugin::POST_META_DRAFT_BODY, true);
+		$draftPlatforms = get_post_meta($post->ID, Plugin::POST_META_DRAFT_PLATFORMS, true);
+		$draftTopics = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TOPICS, true);
+		$draftSchedule = get_post_meta($post->ID, Plugin::POST_META_DRAFT_SCHEDULE, true);
+
+		if(!is_array($draftPlatforms)){
+		    $draftPlatforms = ["android", "ios", "web"];
+        }
 		?>
         <div class="fn__wrapper">
             <div class="fn__base-control--field">
@@ -118,7 +136,8 @@ class MetaBox {
                        type="text"
                        id="firebase-notifications__title"
                        maxlength="190"
-                       value="<?php the_title(); ?>"
+                       value="<?= !empty($draftTitle) ? $draftTitle : get_the_title(); ?>"
+                       name="<?= Plugin::POST_META_DRAFT_TITLE; ?>"
                 />
             </div>
             <div class="fn__base-control--field">
@@ -127,14 +146,37 @@ class MetaBox {
                 <textarea class="fn__base-control--input"
                           id="firebase-notifications__body"
                           rows="4"
-                ><?php echo $post->post_excerpt; ?></textarea>
+                          name="<?= Plugin::POST_META_DRAFT_BODY; ?>"
+                ><?= !empty($draftBody) ? $draftBody : $post->post_excerpt; ?></textarea>
             </div>
             <div class="fn__base-control--field">
-                <label class="fn__base-control--label"><?php _e( "To devices of plattform", Plugin::DOMAIN ); ?></label>
+                <label class="fn__base-control--label"><?php _e( "To devices of platform", Plugin::DOMAIN ); ?></label>
                 <p class="firebase--notifications__plafforms">
-                    <label><input type="checkbox" name="plattform[]" checked="checked" value="android"/> Android</label>
-                    <label><input type="checkbox" name="plattform[]" checked="checked" value="ios"/> iOS</label>
-                    <label><input type="checkbox" name="plattform[]" checked="checked" value="web"/> Web</label>
+                    <?php
+                    $platforms = [
+                        [
+                            "label" => "Android",
+                            "id" => "android",
+                        ],
+	                    [
+		                    "label" => "iOS",
+		                    "id" => "ios",
+	                    ],
+	                    [
+		                    "label" => "Web",
+		                    "id" => "web",
+	                    ]
+                    ];
+                    foreach ($platforms as $platform){
+                        $label = $platform["label"];
+                        $id = $platform["id"];
+                        $name = Plugin::POST_META_DRAFT_PLATFORMS."[]";
+                        $checked = in_array($id, $draftPlatforms) ? "checked='checked'" : "";
+                        echo "<label>";
+                        echo "<input type='checkbox' name='{$name}' {$checked} value='{$id}' data-platform />";
+                        echo " $label</label>";
+                    }
+                    ?>
                 </p>
             </div>
 
@@ -185,7 +227,7 @@ class MetaBox {
                         <span id="firebase-notifications_conditions--valid">...</span>
                     </label>
 					<?php
-					$value    = "";
+					$value    = !empty($draftTopics)? $draftTopics : "";
 					$readonly = "";
 					if ( $tcount == 1 ) {
 						$value    = $topics[0]->id;
@@ -196,8 +238,14 @@ class MetaBox {
                            type="text"
                            id="firebase-notifications__conditions"
 						<?php echo $readonly; ?>
-                           value="<?php echo $value; ?>"
+                           value="<?= $value; ?>"
+                           name="<?= Plugin::POST_META_DRAFT_TOPICS; ?>"
+
                     />
+                    <input type="text" id="firebase-notifications__conditions-parsed"
+                           value=""
+                           name="<?= Plugin::POST_META_DRAFT_TOPICS_PARSED; ?>"
+                           />
 					<?php
 					if ( $tcount > 1 ) {
 						?>
@@ -237,25 +285,73 @@ class MetaBox {
         <div class="fn__base-control--field">
             <label class="fn__base-control--label"><?php _e( "Schedule", Plugin::DOMAIN ); ?></label>
             <div class="firebase--notifications__schedule">
-                <label><input type="radio" name="firebase_schedule" checked
-                              value="now"/> <?php _e( "Now", Plugin::DOMAIN ); ?></label>
-                <label><input type="radio" name="firebase_schedule"
-                              value="plan"/> <?php _e( "Plan", Plugin::DOMAIN ); ?></label>
-				<?php
-				$futureDateExample = date( "Y-m-d H:i", time() + 60 * 60 * 24 );
-				?>
-                <label title="yyyy-mm-dd hh:ii for example <?php echo $futureDateExample; ?>">
-                    <input type="datetime-local" name="firebase_schedule_datetime" value=""
-                           placeholder="yyyy-mm-dd hh:ii"/><br/>
-                    <span class="description">yyyy-mm-dd hh:ii for example "<?php echo $futureDateExample; ?>"</span>
-                </label>
+	            <?php
+                $options = ("publish" === $post->post_status) ?
+	                [
+		                [
+			                "label" => __( "Now", Plugin::DOMAIN ),
+			                "value" => "now",
+		                ],
+		                [
+			                "label" => __( "Plan", Plugin::DOMAIN ),
+			                "value" => "plan",
+		                ],
+	                ]
+	                :
+	                [
+		                [
+			                "label" => __( "Manually after publication", Plugin::DOMAIN ),
+			                "value" => "manually",
+		                ],
+		                [
+			                "label" => __( "On publication", Plugin::DOMAIN ),
+			                "value" => "on_publish",
+		                ],
+                    ];
+                $checkedValue = "";
+                foreach ($options as $option){
+                    if($draftSchedule === $option["value"]){
+                        $checkedValue = $option["value"];
+                    }
+                }
+                if(empty($checkedValue)){
+                    $checkedValue = $options[0]["value"];
+                }
+
+                foreach ($options as $option){
+                    $label = $option["label"];
+                    $value = $option["value"];
+                    $checked = $checkedValue === $value ? "checked='checked'": "";
+                    ?>
+                    <label><input type="radio"
+                                  name="<?= Plugin::POST_META_DRAFT_SCHEDULE; ?>"
+                                  <?= $checked ?>
+                                  data-schedule
+                                  value="<?= $value ?>"/> <?= $label ?></label>
+                        <?php
+                    if($value === "plan") {
+	                    $futureDateExample = date( "Y-m-d H:i", time() + 60 * 60 * 24 );
+	                    ?>
+                        <label title="yyyy-mm-dd hh:ii for example <?php echo $futureDateExample; ?>">
+                            <input type="datetime-local" data-firebase-schedule-datetime value=""
+                                   placeholder="yyyy-mm-dd hh:ii"/><br/>
+                            <span class="description">yyyy-mm-dd hh:ii for example "<?php echo $futureDateExample; ?>"</span>
+                        </label>
+	                    <?php
+                    }
+                }
+                ?>
             </div>
         </div>
 		<?php
 
 		do_action( Plugin::ACTION_META_BOX_CUSTOM, $this );
 
-		if ( count( $topics ) ) {
+		if( count( $topics ) <= 0 ) {
+
+			echo "<p> 🚨" . __( 'Configuration missing. There are no topics defined', Plugin::DOMAIN ) . "</p>";
+
+		} else if ( "publish" === $post->post_status ) {
 
 			echo "<p>";
 			submit_button( __( "Send", Plugin::DOMAIN ), "primary", "firebase-notifications-submit", false );
@@ -265,10 +361,13 @@ class MetaBox {
 			printf( "<span class='error-display'> 🚨 %s</span>", _x( "Error.", "Send message post meta box response", Plugin::DOMAIN ) );
 			echo "</p>";
 
-		} else {
-			echo "<p> 🚨" . __( 'Configuration missing. There are no topics defined', Plugin::DOMAIN ) . "</p>";
 		}
 
+		$this->renderHistory($post);
+
+	}
+
+	public function renderHistory($post){
 		// history
 		$messages = $this->plugin->database->getPostMessages( $post->ID );
 		$count    = count( $messages );
@@ -339,7 +438,101 @@ class MetaBox {
 			);
 			echo "</a></p>";
 		}
+	}
 
+	public function save_post($post_id){
+	    $saveFields = [
+		    Plugin::POST_META_DRAFT_TITLE,
+		    Plugin::POST_META_DRAFT_BODY,
+		    Plugin::POST_META_DRAFT_TOPICS,
+            Plugin::POST_META_DRAFT_TOPICS_PARSED,
+		    Plugin::POST_META_DRAFT_SCHEDULE,
+        ];
+	    foreach ($saveFields as $field){
+		    if(isset($_POST[$field])){
+		        if(is_string($_POST[$field])){
+			        update_post_meta(
+				        $post_id,
+				        $field,
+				        sanitize_text_field($_POST[$field])
+			        );
+		        } else if(is_array($_POST[$field])){
+			        $values = array_map('sanitize_text_field', $_POST[$field]);
+			        update_post_meta(
+				        $post_id,
+				        $field,
+				        $values
+			        );
+		        }
+		    }
+	    }
+
+	    if($this->wasPublished){
+	        $post = get_post($post_id);
+	        $this->sendDraft($post);
+	    }
+	}
+
+	public function transition_post_status( $new_status, $old_status ) {
+		if ( "publish" !== $new_status ) {
+			return;
+		}
+		if ( ! in_array( $old_status, [ "new", "pending", "draft", "auto-draft", "future" ] ) ) {
+			return;
+		}
+
+		$this->wasPublished = true;
+	}
+
+	public function sendDraft($post){
+		$schedule = get_post_meta($post->ID, Plugin::POST_META_DRAFT_SCHEDULE, true);
+		if("on_publish" !== $schedule){
+			return;
+		}
+
+		$title = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TITLE, true);
+		$body = get_post_meta($post->ID, Plugin::POST_META_DRAFT_BODY, true);
+		$platforms = get_post_meta($post->ID, Plugin::POST_META_DRAFT_PLATFORMS, true);
+		$topics = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TOPICS_PARSED, true);
+		if(empty($title) || empty($body) || empty($platforms) || empty($topics)){
+			return;
+		}
+
+		$conditionsArr = json_decode($topics);
+		if(!Validation::isValidConditions($conditionsArr)){
+			return;
+		}
+		$conditionsArr = Validation::sanitizeConditions($conditionsArr);
+		$payload = array(
+			"post_id"   => $post->ID,
+			"permalink" => get_permalink( $post ),
+		);
+
+		$message = Message::build($platforms,$conditionsArr, $title, $body, $payload);
+		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
+		$message_id = $this->plugin->database->add($message);
+		if(!$message_id) {
+			error_log("Could not save notification message");
+			return;
+		}
+		do_action(Plugin::ACTION_SAVED_MESSAGE, $message);
+
+		try{
+
+			$result = $this->plugin->cloudMessagingApi->send($message);
+			$message->result = $result;
+			$success = $this->plugin->database->setSent( $message->id, $result);
+
+			if(!$success){
+				error_log("Firebase Service connection not working. Check the settings.");
+			}
+		} catch (\Exception $e){
+			wp_send_json_error($e->getMessage());
+		} catch ( MessagingException $e ) {
+			wp_send_json_error($e->getMessage());
+		} catch ( FirebaseException $e ) {
+			wp_send_json_error($e->getMessage());
+		}
 	}
 
 	/**

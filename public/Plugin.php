@@ -49,6 +49,13 @@ class Plugin extends \Palasthotel\WordPress\Plugin {
 	const HANDLE_TOOLS_PAGE_SCRIPT = "firebase-notifications-tools-page-script";
 	const HANDLE_TOOLS_PAGE_STYLE = "firebase-notifications-tools-page-style";
 
+	const POST_META_DRAFT_TITLE = "firebase_notification_draft_title";
+	const POST_META_DRAFT_BODY = "firebase_notification_draft_body";
+	const POST_META_DRAFT_PLATFORMS = "firebase_notification_draft_platforms";
+	const POST_META_DRAFT_TOPICS = "firebase_notification_draft_topics";
+	const POST_META_DRAFT_TOPICS_PARSED = "firebase_notification_draft_topics_parsed";
+	const POST_META_DRAFT_SCHEDULE = "firebase_notification_draft_schedule";
+
 	const FILTER_CURRENT_USER_CAN_SEND_MESSAGE = "firebase_notifications_current_user_can_send_message";
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
