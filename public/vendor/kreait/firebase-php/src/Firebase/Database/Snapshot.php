@@ -23,10 +23,9 @@ use Kreait\Firebase\Exception\InvalidArgumentException;
  */
 class Snapshot
 {
-    /** @var Reference */
-    private $reference;
+    private Reference $reference;
 
-    /** @var mixed */
+    /** @var mixed mixed */
     private $value;
 
     /**

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '9a7f1f726ca9bc01c144f23f8cafdf7483b9fd2d',
+    'reference' => 'e4d509f2eb7ce9bd333d7e5879ecf70c554a58cf',
     'name' => 'palasthotel/plugin-firebase-notifications',
   ),
   'versions' => 
@@ -49,12 +49,12 @@
     ),
     'google/cloud-core' => 
     array (
-      'pretty_version' => 'v1.41.1',
-      'version' => '1.41.1.0',
+      'pretty_version' => 'v1.42.0',
+      'version' => '1.42.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6c39dfc66eb9e542fcc5d793a1c128d3d006a6b8',
+      'reference' => '0e311771797adb1b8674fce77e5dbaf727cea3eb',
     ),
     'google/cloud-storage' => 
     array (
@@ -112,12 +112,12 @@
     ),
     'kreait/firebase-php' => 
     array (
-      'pretty_version' => '5.18.0',
-      'version' => '5.18.0.0',
+      'pretty_version' => '5.20.0',
+      'version' => '5.20.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2fb3778725bb26000c49e9299ed4a52ac142a4e3',
+      'reference' => '8f1ee07ddcafe631bfe4f5795c41fc98d246cb6d',
     ),
     'kreait/firebase-tokens' => 
     array (
@@ -184,16 +184,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '9a7f1f726ca9bc01c144f23f8cafdf7483b9fd2d',
+      'reference' => 'e4d509f2eb7ce9bd333d7e5879ecf70c554a58cf',
     ),
     'palasthotel/wp-components' => 
     array (
-      'pretty_version' => '0.0.8',
-      'version' => '0.0.8.0',
+      'pretty_version' => '0.0.9',
+      'version' => '0.0.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '32b415345c5e3d7f50897e5db650093039dc1f00',
+      'reference' => 'a4db3fb8ecf0f4b971cb9589b0b6dbec27bc8ae1',
     ),
     'phar-io/manifest' => 
     array (
@@ -512,6 +512,15 @@
       array (
       ),
       'reference' => '5232de97ee3b75b0360528dae24e73db49566ab1',
+    ),
+    'symfony/polyfill-php80' => 
+    array (
+      'pretty_version' => 'v1.22.1',
+      'version' => '1.22.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'dc3063ba22c2a1fd2f45ed856374d79114998f91',
     ),
     'theseer/tokenizer' => 
     array (

@@ -19,6 +19,6 @@
         "ext-curl": "*",
         "ext-json": "*",
         "kreait/firebase-php": "^5.11",
-        "palasthotel/wp-components": "0.0.8"
+        "palasthotel/wp-components": "0.0.9"
     }
 }
