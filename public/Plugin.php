@@ -35,7 +35,7 @@ require_once dirname( __FILE__ ) . "/vendor/autoload.php";
  * @property DesktopMessaging desktopMessaging
  * @property Assets assets
  */
-class Plugin extends \Palasthotel\WordPress\Plugin {
+class Plugin extends Component\Plugin {
 
 	const DOMAIN = "firebase-notifications";
 
@@ -84,10 +84,9 @@ class Plugin extends \Palasthotel\WordPress\Plugin {
 		/**
 		 * load translations
 		 */
-		load_plugin_textdomain(
+		$this->textdomainConfig = new Component\TextdomainConfig(
 			Plugin::DOMAIN,
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+			"languages"
 		);
 
 		$this->assets                             = new Assets( $this );
@@ -98,7 +97,7 @@ class Plugin extends \Palasthotel\WordPress\Plugin {
 		$this->notificationsSettingsThemeTemplate = new NotificationsSettingsThemeTemplate( $this );
 		$this->desktopMessaging                   = new DesktopMessaging( $this );
 		$this->metaBox                            = new MetaBox( $this );
-		$this->topics                             = new Topics( $this );
+		$this->topics                             = new Topics();
 		$this->toolsPage                          = new ToolsPage( $this );
 		$this->settings                           = new Settings( $this );
 		$this->permissions                        = new Permissions();

@@ -14,16 +14,14 @@ namespace Palasthotel\FirebaseNotifications;
  * @property string $tablename
  * @property string tablename_posts
  */
-class Database {
+class Database extends Component\Database {
 
 	/**
 	 * Database constructor.
 	 */
-	public function __construct() {
-		global $wpdb;
-		$this->wpdb      = $wpdb;
-		$this->tablename = $wpdb->prefix . "firebase_notification_messages";
-		$this->tablename_posts = $wpdb->prefix . "firebase_notification_messages_from_posts";
+	public function init() {
+		$this->tablename = $this->wpdb->prefix . "firebase_notification_messages";
+		$this->tablename_posts = $this->wpdb->prefix . "firebase_notification_messages_from_posts";
 	}
 
 	/**
@@ -243,11 +241,8 @@ class Database {
 		return $msg;
 	}
 
-	/**
-	 * create tables
-	 */
-	public function create() {
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	public function createTables() {
+		parent::createTables();
 
 		dbDelta( "CREATE TABLE IF NOT EXISTS $this->tablename (
 			 id bigint(20) unsigned not null auto_increment,
@@ -276,7 +271,5 @@ class Database {
 			 key(message_id),
 			 key (post_id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
-
 	}
-
 }

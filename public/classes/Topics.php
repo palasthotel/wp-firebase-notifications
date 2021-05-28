@@ -11,10 +11,6 @@ namespace Palasthotel\FirebaseNotifications;
 
 class Topics {
 
-	public function __construct( Plugin $plugin ) {
-
-	}
-
 	public function getTopics() {
 		return apply_filters(
 			Plugin::FILTER_TOPICS,

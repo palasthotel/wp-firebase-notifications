@@ -4,23 +4,18 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use Palasthotel\FirebaseNotifications\Component\Component;
+
 /**
  * @property Plugin plugin
  */
-class DesktopMessaging {
+class DesktopMessaging extends Component {
 
 	const PARAM_KEY = "firebase-service-worker";
 
 	const PARAM_VALUE = "render-service-worker-js";
 
-	/**
-	 * DesktopMessaging constructor.
-	 *
-	 * @param Plugin $plugin
-	 */
-	public function __construct( $plugin ) {
-		$this->plugin = $plugin;
-
+	public function onCreate( ) {
 		add_action( 'init', array( $this, 'add_endpoint' ) );
 		add_filter( 'query_vars', array( $this, 'add_query_vars' ), 0 );
 		add_action( 'parse_request', array( $this, 'sniff_requests' ), 0 );

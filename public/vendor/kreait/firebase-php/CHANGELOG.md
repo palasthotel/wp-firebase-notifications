@@ -1,8 +1,14 @@
 # CHANGELOG
 
+## [Unreleased]
+
+## [5.20.1] - 2021-05-12
+### Fixed
+* Restored broken support for Guzzle 6.x
+
 ## [5.20.0] - 2021-05-11
-* Dropped support for unsupported PHP versions. Starting with this release, supported
-  PHP versions are >=7.4 and <8.1.
+* Dropped support for unsupported PHP versions. Dropped support for unsupported PHP versions. Starting with this 
+  release, supported are PHP versions >=7.4.
 
 ## [5.19.0] - 2021-05-09
 ### Added
@@ -251,7 +257,8 @@ to upgrade from a 4.x release to 5.0 without changes to your code.**
 * Support for PHP `<7.2`
 * Deprecated methods and classes
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/5.20.0...HEAD
+[Unreleased]: https://github.com/kreait/firebase-php/compare/5.20.1...HEAD
+[5.20.1]: https://github.com/kreait/firebase-php/compare/5.20.0...5.20.1
 [5.20.0]: https://github.com/kreait/firebase-php/compare/5.19.0...5.20.0
 [5.19.0]: https://github.com/kreait/firebase-php/compare/5.18.0...5.19.0
 [5.18.0]: https://github.com/kreait/firebase-php/compare/5.17.1...5.18.0

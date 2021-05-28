@@ -9,19 +9,15 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use Palasthotel\FirebaseNotifications\Component\Component;
+
 /**
  * @property Plugin plugin
  */
-class Settings {
+class Settings extends Component {
 
-	/**
-	 * Settings constructor.
-	 *
-	 * @param Plugin $plugin
-	 */
-	public function __construct(Plugin $plugin) {
-		$this->plugin = $plugin;
-		add_filter('plugin_action_links_' . $plugin->basename, array($this, 'add_action_links'));
+	public function onCreate() {
+		add_filter('plugin_action_links_' . $this->plugin->basename, array($this, 'add_action_links'));
 		add_action('admin_init', array($this,'custom_settings'));
 		add_action('admin_enqueue_scripts', array($this, 'load_wp_media_files') );
 	}

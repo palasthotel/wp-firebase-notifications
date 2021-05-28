@@ -8,21 +8,17 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+use Palasthotel\FirebaseNotifications\Component\Component;
+
 /**
  * Class ToolsPage
  *
  * @property Plugin plugin
  * @package Palasthotel\FirebaseNotifications
  */
-class ToolsPage {
+class ToolsPage extends Component {
 
-	/**
-	 * ToolsPage constructor.
-	 *
-	 * @param Plugin $plugin
-	 */
-	public function __construct( Plugin $plugin ) {
-		$this->plugin = $plugin;
+	public function onCreate() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 

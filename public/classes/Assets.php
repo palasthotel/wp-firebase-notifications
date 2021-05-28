@@ -4,17 +4,18 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
+use Palasthotel\FirebaseNotifications\Component\Component;
+
 /**
  * @property Plugin plugin
  */
-class Assets {
+class Assets extends Component {
 
 	const HANDLE_FIREBASE_CORE = "firebase-core";
 	const HANDLE_FIREBASE_MESSAGING = "firebase-messaging";
 	const FB_VERSION = "8.4.3";
 
-	public function __construct(Plugin $plugin){
-		$this->plugin = $plugin;
+	public function onCreate(){
 		add_action('init', function(){
 			$this->registerFirebase();
 			$this->registerFrontendApiScript();
