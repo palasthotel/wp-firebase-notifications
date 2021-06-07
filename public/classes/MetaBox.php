@@ -447,6 +447,7 @@ class MetaBox {
 		    Plugin::POST_META_DRAFT_TOPICS,
             Plugin::POST_META_DRAFT_TOPICS_PARSED,
 		    Plugin::POST_META_DRAFT_SCHEDULE,
+            Plugin::POST_META_DRAFT_PLATFORMS,
         ];
 	    foreach ($saveFields as $field){
 		    if(isset($_POST[$field])){

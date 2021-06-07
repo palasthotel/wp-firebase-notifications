@@ -114,7 +114,7 @@ class Plugin extends Component\Plugin {
 	 * on plugin activation
 	 */
 	function onSiteActivation() {
-		$this->database->create();
+		$this->database->createTables();
 		$this->databaseUpdates->setToLatestSchemaVersion();
 		$this->notificationsSettingsThemeTemplate->add_endpoint();
 		$this->desktopMessaging->add_endpoint();
