@@ -24,6 +24,16 @@ class Database extends Component\Database {
 		$this->tablename_posts = $this->wpdb->prefix . "firebase_notification_messages_from_posts";
 	}
 
+	function count($since){
+		$current_date = date("Y-m-d H:i:s",$since);
+		return $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				"SELECT COUNT(*) FROM " . $this->tablename . " WHERE sent > %s",
+				$current_date
+			)
+		);
+	}
+
 	/**
 	 * @param Message $message
 	 *

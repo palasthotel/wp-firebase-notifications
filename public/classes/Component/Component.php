@@ -6,7 +6,7 @@ namespace Palasthotel\FirebaseNotifications\Component;
 /**
  * Class Component
  *
- * @property Plugin plugin
+ * @property \Palasthotel\FirebaseNotifications\Plugin plugin
  *
  * @package Palasthotel\WordPress
  * @version 0.1.1

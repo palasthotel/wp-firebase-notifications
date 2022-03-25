@@ -3,16 +3,16 @@
  * Plugin Name: Firebase Notifications
  * Plugin URI: https://github.com/palasthotel/wp-firebase-notifications
  * Description: send messages with firebase messaging
- * Version: 1.0.8
+ * Version: 1.1.0
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 5.0
- * Tested up to: 5.7.2
+ * Tested up to: 5.9.2
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  * Text Domain:       firebase-notifications
  * Domain Path:       /languages
  *
- * @copyright Copyright (c) 2021, Palasthotel
+ * @copyright Copyright (c) 2022, Palasthotel
  * @package Palasthotel\FirebaseNotifications
  */
 
@@ -34,6 +34,8 @@ require_once dirname( __FILE__ ) . "/vendor/autoload.php";
  * @property Schedule schedule
  * @property DesktopMessaging desktopMessaging
  * @property Assets assets
+ * @property REST $rest
+ * @property Component\TextdomainConfig $textdomainConfig
  */
 class Plugin extends Component\Plugin {
 
@@ -94,6 +96,7 @@ class Plugin extends Component\Plugin {
 		$this->database                           = new Database();
 		$this->databaseUpdates                    = new DatabaseUpdates( $this->database );
 		$this->ajax                               = new Ajax( $this );
+		$this->rest                               = new REST( $this );
 		$this->notificationsSettingsThemeTemplate = new NotificationsSettingsThemeTemplate( $this );
 		$this->desktopMessaging                   = new DesktopMessaging( $this );
 		$this->metaBox                            = new MetaBox( $this );
@@ -102,12 +105,6 @@ class Plugin extends Component\Plugin {
 		$this->settings                           = new Settings( $this );
 		$this->permissions                        = new Permissions();
 		$this->schedule                           = new Schedule( $this );
-
-		/**
-		 * on activate or deactivate plugin
-		 */
-		register_activation_hook( __FILE__, array( $this, "activation" ) );
-		register_deactivation_hook( __FILE__, array( $this, "deactivation" ) );
 	}
 
 	/**
