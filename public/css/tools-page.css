@@ -1,28 +1,74 @@
-.firebase-notifications__item { width: 100%; max-width: 100%; box-sizing: border-box; }
 
-.firebase-notifications__item .firebase-notifications__item--title { font-size: 1.1rem; margin-bottom: 12px; }
+.firebase-notifications__list{
+	--color-highlight: #0073aa;
+	--color-background-light: #f9f9f9;
+	--color-font-light: #72777c;
+}
 
-.firebase-notifications__item .firebase-notifications__item--body { margin-bottom: 16px; }
+.firebase-notifications__item{
 
-.firebase-notifications__item .firebase-notifications__item--footer { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; -ms-flex-pack: justify; justify-content: space-between; color: #72777c; }
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
 
-.firebase-notifications__item .firebase-notifications__item--created, .firebase-notifications__item .firebase-notifications__item--sent { -webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1; }
+	.firebase-notifications__item--title{
+		font-size: 1.1rem;
+		margin-bottom: 12px;
+	}
+	.firebase-notifications__item--body{
+		margin-bottom: 16px;
+	}
 
-.firebase-notifications__item .firebase-notifications__item--sent { text-align: right; }
+	.firebase-notifications__item--footer{
+		display: flex;
+		justify-content: space-between;
+		color: var(--color-font-light);
+	}
+	.firebase-notifications__item--created,
+	.firebase-notifications__item--sent {
+		flex-grow: 1;
+	}
+	.firebase-notifications__item--sent{
+		text-align: right;
+	}
 
-.firebase-notifications__item .firebase-notifications__item--plattform { width: 160px; }
+	.firebase-notifications__item--plattform{
+		width: 160px;
+	}
+	.firebase-notifications__item--conditions{
+		flex-grow: 3;
+	}
 
-.firebase-notifications__item .firebase-notifications__item--conditions { -webkit-box-flex: 3; -webkit-flex-grow: 3; -ms-flex-positive: 3; flex-grow: 3; }
+	.firebase-notifications__item--conditions-wrapper{
+		background-color: var(--color-highlight);
+		padding: 2px 6px;
+		border-radius: 2px;
+		display: inline-block;
+		color: white;
+		margin-bottom: 4px;
+	}
 
-.firebase-notifications__item .firebase-notifications__item--conditions-wrapper { background-color: #0073aa; padding: 2px 6px; border-radius: 2px; display: inline-block; color: white; margin-bottom: 4px; }
-
-.firebase-notifications__item .firebase-notifications__item--show-communication { color: #0073aa; -webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1; }
-
-.firebase-notifications__item .firebase-notifications__item--communication { overflow-x: scroll; background: #f9f9f9; margin: 0 -2em -1em; padding: 0.7em 2em 0.7em; }
-
-.firebase-notifications__item .firebase-notifications__item--payload, .firebase-notifications__item .firebase-notifications__item--result { padding: 5px 15px; }
-
-.firebase-notifications__item .firebase-notifications__item--payload-label, .firebase-notifications__item .firebase-notifications__item--result-label { font-style: italic; }
-
-.firebase-notifications__item .firebase-notifications__item--payload { border-bottom: 1px solid #e0e0e0; margin-bottom: 8px; }
-/*# sourceMappingURL=tools-page.css.map */
+	.firebase-notifications__item--show-communication{
+		color: var(--color-highlight);
+		flex-grow: 1;
+	}
+	.firebase-notifications__item--communication{
+		//display: none;
+		overflow-x: scroll;
+		background: var(--color-background-light);
+		margin: 0 -2em -1em;
+		padding: 0.7em 2em 0.7em;
+	}
+	.firebase-notifications__item--payload,
+	.firebase-notifications__item--result{
+		padding: 5px 15px;
+	}
+	.firebase-notifications__item--payload-label,
+	.firebase-notifications__item--result-label{
+		font-style: italic;
+	}
+	.firebase-notifications__item--payload{
+		border-bottom: 1px solid color-mix(in oklch, var(--color-background-light), black 10%);
+		margin-bottom: 8px;
+	}
+}
