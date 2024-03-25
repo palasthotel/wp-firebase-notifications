@@ -9,29 +9,22 @@ use Kreait\Firebase\JWT\Value\Duration;
 
 final class FetchGooglePublicKeys
 {
-    /** @deprecated 1.15.0 */
-    const DEFAULT_URL = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
-
-    const DEFAULT_URLS = [
+    public const DEFAULT_URLS = [
         'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com',
         'https://www.googleapis.com/oauth2/v1/certs',
+        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/publicKeys',
     ];
-
-    const DEFAULT_FALLBACK_CACHE_DURATION = 'PT1H';
+    public const DEFAULT_FALLBACK_CACHE_DURATION = 'PT1H';
 
     /** @var array<int, string> */
-    private $urls;
-
-    /** @var Duration */
-    private $fallbackCacheDuration;
+    private readonly array $urls;
 
     /**
      * @param array<array-key, string> $urls
      */
-    private function __construct(array $urls, Duration $fallbackCacheDuration)
+    private function __construct(array $urls, private Duration $fallbackCacheDuration)
     {
-        $this->urls = \array_values($urls);
-        $this->fallbackCacheDuration = $fallbackCacheDuration;
+        $this->urls = array_values($urls);
     }
 
     public static function fromGoogle(): self
@@ -50,10 +43,8 @@ final class FetchGooglePublicKeys
     /**
      * A response from the Google APIs should have a cache control header that determines when the keys expire.
      * If it doesn't have one, fall back to this value.
-     *
-     * @param Duration|DateInterval|string|int $duration
      */
-    public function ifKeysDoNotExpireCacheFor($duration): self
+    public function ifKeysDoNotExpireCacheFor(Duration|DateInterval|string|int $duration): self
     {
         $duration = Duration::make($duration);
 
@@ -61,14 +52,6 @@ final class FetchGooglePublicKeys
         $action->fallbackCacheDuration = $duration;
 
         return $action;
-    }
-
-    /**
-     * @deprecated 1.15.0
-     */
-    public function url(): string
-    {
-        return $this->urls[0];
     }
 
     /**

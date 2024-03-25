@@ -14,21 +14,15 @@ use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging;
-use Kreait\Firebase\ServiceAccount;
 
 /**
  * @property Plugin plugin
  */
 class CloudMessagingApi {
 
-	/**
-	 * @var ServiceAccount
-	 */
-	private $serviceAccount;
-    /**
-     * @var Messaging
-     */
-	private $messaging;
+	private ?Factory $factory;
+
+	private ?Messaging $messaging;
 
 	/**
 	 * CloudMessagingApi constructor.
@@ -37,36 +31,25 @@ class CloudMessagingApi {
 	 */
 	public function __construct( Plugin $plugin ) {
 		$this->plugin = $plugin;
+
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function hasConfiguration(){
-		return $this->getServiceAccount() != null;
-	}
-
-	/**
-	 * @return ServiceAccount
-	 */
-	public function getServiceAccount(){
-		if($this->serviceAccount == null){
-
-			$config = $this->plugin->settings->getConfig(true);
-			if($config == null) return null;
-			$this->serviceAccount = ServiceAccount::fromValue($config);
+	private function getFactory(): Factory {
+		if($this->factory == null){
+			$this->factory = ( new Factory )->withServiceAccount(
+				$this->plugin->settings->getConfig(true)
+			);
 		}
-		return $this->serviceAccount;
+		return $this->factory;
 	}
 
-    /**
-     * @return Messaging
-     */
-	public function getMessaging(){
+	public function hasConfiguration(): bool{
+		return !empty($this->getFactory()->getDebugInfo()["projectId"]);
+	}
+
+	public function getMessaging(): Messaging{
 	    if($this->messaging == null){
-            $this->messaging = ( new Factory )->withServiceAccount(
-                $this->getServiceAccount()
-            )->createMessaging();
+            $this->messaging = $this->getFactory()->createMessaging();
         }
 
         return $this->messaging;
@@ -75,14 +58,12 @@ class CloudMessagingApi {
 	/**
 	 * send message via firebase cloud messaging
 	 *
-	 * @param Message $msg
-	 *
 	 * @return array
 	 * @throws FirebaseException
 	 * @throws MessagingException
 	 * @throws Exception
 	 */
-	function send( $msg ) {
+	function send( Message $msg ): array {
 		$arr = $msg->getCloudMessageArray();
 		if(WP_DEBUG){
 			return array(

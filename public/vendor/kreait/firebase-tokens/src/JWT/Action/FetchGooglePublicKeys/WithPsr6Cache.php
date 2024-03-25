@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\JWT\Action\FetchGooglePublicKeys;
 
-use Kreait\Clock;
 use Kreait\Firebase\JWT\Action\FetchGooglePublicKeys;
 use Kreait\Firebase\JWT\Contract\Expirable;
 use Kreait\Firebase\JWT\Contract\Keys;
 use Kreait\Firebase\JWT\Error\FetchingGooglePublicKeysFailed;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Clock\ClockInterface;
 
+/**
+ * @internal
+ */
 final class WithPsr6Cache implements Handler
 {
-    /** @var Handler */
-    private $handler;
+    private readonly CacheItemPoolInterface $cache;
+    private readonly ClockInterface $clock;
 
-    /** @var CacheItemPoolInterface */
-    private $cache;
-
-    /** @var Clock */
-    private $clock;
-
-    public function __construct(Handler $handler, CacheItemPoolInterface $cache, Clock $clock)
+    public function __construct(private readonly Handler $handler, CacheItemPoolInterface $cache, ClockInterface $clock)
     {
-        $this->handler = $handler;
         $this->cache = $cache;
         $this->clock = $clock;
     }
@@ -32,11 +28,12 @@ final class WithPsr6Cache implements Handler
     public function handle(FetchGooglePublicKeys $action): Keys
     {
         $now = $this->clock->now();
-        $cacheKey = \md5(\get_class($action));
+        $cacheKey = md5($action::class);
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $cacheItem = $this->cache->getItem($cacheKey);
-        /** @var Keys|null $keys */
+
+        /** @var Keys|Expirable|null $keys */
         $keys = $cacheItem->get();
 
         // We deliberately don't care if the cache item is expired here, as long as the keys
@@ -57,9 +54,11 @@ final class WithPsr6Cache implements Handler
         try {
             $keys = $this->handler->handle($action);
         } catch (FetchingGooglePublicKeysFailed $e) {
-            $reason = \sprintf(
+            $reason = sprintf(
                 'The inner handler of %s (%s) failed in fetching keys: %s',
-                __CLASS__, \get_class($this->handler), $e->getMessage()
+                self::class,
+                $this->handler::class,
+                $e->getMessage(),
             );
 
             throw FetchingGooglePublicKeysFailed::because($reason, $e->getCode(), $e);

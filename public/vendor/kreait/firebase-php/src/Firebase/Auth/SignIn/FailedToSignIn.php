@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\Auth\SignIn;
 
+use Beste\Json;
 use InvalidArgumentException;
 use Kreait\Firebase\Auth\SignIn;
-use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Util\JSON;
+use Kreait\Firebase\Exception\AuthException;
+use Kreait\Firebase\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use Throwable;
 
-final class FailedToSignIn extends RuntimeException implements FirebaseException
+final class FailedToSignIn extends RuntimeException implements AuthException
 {
     private ?SignIn $action = null;
     private ?ResponseInterface $response = null;
@@ -22,8 +22,8 @@ final class FailedToSignIn extends RuntimeException implements FirebaseException
         $fallbackMessage = 'Failed to sign in';
 
         try {
-            $message = JSON::decode((string) $response->getBody(), true)['error']['message'] ?? $fallbackMessage;
-        } catch (InvalidArgumentException $e) {
+            $message = Json::decode((string) $response->getBody(), true)['error']['message'] ?? $fallbackMessage;
+        } catch (InvalidArgumentException) {
             $message = $fallbackMessage;
         }
 

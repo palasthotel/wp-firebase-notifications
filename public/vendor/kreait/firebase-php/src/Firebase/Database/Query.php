@@ -5,11 +5,23 @@ declare(strict_types=1);
 namespace Kreait\Firebase\Database;
 
 use Kreait\Firebase\Database\Query\Filter;
+use Kreait\Firebase\Database\Query\Filter\EndAt;
+use Kreait\Firebase\Database\Query\Filter\EndBefore;
+use Kreait\Firebase\Database\Query\Filter\EqualTo;
+use Kreait\Firebase\Database\Query\Filter\LimitToFirst;
+use Kreait\Firebase\Database\Query\Filter\LimitToLast;
+use Kreait\Firebase\Database\Query\Filter\Shallow;
+use Kreait\Firebase\Database\Query\Filter\StartAfter;
+use Kreait\Firebase\Database\Query\Filter\StartAt;
 use Kreait\Firebase\Database\Query\Sorter;
+use Kreait\Firebase\Database\Query\Sorter\OrderByChild;
+use Kreait\Firebase\Database\Query\Sorter\OrderByKey;
+use Kreait\Firebase\Database\Query\Sorter\OrderByValue;
 use Kreait\Firebase\Exception\Database\DatabaseNotFound;
 use Kreait\Firebase\Exception\Database\UnsupportedQuery;
 use Kreait\Firebase\Exception\DatabaseException;
 use Psr\Http\Message\UriInterface;
+use Stringable;
 
 /**
  * A Query sorts and filters the data at a database location so only a subset of the child data is included.
@@ -24,22 +36,29 @@ use Psr\Http\Message\UriInterface;
  *
  * @see https://firebase.google.com/docs/reference/js/firebase.database.Query
  */
-class Query
+class Query implements Stringable
 {
-    private Reference $reference;
-    private ApiClient $apiClient;
-    /** @var Filter[] */
-    private array $filters;
+    /**
+     * @var Filter[]
+     */
+    private array $filters = [];
     private ?Sorter $sorter = null;
 
     /**
      * @internal
      */
-    public function __construct(Reference $reference, ApiClient $apiClient)
+    public function __construct(private readonly Reference $reference, private readonly ApiClient $apiClient)
     {
-        $this->reference = $reference;
-        $this->apiClient = $apiClient;
-        $this->filters = [];
+    }
+
+    /**
+     * Returns the absolute URL for this location.
+     *
+     * @see getUri()
+     */
+    public function __toString(): string
+    {
+        return (string) $this->getUri();
     }
 
     /**
@@ -59,15 +78,19 @@ class Query
      */
     public function getSnapshot(): Snapshot
     {
+        $uri = $this->getUri();
+
+        $pathAndQuery = $uri->getPath().'?'.$uri->getQuery();
+
         try {
-            $value = $this->apiClient->get($this->getUri());
+            $value = $this->apiClient->get($pathAndQuery);
         } catch (DatabaseNotFound $e) {
             throw $e;
         } catch (DatabaseException $e) {
             throw new UnsupportedQuery($this, $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
 
-        if ($this->sorter) {
+        if ($this->sorter !== null) {
             $value = $this->sorter->modifyValue($value);
         }
 
@@ -82,10 +105,8 @@ class Query
      * Convenience method for {@see getSnapshot()}->getValue().
      *
      * @throws UnsupportedQuery if an error occurred
-     *
-     * @return mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->getSnapshot()->getValue();
     }
@@ -98,13 +119,11 @@ class Query
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#endAt
      *
-     * @param int|float|string|bool $value
-     *
-     * @return Query
+     * @param scalar $value
      */
     public function endAt($value): self
     {
-        return $this->withAddedFilter(new Filter\EndAt($value));
+        return $this->withAddedFilter(new EndAt($value));
     }
 
     /**
@@ -112,13 +131,11 @@ class Query
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#endbefore
      *
-     * @param int|float|string|bool $value
-     *
-     * @return Query
+     * @param scalar $value
      */
     public function endBefore($value): self
     {
-        return $this->withAddedFilter(new Filter\EndBefore($value));
+        return $this->withAddedFilter(new EndBefore($value));
     }
 
     /**
@@ -126,13 +143,11 @@ class Query
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#equalTo
      *
-     * @param int|float|string|bool $value
-     *
-     * @return Query
+     * @param scalar $value
      */
     public function equalTo($value): self
     {
-        return $this->withAddedFilter(new Filter\EqualTo($value));
+        return $this->withAddedFilter(new EqualTo($value));
     }
 
     /**
@@ -140,13 +155,11 @@ class Query
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#startAt
      *
-     * @param int|float|string|bool $value
-     *
-     * @return Query
+     * @param scalar $value
      */
     public function startAt($value): self
     {
-        return $this->withAddedFilter(new Filter\StartAt($value));
+        return $this->withAddedFilter(new StartAt($value));
     }
 
     /**
@@ -154,37 +167,31 @@ class Query
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#startafter
      *
-     * @param int|float|string|bool $value
-     *
-     * @return Query
+     * @param scalar $value
      */
     public function startAfter($value): self
     {
-        return $this->withAddedFilter(new Filter\StartAfter($value));
+        return $this->withAddedFilter(new StartAfter($value));
     }
 
     /**
      * Generates a new Query limited to the first specific number of children.
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#limitToFirst
-     *
-     * @return Query
      */
     public function limitToFirst(int $limit): self
     {
-        return $this->withAddedFilter(new Filter\LimitToFirst($limit));
+        return $this->withAddedFilter(new LimitToFirst($limit));
     }
 
     /**
      * Generates a new Query object limited to the last specific number of children.
      *
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#limitToLast
-     *
-     * @return Query
      */
     public function limitToLast(int $limit): self
     {
-        return $this->withAddedFilter(new Filter\LimitToLast($limit));
+        return $this->withAddedFilter(new LimitToLast($limit));
     }
 
     /**
@@ -196,12 +203,10 @@ class Query
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#orderByChild
      *
      * @throws UnsupportedQuery if the query is already ordered
-     *
-     * @return Query
      */
     public function orderByChild(string $childKey): self
     {
-        return $this->withSorter(new Sorter\OrderByChild($childKey));
+        return $this->withSorter(new OrderByChild($childKey));
     }
 
     /**
@@ -215,12 +220,10 @@ class Query
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#orderByKey
      *
      * @throws UnsupportedQuery if the query is already ordered
-     *
-     * @return Query
      */
     public function orderByKey(): self
     {
-        return $this->withSorter(new Sorter\OrderByKey());
+        return $this->withSorter(new OrderByKey());
     }
 
     /**
@@ -235,12 +238,10 @@ class Query
      * @see https://firebase.google.com/docs/reference/js/firebase.database.Query#orderByValue
      *
      * @throws UnsupportedQuery if the query is already ordered
-     *
-     * @return Query
      */
     public function orderByValue(): self
     {
-        return $this->withSorter(new Sorter\OrderByValue());
+        return $this->withSorter(new OrderByValue());
     }
 
     /**
@@ -252,12 +253,10 @@ class Query
      * truncated to true.
      *
      * @see https://firebase.google.com/docs/reference/rest/database/#section-param-shallow
-     *
-     * @return Query
      */
     public function shallow(): self
     {
-        return $this->withAddedFilter(new Filter\Shallow());
+        return $this->withAddedFilter(new Shallow());
     }
 
     /**
@@ -274,7 +273,7 @@ class Query
     {
         $uri = $this->reference->getUri();
 
-        if ($this->sorter) {
+        if ($this->sorter !== null) {
             $uri = $this->sorter->modifyUri($uri);
         }
 
@@ -283,16 +282,6 @@ class Query
         }
 
         return $uri;
-    }
-
-    /**
-     * Returns the absolute URL for this location.
-     *
-     * @see getUri()
-     */
-    public function __toString(): string
-    {
-        return (string) $this->getUri();
     }
 
     private function withAddedFilter(Filter $filter): self
@@ -305,7 +294,7 @@ class Query
 
     private function withSorter(Sorter $sorter): self
     {
-        if ($this->sorter) {
+        if ($this->sorter !== null) {
             throw new UnsupportedQuery($this, 'This query is already ordered.');
         }
 

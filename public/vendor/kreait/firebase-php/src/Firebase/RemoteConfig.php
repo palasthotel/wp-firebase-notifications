@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase;
 
+use Beste\Json;
 use Kreait\Firebase\Exception\RemoteConfig\VersionNotFound;
 use Kreait\Firebase\RemoteConfig\ApiClient;
 use Kreait\Firebase\RemoteConfig\FindVersions;
 use Kreait\Firebase\RemoteConfig\Template;
 use Kreait\Firebase\RemoteConfig\Version;
 use Kreait\Firebase\RemoteConfig\VersionNumber;
-use Kreait\Firebase\Util\JSON;
 use Psr\Http\Message\ResponseInterface;
 use Traversable;
 
-class RemoteConfig implements Contract\RemoteConfig
-{
-    private ApiClient $client;
+use function array_shift;
+use function is_string;
 
-    /**
-     * @internal
-     */
-    public function __construct(ApiClient $client)
+/**
+ * @internal
+ *
+ * @phpstan-import-type RemoteConfigTemplateShape from Template
+ */
+final class RemoteConfig implements Contract\RemoteConfig
+{
+    public function __construct(private readonly ApiClient $client)
     {
-        $this->client = $client;
     }
 
     public function get(): Template
@@ -43,10 +45,20 @@ class RemoteConfig implements Contract\RemoteConfig
             ->getHeader('ETag')
         ;
 
-        return \array_shift($etag) ?: '';
+        $etag = array_shift($etag);
+
+        if (!is_string($etag)) {
+            return '*';
+        }
+
+        if ($etag === '') {
+            return '*';
+        }
+
+        return $etag;
     }
 
-    public function getVersion($versionNumber): Version
+    public function getVersion(VersionNumber|int|string $versionNumber): Version
     {
         $versionNumber = $this->ensureVersionNumber($versionNumber);
 
@@ -59,7 +71,7 @@ class RemoteConfig implements Contract\RemoteConfig
         throw VersionNotFound::withVersionNumber($versionNumber);
     }
 
-    public function rollbackToVersion($versionNumber): Template
+    public function rollbackToVersion(VersionNumber|int|string $versionNumber): Template
     {
         $versionNumber = $this->ensureVersionNumber($versionNumber);
 
@@ -75,10 +87,11 @@ class RemoteConfig implements Contract\RemoteConfig
 
         do {
             $response = $this->client->listVersions($query, $pageToken);
-            $result = JSON::decode((string) $response->getBody(), true);
+            $result = Json::decode((string) $response->getBody(), true);
 
             foreach ((array) ($result['versions'] ?? []) as $versionData) {
                 ++$count;
+
                 yield Version::fromArray($versionData);
 
                 if ($count === $limit) {
@@ -91,7 +104,7 @@ class RemoteConfig implements Contract\RemoteConfig
     }
 
     /**
-     * @param Template|array<string, mixed> $value
+     * @param Template|RemoteConfigTemplateShape $value
      */
     private function ensureTemplate($value): Template
     {
@@ -99,9 +112,9 @@ class RemoteConfig implements Contract\RemoteConfig
     }
 
     /**
-     * @param VersionNumber|int|string $value
+     * @param VersionNumber|positive-int|non-empty-string $value
      */
-    private function ensureVersionNumber($value): VersionNumber
+    private function ensureVersionNumber(VersionNumber|int|string $value): VersionNumber
     {
         return $value instanceof VersionNumber ? $value : VersionNumber::fromValue($value);
     }
@@ -109,9 +122,9 @@ class RemoteConfig implements Contract\RemoteConfig
     private function buildTemplateFromResponse(ResponseInterface $response): Template
     {
         $etagHeader = $response->getHeader('ETag');
-        $etag = \array_shift($etagHeader) ?: '*';
+        $etag = array_shift($etagHeader) ?: '*';
 
-        $data = JSON::decode((string) $response->getBody(), true);
+        $data = Json::decode((string) $response->getBody(), true);
 
         return Template::fromArray($data, $etag);
     }

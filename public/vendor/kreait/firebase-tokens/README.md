@@ -11,17 +11,27 @@ Achieve more with the [Firebase Admin SDK](https://github.com/kreait/firebase-ph
 [![Monthly Downloads](https://img.shields.io/packagist/dm/kreait/firebase-tokens.svg)](https://packagist.org/packages/kreait/firebase-tokens/stats)
 [![Total Downloads](https://img.shields.io/packagist/dt/kreait/firebase-tokens.svg)](https://packagist.org/packages/kreait/firebase-tokens/stats)
 [![Tests](https://github.com/kreait/firebase-tokens-php/workflows/Tests/badge.svg)](https://github.com/kreait/firebase-tokens-php/actions)
-[![Discord](https://img.shields.io/discord/807679292573220925.svg?color=7289da&logo=discord)](https://discord.gg/Yacm7unBsr)
 [![Sponsor](https://img.shields.io/static/v1?logo=GitHub&label=Sponsor&message=%E2%9D%A4&color=ff69b4)](https://github.com/sponsors/jeromegamez)
+
+---
+
+## The future of the Firebase Admin PHP SDK
+
+Please read about the future of the Firebase Admin PHP SDK on the
+[SDK's GitHub Repository](https://github.com/kreait/firebase-php).
+
+---
 
 - [Installation](#installation)
 - [Simple Usage](#simple-usage)
   - [Create a custom token](#create-a-custom-token)
   - [Verify an ID token](#verify-an-id-token)
+  - [Verify a Session Cookie](#verify-a-session-cookie)
   - [Tokens](#tokens)
   - [Tenant Awareness](#tenant-awareness) 
 - [Advanced Usage](#advanced-usage)
   - [Cache results from the Google Secure Token Store](#cache-results-from-the-google-secure-token-store)
+- [Supported Versions](#supported-versions)
 
 ## Installation
 
@@ -86,9 +96,44 @@ try {
 }
 ```
 
+### Verify a Session Cookie
+
+Session cookie verification is similar to ID Token verification.
+
+See [Manage Session Cookies](https://firebase.google.com/docs/auth/admin/manage-cookies) for more information.
+
+```php
+<?php
+
+use Kreait\Firebase\JWT\Error\SessionCookieVerificationFailed;
+use Kreait\Firebase\JWT\SessionCookieVerifier;
+
+$projectId = '...';
+$sessionCookie = 'eyJhb...'; // A session cookie given to your backend by a Client application
+
+$verifier = SessionCookieVerifier::createWithProjectId($projectId);
+
+try {
+    $token = $verifier->verifySessionCookie($sessionCookie);
+} catch (SessionCookieVerificationFailed $e) {
+    echo $e->getMessage();
+    // Example Output:
+    // The value 'eyJhb...' is not a verified ID token:
+    // - The token is expired.
+    exit;
+}
+
+try {
+    $token = $verifier->verifySessionCookieWithLeeway($sessionCookie, $leewayInSeconds = 10000000);
+} catch (SessionCookieVerificationFailed $e) {
+    print $e->getMessage();
+    exit;
+}
+```
+
 ### Tokens
 
-Tokens returned from the Generator and Verifier are instances of `Kreait\Firebase\JWT\Token` and
+Tokens returned from the Generator and Verifier are instances of `\Kreait\Firebase\JWT\Contract\Token` and
 represent a [JWT](https://jwt.io/). The displayed outputs are examples and vary depending on
 the information associated with the given user in your project's auth database.
 
@@ -167,6 +212,7 @@ $verifier = IdTokenVerifier::createWithProjectId('my-project-id');
 $tenantAwareVerifier = $verifier->withExpectedTenantId('my-tenant-id');
 ```
 
+Session cookies currently don't support tenants.
 
 ## Advanced usage
 
@@ -184,12 +230,22 @@ Here's an example using the [Symfony Cache Component](https://symfony.com/doc/cu
 
 ```php
 use Kreait\Firebase\JWT\IdTokenVerifier;
-use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-$cache = new FilesystemCache();
+$cache = new FilesystemAdapter();
 
 $verifier = IdTokenVerifier::createWithProjectIdAndCache($projectId, $cache);
 ```
+
+## Supported Versions
+
+| Version | Initial Release | Supported PHP Versions   | Support     |
+|---------|-----------------|--------------------------|-------------|
+| `5.x`   | 25 Nov 2023     | `~8.2.0, ~8.3.0`         | Active      |
+| `4.x`   | 26 Nov 2022     | `~8.1.0, ~8.2.0, ~8.3.0` | Bug fixes   |
+| `3.x`   | 25 Apr 2022     | `^7.4, ^8.0`             | End of life |
+| `2.x`   | 03 Jan 2022     | `^7.4, ^8.0`             | End of life |
+| `1.x`   | 06 Feb 2017     | `>=5.5`                  | End of life |
 
 ## License
 

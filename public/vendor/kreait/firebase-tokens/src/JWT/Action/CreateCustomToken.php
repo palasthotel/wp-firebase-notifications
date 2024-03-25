@@ -10,33 +10,23 @@ use Kreait\Firebase\JWT\Value\Duration;
 
 final class CreateCustomToken
 {
-    const MINIMUM_TTL = 'PT1S';
-    const MAXIMUM_TTL = 'PT1H';
-    const DEFAULT_TTL = self::MAXIMUM_TTL;
-
-    /** @var string */
-    private $uid;
-
-    /** @var string|null */
-    private $tenantId;
+    public const MINIMUM_TTL = 'PT1S';
+    public const MAXIMUM_TTL = 'PT1H';
+    public const DEFAULT_TTL = self::MAXIMUM_TTL;
+    private ?string $tenantId = null;
 
     /** @var array<string, mixed> */
-    private $customClaims = [];
+    private array $customClaims = [];
+    private Duration $ttl;
 
-    /** @var Duration */
-    private $ttl;
-
-    private function __construct()
+    private function __construct(private string $uid)
     {
         $this->ttl = Duration::fromDateIntervalSpec(self::DEFAULT_TTL);
     }
 
     public static function forUid(string $uid): self
     {
-        $action = new self();
-        $action->uid = $uid;
-
-        return $action;
+        return new self($uid);
     }
 
     public function withTenantId(string $tenantId): self
@@ -55,10 +45,7 @@ final class CreateCustomToken
         return $action;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function withCustomClaim(string $name, $value): self
+    public function withCustomClaim(string $name, mixed $value): self
     {
         $action = clone $this;
         $action->customClaims[$name] = $value;
@@ -83,15 +70,12 @@ final class CreateCustomToken
     public function withAddedCustomClaims(array $claims): self
     {
         $action = clone $this;
-        $action->customClaims = \array_merge($action->customClaims, $claims);
+        $action->customClaims = [...$action->customClaims, ...$claims];
 
         return $action;
     }
 
-    /**
-     * @param Duration|DateInterval|string|int $ttl
-     */
-    public function withTimeToLive($ttl): self
+    public function withTimeToLive(Duration|DateInterval|string|int $ttl): self
     {
         $ttl = Duration::make($ttl);
 
@@ -100,7 +84,8 @@ final class CreateCustomToken
 
         if ($ttl->isSmallerThan($minTtl) || $ttl->isLargerThan($maxTtl)) {
             $message = 'The expiration time of a custom token must be between %s and %s, but got %s';
-            throw new InvalidArgumentException(\sprintf($message, $minTtl, $maxTtl, $ttl));
+
+            throw new InvalidArgumentException(sprintf($message, $minTtl, $maxTtl, $ttl));
         }
 
         $action = clone $this;
@@ -114,10 +99,7 @@ final class CreateCustomToken
         return $this->uid;
     }
 
-    /**
-     * @return string|null
-     */
-    public function tenantId()
+    public function tenantId(): ?string
     {
         return $this->tenantId;
     }

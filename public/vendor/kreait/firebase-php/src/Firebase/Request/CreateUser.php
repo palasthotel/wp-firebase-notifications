@@ -9,6 +9,7 @@ use Kreait\Firebase\Request;
 
 final class CreateUser implements Request
 {
+    /** @phpstan-use EditUserTrait<self> */
     use EditUserTrait;
 
     private function __construct()
@@ -30,9 +31,6 @@ final class CreateUser implements Request
         return self::withEditableProperties(new self(), $properties);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return $this->prepareJsonSerialize();

@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace Kreait\Firebase\Exception\Database;
 
 use Kreait\Firebase\Database\Reference;
-use Kreait\Firebase\Exception\FirebaseException;
-use RuntimeException;
+use Kreait\Firebase\Exception\DatabaseException;
+use Kreait\Firebase\Exception\RuntimeException;
 use Throwable;
 
-final class TransactionFailed extends RuntimeException implements FirebaseException
+use function trim;
+
+final class TransactionFailed extends RuntimeException implements DatabaseException
 {
-    private Reference $reference;
+    private readonly Reference $reference;
 
     public function __construct(Reference $query, string $message = '', int $code = 0, ?Throwable $previous = null)
     {
-        if (\trim($message) === '') {
+        if (trim($message) === '') {
             $queryPath = $query->getPath();
 
             $message = "The transaction on {$queryPath} failed";
@@ -34,7 +36,7 @@ final class TransactionFailed extends RuntimeException implements FirebaseExcept
 
     public static function onReference(Reference $reference, ?Throwable $error = null): self
     {
-        $code = $error ? $error->getCode() : 0;
+        $code = $error !== null ? $error->getCode() : 0;
 
         return new self($reference, '', $code, $error);
     }

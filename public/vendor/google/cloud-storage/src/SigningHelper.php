@@ -60,14 +60,15 @@ class SigningHelper
      * Sign using the version inferred from `$options.version`.
      *
      * @param ConnectionInterface $connection A connection to the Cloud Storage
-     *        API.
+     *        API. This object is created by StorageClient,
+     *        and should not be instantiated outside of this client.
      * @param Timestamp|\DateTimeInterface|int $expires The signed URL
      *        expiration.
      * @param string $resource The URI to the storage resource, preceded by a
      *        leading slash.
      * @param int|null $generation The resource generation.
      * @param array $options Configuration options. See
-     *        {@see Google\Cloud\Storage\StorageObject::signedUrl()} for
+     *        {@see StorageObject::signedUrl()} for
      *        details.
      * @return string
      * @throws \InvalidArgumentException
@@ -78,9 +79,7 @@ class SigningHelper
      */
     public function sign(ConnectionInterface $connection, $expires, $resource, $generation, array $options)
     {
-        $version = isset($options['version'])
-            ? $options['version']
-            : self::DEFAULT_URL_SIGNING_VERSION;
+        $version = $options['version'] ?? self::DEFAULT_URL_SIGNING_VERSION;
 
         unset($options['version']);
 
@@ -112,14 +111,15 @@ class SigningHelper
      * This method will be deprecated in the future.
      *
      * @param ConnectionInterface $connection A connection to the Cloud Storage
-     *        API.
+     *        API. This object is created by StorageClient,
+     *        and should not be instantiated outside of this client.
      * @param Timestamp|\DateTimeInterface|int $expires The signed URL
      *        expiration.
      * @param string $resource The URI to the storage resource, preceded by a
      *        leading slash.
      * @param int|null $generation The resource generation.
      * @param array $options Configuration options. See
-     *        {@see Google\Cloud\Storage\StorageObject::signedUrl()} for
+     *        {@see StorageObject::signedUrl()} for
      *        details.
      * @return string
      * @throws \InvalidArgumentException
@@ -208,14 +208,15 @@ class SigningHelper
      * Sign a storage URL using Google Signed URLs v4.
      *
      * @param ConnectionInterface $connection A connection to the Cloud Storage
-     *        API.
+     *        API. This object is created by StorageClient,
+     *        and should not be instantiated outside of this client.
      * @param Timestamp|\DateTimeInterface|int $expires The signed URL
      *        expiration.
      * @param string $resource The URI to the storage resource, preceded by a
      *        leading slash.
      * @param int|null $generation The resource generation.
      * @param array $options Configuration options. See
-     *        {@see Google\Cloud\Storage\StorageObject::signedUrl()} for
+     *        {@see StorageObject::signedUrl()} for
      *        details.
      * @return string
      * @throws \InvalidArgumentException
@@ -364,12 +365,14 @@ class SigningHelper
      * Create an HTTP POST policy using v4 signing.
      *
      * @param ConnectionInterface $connection A Connection to Google Cloud Storage.
+     *        This object is created by StorageClient,
+     *        and should not be instantiated outside of this client.
      * @param Timestamp|\DateTimeInterface|int $expires The signed URL
      *        expiration.
      * @param string $resource The URI to the storage resource, preceded by a
      *        leading slash.
      * @param array $options Configuration options. See
-     *        {@see Google\Cloud\Storage\Bucket::generateSignedPostPolicyV4()} for details.
+     *        {@see Bucket::generateSignedPostPolicyV4()} for details.
      * @return array An associative array, containing (string) `uri` and
      *        (array) `fields` keys.
      */
@@ -782,6 +785,8 @@ class SigningHelper
      * Get the credentials for use with signing.
      *
      * @param ConnectionInterface $connection A Storage connection object.
+     *        This object is created by StorageClient,
+     *        and should not be instantiated outside of this client.
      * @param array $options Configuration options.
      * @return array A list containing a credentials object at index 0 and the
      *        modified options at index 1.
@@ -790,9 +795,7 @@ class SigningHelper
      */
     private function getSigningCredentials(ConnectionInterface $connection, array $options)
     {
-        $keyFilePath = isset($options['keyFilePath'])
-            ? $options['keyFilePath']
-            : null;
+        $keyFilePath = $options['keyFilePath'] ?? null;
 
         if ($keyFilePath) {
             if (!file_exists($keyFilePath)) {
@@ -807,13 +810,9 @@ class SigningHelper
 
         $rw = $connection->requestWrapper();
 
-        $keyFile = isset($options['keyFile'])
-            ? $options['keyFile']
-            : null;
+        $keyFile = $options['keyFile'] ?? null;
         if ($keyFile) {
-            $scopes = isset($options['scopes'])
-                ? $options['scopes']
-                : $rw->scopes();
+            $scopes = $options['scopes'] ?? $rw->scopes();
 
             $credentials = CredentialsLoader::makeCredentials($scopes, $keyFile);
         } else {

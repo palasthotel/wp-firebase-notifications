@@ -6,6 +6,7 @@ namespace Kreait\Firebase\Contract;
 
 use Kreait\Firebase\Database\Reference;
 use Kreait\Firebase\Database\RuleSet;
+use Kreait\Firebase\Database\Transaction;
 use Kreait\Firebase\Exception\DatabaseException;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Kreait\Firebase\Exception\OutOfRangeException;
@@ -18,6 +19,8 @@ use Psr\Http\Message\UriInterface;
  */
 interface Database
 {
+    public const SERVER_TIMESTAMP = ['.sv' => 'timestamp'];
+
     /**
      * Returns a Reference to the root or the specified path.
      *
@@ -58,9 +61,7 @@ interface Database
     public function updateRules(RuleSet $ruleSet): void;
 
     /**
-     * @param callable(\Kreait\Firebase\Database\Transaction $transaction):mixed $callable
-     *
-     * @return mixed
+     * @param callable(Transaction $transaction):mixed $callable
      */
-    public function runTransaction(callable $callable);
+    public function runTransaction(callable $callable): mixed;
 }

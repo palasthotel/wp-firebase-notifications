@@ -8,36 +8,39 @@ use Countable;
 use IteratorAggregate;
 use Traversable;
 
+use function array_filter;
+use function count;
+
 /**
  * @implements IteratorAggregate<TopicSubscription>
  */
 final class TopicSubscriptions implements Countable, IteratorAggregate
 {
-    /** @var TopicSubscription[] */
-    private array $subscriptions;
+    /**
+     * @var list<TopicSubscription>
+     */
+    private readonly array $subscriptions;
 
     public function __construct(TopicSubscription ...$subscriptions)
     {
-        $this->subscriptions = $subscriptions;
+        $this->subscriptions = array_values($subscriptions);
     }
 
     public function filter(callable $filter): self
     {
-        return new self(...\array_filter($this->subscriptions, $filter));
+        return new self(...array_values(array_filter($this->subscriptions, $filter)));
     }
 
     /**
-     * @codeCoverageIgnore
-     *
-     * @return Traversable<TopicSubscription>|TopicSubscription[]
+     * @return Traversable<TopicSubscription>
      */
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         yield from $this->subscriptions;
     }
 
     public function count(): int
     {
-        return \count($this->subscriptions);
+        return count($this->subscriptions);
     }
 }

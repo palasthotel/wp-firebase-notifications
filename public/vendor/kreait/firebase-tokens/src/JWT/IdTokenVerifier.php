@@ -4,58 +4,68 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\JWT;
 
+use Beste\Clock\SystemClock;
+use GuzzleHttp\Client;
 use InvalidArgumentException;
-use Kreait\Clock\SystemClock;
-use Kreait\Firebase\JWT\Action\FetchGooglePublicKeys;
+use Kreait\Firebase\JWT\Action\FetchGooglePublicKeys\WithGuzzle;
+use Kreait\Firebase\JWT\Action\FetchGooglePublicKeys\WithPsr6Cache;
 use Kreait\Firebase\JWT\Action\VerifyIdToken;
-use Kreait\Firebase\JWT\Cache\InMemoryCache;
+use Kreait\Firebase\JWT\Action\VerifyIdToken\Handler;
+use Kreait\Firebase\JWT\Action\VerifyIdToken\WithLcobucciJWT;
 use Kreait\Firebase\JWT\Contract\Token;
 use Kreait\Firebase\JWT\Error\IdTokenVerificationFailed;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\SimpleCache\CacheInterface;
 
 final class IdTokenVerifier
 {
-    /** @var VerifyIdToken\Handler */
-    private $handler;
+    /**
+     * @var non-empty-string
+     */
+    private ?string $expectedTenantId = null;
 
-    /** @var string|null */
-    private $expectedTenantId;
-
-    public function __construct(VerifyIdToken\Handler $handler)
+    public function __construct(private readonly Handler $handler)
     {
-        $this->handler = $handler;
-    }
-
-    public static function createWithProjectId(string $projectId): self
-    {
-        return self::createWithProjectIdAndCache($projectId, InMemoryCache::createEmpty());
     }
 
     /**
-     * @param CacheInterface|CacheItemPoolInterface $cache
+     * @param non-empty-string $projectId
      */
-    public static function createWithProjectIdAndCache(string $projectId, $cache): self
+    public static function createWithProjectId(string $projectId): self
     {
-        $clock = new SystemClock();
-        $keyHandler = new FetchGooglePublicKeys\WithHandlerDiscovery($clock);
-
-        $keyHandler = $cache instanceof CacheInterface
-            ? new FetchGooglePublicKeys\WithPsr16SimpleCache($keyHandler, $cache, $clock)
-            : new FetchGooglePublicKeys\WithPsr6Cache($keyHandler, $cache, $clock);
+        $clock = SystemClock::create();
+        $keyHandler = new WithGuzzle(new Client(['http_errors' => false]), $clock);
 
         $keys = new GooglePublicKeys($keyHandler, $clock);
-        $handler = new VerifyIdToken\WithHandlerDiscovery($projectId, $keys, $clock);
+        $handler = new WithLcobucciJWT($projectId, $keys, $clock);
 
         return new self($handler);
     }
 
+    /**
+     * @param non-empty-string $projectId
+     */
+    public static function createWithProjectIdAndCache(string $projectId, CacheItemPoolInterface $cache): self
+    {
+        $clock = SystemClock::create();
+
+        $innerKeyHandler = new WithGuzzle(new Client(['http_errors' => false]), $clock);
+        $keyHandler = new WithPsr6Cache($innerKeyHandler, $cache, $clock);
+
+        $keys = new GooglePublicKeys($keyHandler, $clock);
+        $handler = new WithLcobucciJWT($projectId, $keys, $clock);
+
+        return new self($handler);
+    }
+
+    /**
+     * @param non-empty-string $tenantId
+     */
     public function withExpectedTenantId(string $tenantId): self
     {
-        $generator = clone $this;
-        $generator->expectedTenantId = $tenantId;
+        $verifier = clone $this;
+        $verifier->expectedTenantId = $tenantId;
 
-        return $generator;
+        return $verifier;
     }
 
     public function execute(VerifyIdToken $action): Token
@@ -68,6 +78,8 @@ final class IdTokenVerifier
     }
 
     /**
+     * @param non-empty-string $token
+     *
      * @throws IdTokenVerificationFailed
      */
     public function verifyIdToken(string $token): Token
@@ -76,8 +88,11 @@ final class IdTokenVerifier
     }
 
     /**
-     * @throws InvalidArgumentException on invalid leeway
+     * @param non-empty-string $token
+     * @param int<0, max> $leewayInSeconds
+     *
      * @throws IdTokenVerificationFailed
+     * @throws InvalidArgumentException on invalid leeway
      */
     public function verifyIdTokenWithLeeway(string $token, int $leewayInSeconds): Token
     {

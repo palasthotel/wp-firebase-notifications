@@ -12,48 +12,49 @@ use Kreait\Firebase\DynamicLink\DynamicLinkStatistics;
 use Kreait\Firebase\DynamicLink\GetStatisticsForDynamicLink;
 use Kreait\Firebase\DynamicLink\ShortenLongDynamicLink;
 use Kreait\Firebase\DynamicLink\ShortenLongDynamicLink\FailedToShortenLongDynamicLink;
-use Kreait\Firebase\Value\Url;
-use Psr\Http\Message\UriInterface;
+use Stringable;
 
+/**
+ * @phpstan-import-type CreateDynamicLinkShape from CreateDynamicLink
+ * @phpstan-import-type ShortenLongDynamicLinkShape from ShortenLongDynamicLink
+ */
 interface DynamicLinks
 {
     /**
-     * @param string|Url|UriInterface|CreateDynamicLink|array|mixed $url
+     * @param Stringable|non-empty-string|CreateDynamicLink|CreateDynamicLinkShape $url
      *
      * @throws InvalidArgumentException
      * @throws FailedToCreateDynamicLink
      */
-    public function createUnguessableLink($url): DynamicLink;
+    public function createUnguessableLink(Stringable|string|CreateDynamicLink|array $url): DynamicLink;
 
     /**
-     * @param string|Url|UriInterface|CreateDynamicLink|array|mixed $url
+     * @param Stringable|non-empty-string|CreateDynamicLink|CreateDynamicLinkShape $url
      *
      * @throws InvalidArgumentException
      * @throws FailedToCreateDynamicLink
      */
-    public function createShortLink($url): DynamicLink;
+    public function createShortLink(Stringable|string|CreateDynamicLink|array $url): DynamicLink;
 
     /**
-     * @param string|Url|UriInterface|CreateDynamicLink|array|mixed $actionOrParametersOrUrl
+     * @param Stringable|non-empty-string|CreateDynamicLink|CreateDynamicLinkShape $actionOrParametersOrUrl
      *
      * @throws InvalidArgumentException
      * @throws FailedToCreateDynamicLink
      */
-    public function createDynamicLink($actionOrParametersOrUrl, ?string $suffixType = null): DynamicLink;
+    public function createDynamicLink(Stringable|string|CreateDynamicLink|array $actionOrParametersOrUrl, ?string $suffixType = null): DynamicLink;
 
     /**
-     * @param string|Url|UriInterface|ShortenLongDynamicLink|array|mixed $longDynamicLinkOrAction
+     * @param Stringable|non-empty-string|ShortenLongDynamicLink|ShortenLongDynamicLinkShape $longDynamicLinkOrAction
      *
      * @throws InvalidArgumentException
      * @throws FailedToShortenLongDynamicLink
      */
-    public function shortenLongDynamicLink($longDynamicLinkOrAction, ?string $suffixType = null): DynamicLink;
+    public function shortenLongDynamicLink(Stringable|string|ShortenLongDynamicLink|array $longDynamicLinkOrAction, ?string $suffixType = null): DynamicLink;
 
     /**
-     * @param string|Url|UriInterface|GetStatisticsForDynamicLink|mixed $dynamicLinkOrAction
-     *
      * @throws InvalidArgumentException
      * @throws GetStatisticsForDynamicLink\FailedToGetStatisticsForDynamicLink
      */
-    public function getStatistics($dynamicLinkOrAction, ?int $durationInDays = null): DynamicLinkStatistics;
+    public function getStatistics(Stringable|string|GetStatisticsForDynamicLink $dynamicLinkOrAction, ?int $durationInDays = null): DynamicLinkStatistics;
 }
