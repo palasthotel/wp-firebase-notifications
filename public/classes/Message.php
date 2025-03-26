@@ -254,6 +254,10 @@ class Message {
 							'apns-priority' => '10',
 						],
 						'payload' => array(
+                            'notification' => array(
+                                'title' => $this->title,
+                                'body'  => $this->body,
+                            ),
 							'aps' => array(
 								'alert' => array(
 									'title' => $this->title,
