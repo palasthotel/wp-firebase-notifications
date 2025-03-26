@@ -61,6 +61,7 @@ class Plugin extends Component\Plugin {
 	const FILTER_CURRENT_USER_CAN_SEND_MESSAGE = "firebase_notifications_current_user_can_send_message";
 	const FILTER_TOPICS = "firebase_notifications_topics";
 	const FILTER_MESSAGE = "firebase_notifications_message";
+    const FILTER_MESSAGE_PAYLOAD = "firebase_notifications_message_payload";
 	const FILTER_META_BOX_RESTRICTIONS = "firebase_notifications_meta_box_restrictions";
 	const FILTER_SETTINGS_URL = "firebase_notifications_settings_url";
 

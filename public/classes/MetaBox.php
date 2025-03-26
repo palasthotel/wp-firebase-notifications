@@ -111,10 +111,10 @@ class MetaBox {
 				),
 			),
 			"topic_ids" => $this->plugin->topics->getTopicIds(),
-			"payload"   => array(
+			"payload"   => apply_filters(PLUGIN::FILTER_MESSAGE_PAYLOAD, array(
 				"post_id"   => $post->ID,
 				"permalink" => get_permalink( $post ),
-			),
+			)),
 		) );
 		do_action( Plugin::ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT, Plugin::HANDLE_META_BOX_SCRIPT );
 		$draftTitle = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TITLE, true);
