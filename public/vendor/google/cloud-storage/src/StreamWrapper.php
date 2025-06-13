@@ -21,7 +21,6 @@ use Google\Cloud\Core\Exception\NotFoundException;
 use Google\Cloud\Core\Exception\ServiceException;
 use Google\Cloud\Storage\Bucket;
 use GuzzleHttp\Psr7\CachingStream;
-use GuzzleHttp\Psr7;
 
 /**
  * A streamWrapper implementation for handling `gs://bucket/path/to/file.jpg`.
@@ -121,6 +120,47 @@ class StreamWrapper
     }
 
     /**
+     * This is called when include/require is used on a stream.
+     */
+    public function stream_set_option()
+    {
+        return false;
+    }
+
+    /**
+     * This is called when touch is used on a stream. See:
+     * https://www.php.net/manual/en/streamwrapper.stream-metadata.php
+     */
+    public function stream_metadata($path, $option, $value)
+    {
+        if ($option == STREAM_META_TOUCH) {
+            $this->openPath($path);
+            return $this->touch();
+        }
+
+        return false;
+    }
+
+    /**
+     * Creates an empty file if it does not exist.
+     * @return bool Returns true if file exists or has been created, false otherwise.
+     */
+    private function touch()
+    {
+        $object = $this->bucket->object($this->file);
+        try {
+            if (!$object->exists()) {
+                $this->bucket->upload('', [
+                    'name' => $this->file
+                ]);
+            }
+            return true;
+        } catch (NotFoundException $e) {
+        }
+        return false;
+    }
+
+    /**
      * Register a StreamWrapper for reading and writing to Google Storage
      *
      * @param StorageClient $client The StorageClient configuration to use.
@@ -179,7 +219,7 @@ class StreamWrapper
      */
     public function stream_open($path, $mode, $flags, &$openedPath)
     {
-        $client = $this->openPath($path);
+        $this->openPath($path);
 
         // strip off 'b' or 't' from the mode
         $mode = rtrim($mode, 'bt');

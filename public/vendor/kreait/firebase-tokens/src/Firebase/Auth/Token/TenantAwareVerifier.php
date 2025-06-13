@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace Firebase\Auth\Token;
 
+use Firebase\Auth\Token\Domain\Verifier;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\Plain;
 
-final class TenantAwareVerifier implements Domain\Verifier
+final class TenantAwareVerifier implements Verifier
 {
-    /** @var string */
-    private $tenantId;
+    private string $tenantId;
 
-    /** @var Domain\Verifier */
-    private $baseVerifier;
+    private Verifier $baseVerifier;
 
-    /**
-     * @deprecated 1.12.0
-     * @see \Kreait\Firebase\JWT\IdTokenVerifier
-     */
-    public function __construct(string $tenantId, Domain\Verifier $baseVerifier)
+    public function __construct(string $tenantId, Verifier $baseVerifier)
     {
         $this->tenantId = $tenantId;
         $this->baseVerifier = $baseVerifier;
@@ -29,17 +25,20 @@ final class TenantAwareVerifier implements Domain\Verifier
     {
         $token = $this->baseVerifier->verifyIdToken($token);
 
-        if (!($token instanceof Token\Plain)) {
+        if (!($token instanceof Plain)) {
             throw new InvalidToken($token, 'The ID token could not be decrypted');
         }
 
         $claim = $token->claims()->get('firebase');
 
-        $tenant = \is_object($claim)
-            ? ($claim->tenant ?? null)
-            : ($claim['tenant'] ?? null);
+        $tenant = null;
+        if (\is_object($claim) && \property_exists($claim, 'tenant')) {
+            $tenant = $claim->tenant;
+        } elseif (\is_array($claim)) {
+            $tenant = $claim['tenant'] ?? null;
+        }
 
-        if (!$tenant) {
+        if (!\is_string($tenant)) {
             throw new InvalidToken($token, 'The ID token does not contain a tenant identifier');
         }
 

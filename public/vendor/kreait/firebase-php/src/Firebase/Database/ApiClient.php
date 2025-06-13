@@ -132,8 +132,11 @@ class ApiClient
      */
     public function updateRules($uri, RuleSet $ruleSet)
     {
+        $rules = $ruleSet->getRules();
+        $encodedRules = Json::encode((object) $rules);
+
         $response = $this->requestApi('PUT', $uri, [
-            'body' => \json_encode($ruleSet, \JSON_PRETTY_PRINT),
+            'body' => $encodedRules,
         ]);
 
         return JSON::decode((string) $response->getBody(), true);
@@ -181,7 +184,7 @@ class ApiClient
      */
     private function requestApi(string $method, $uri, ?array $options = null): ResponseInterface
     {
-        $options = $options ?? [];
+        $options ??= [];
 
         $request = new Request($method, $uri);
 

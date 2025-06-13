@@ -1,10 +1,14 @@
 # PHP URI Template
 
-This is a URI Template implementation in PHP based on [RFC 6570 URI Template](http://tools.ietf.org/html/rfc6570). In addition to URI expansion, it also supports URI extraction (200+ test cases).
+This is a URI Template implementation in PHP based on [RFC 6570 URI Template](http://tools.ietf.org/html/rfc6570). In addition to URI expansion, it also supports URI extraction (used by [Google Cloud Core](https://github.com/googleapis/google-cloud-php-core) and [Google Cloud Client Library](https://github.com/googleapis/google-cloud-php)).
 
-![CI](https://github.com/rize/UriTemplate/workflows/CI/badge.svg) [![Total Downloads](https://poser.pugx.org/rize/uri-template/downloads.png)](https://packagist.org/packages/rize/uri-template)
+![CI](https://github.com/rize/UriTemplate/workflows/CI/badge.svg) [![Total Downloads](https://poser.pugx.org/rize/uri-template/downloads)](https://packagist.org/packages/rize/uri-template) [![Latest Stable Version](https://poser.pugx.org/rize/uri-template/v)](https://packagist.org/packages/rize/uri-template) [![PHP Version Require](https://poser.pugx.org/rize/uri-template/require/php)](https://packagist.org/packages/rize/uri-template)
 
-* [Node.js/Javascript](https://github.com/rezigned/uri-template.js) URI Template
+> [!NOTE]
+>
+> Due to the deprecation of implictly nullable parameter types in [PHP 8.4](https://wiki.php.net/rfc/deprecate-implicitly-nullable-types), we must introduce breaking change by adding explicit nullable types (`?T`) which requires PHP 7.1+.
+>
+> As a result, version [0.4.0](https://github.com/rize/UriTemplate/releases/tag/0.4.0) and later will no longer support PHP versions below 8.1.
 
 ## Usage
 
@@ -216,3 +220,34 @@ Using `composer`
 * **0.2.5** Add strict mode support for `extract` method
 * **0.3.0** Improve code quality + RFC3986 support for `extract` method by @Maks3w
 * **0.3.1** Improve `extract` method to parse two or more adjacent variables separated by dot by @corleonis
+* **0.4.0** Fixes the deprecation of implicitly nullable parameter types introduced in PHP 8.4. This version requires PHP 8.1 or later.
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/rize/UriTemplate/graphs/contributors"><img src="https://opencollective.com/rize-uri-template/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/rize-uri-template/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/rize-uri-template"><img src="https://opencollective.com/rize-uri-template/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/rize-uri-template/contribute)]
+
+<a href="https://opencollective.com/rize-uri-template/organization/0/website"><img src="https://opencollective.com/rize-uri-template/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/1/website"><img src="https://opencollective.com/rize-uri-template/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/2/website"><img src="https://opencollective.com/rize-uri-template/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/3/website"><img src="https://opencollective.com/rize-uri-template/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/4/website"><img src="https://opencollective.com/rize-uri-template/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/5/website"><img src="https://opencollective.com/rize-uri-template/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/6/website"><img src="https://opencollective.com/rize-uri-template/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/7/website"><img src="https://opencollective.com/rize-uri-template/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/8/website"><img src="https://opencollective.com/rize-uri-template/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/rize-uri-template/organization/9/website"><img src="https://opencollective.com/rize-uri-template/organization/9/avatar.svg"></a>

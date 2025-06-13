@@ -44,7 +44,7 @@ class MessagingApiExceptionConverter
      */
     public function convertException(Throwable $exception): FirebaseException
     {
-        /* @phpstan-ignore-next-line */
+        // @phpstan-ignore-next-line
         if ($exception instanceof RequestException && !($exception instanceof ConnectException)) {
             return $this->convertGuzzleRequestException($exception);
         }
@@ -72,39 +72,37 @@ class MessagingApiExceptionConverter
                 $convertedError = new InvalidMessage($message);
 
                 break;
-
             case 401:
             case 403:
                 $convertedError = new AuthenticationError($message);
 
                 break;
-
             case 404:
                 $convertedError = new NotFound($message);
 
                 break;
-
             case 429:
                 $convertedError = new QuotaExceeded($message);
-                if ($retryAfter = $this->getRetryAfter($response)) {
+                $retryAfter = $this->getRetryAfter($response);
+
+                if ($retryAfter !== null) {
                     $convertedError = $convertedError->withRetryAfter($retryAfter);
                 }
 
                 break;
-
             case 500:
                 $convertedError = new ServerError($message);
 
                 break;
-
             case 503:
                 $convertedError = new ServerUnavailable($message);
-                if ($retryAfter = $this->getRetryAfter($response)) {
+                $retryAfter = $this->getRetryAfter($response);
+
+                if ($retryAfter !== null) {
                     $convertedError = $convertedError->withRetryAfter($retryAfter);
                 }
 
                 break;
-
             default:
                 $convertedError = new MessagingError($message, $code, $previous);
 
@@ -116,7 +114,9 @@ class MessagingApiExceptionConverter
 
     private function convertGuzzleRequestException(RequestException $e): MessagingException
     {
-        if ($response = $e->getResponse()) {
+        $response = $e->getResponse();
+
+        if ($response !== null) {
             return $this->convertResponse($response, $e);
         }
 

@@ -71,22 +71,16 @@ final class GuzzleHandler implements Handler
         switch (true) {
             case $action instanceof SignInAnonymously:
                 return $this->anonymous($action);
-
             case $action instanceof SignInWithCustomToken:
                 return $this->customToken($action);
-
             case $action instanceof SignInWithEmailAndPassword:
                 return $this->emailAndPassword($action);
-
             case $action instanceof SignInWithEmailAndOobCode:
                 return $this->emailAndOobCode($action);
-
             case $action instanceof SignInWithIdpCredentials:
                 return $this->idpCredentials($action);
-
             case $action instanceof SignInWithRefreshToken:
                 return $this->refreshToken($action);
-
             default:
                 throw new FailedToSignIn(self::class.' does not support '.\get_class($action));
         }
@@ -96,7 +90,7 @@ final class GuzzleHandler implements Handler
     {
         $uri = Utils::uriFor('https://identitytoolkit.googleapis.com/v1/accounts:signUp');
 
-        $body = Utils::streamFor(\json_encode(self::prepareBody($action)));
+        $body = Utils::streamFor(JSON::encode(self::prepareBody($action), JSON_FORCE_OBJECT));
 
         $headers = self::$defaultHeaders;
 
@@ -107,9 +101,9 @@ final class GuzzleHandler implements Handler
     {
         $uri = Utils::uriFor('https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken');
 
-        $body = Utils::streamFor(\json_encode(\array_merge(self::prepareBody($action), [
+        $body = Utils::streamFor(JSON::encode(\array_merge(self::prepareBody($action), [
             'token' => $action->customToken(),
-        ])));
+        ]), JSON_FORCE_OBJECT));
 
         $headers = self::$defaultHeaders;
 
@@ -120,11 +114,11 @@ final class GuzzleHandler implements Handler
     {
         $uri = Utils::uriFor('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword');
 
-        $body = Utils::streamFor(\json_encode(\array_merge(self::prepareBody($action), [
+        $body = Utils::streamFor(JSON::encode(\array_merge(self::prepareBody($action), [
             'email' => $action->email(),
             'password' => $action->clearTextPassword(),
             'returnSecureToken' => true,
-        ])));
+        ]), JSON_FORCE_OBJECT));
 
         $headers = self::$defaultHeaders;
 
@@ -135,11 +129,11 @@ final class GuzzleHandler implements Handler
     {
         $uri = Utils::uriFor('https://www.googleapis.com/identitytoolkit/v3/relyingparty/emailLinkSignin');
 
-        $body = Utils::streamFor(\json_encode(\array_merge(self::prepareBody($action), [
+        $body = Utils::streamFor(JSON::encode(\array_merge(self::prepareBody($action), [
             'email' => $action->email(),
             'oobCode' => $action->oobCode(),
             'returnSecureToken' => true,
-        ])));
+        ]), JSON_FORCE_OBJECT));
 
         $headers = self::$defaultHeaders;
 
@@ -156,15 +150,25 @@ final class GuzzleHandler implements Handler
             'providerId' => $action->provider(),
         ];
 
-        if ($action->oauthTokenSecret()) {
-            $postBody['oauth_token_secret'] = $action->oauthTokenSecret();
+        if ($oauthTokenSecret = $action->oauthTokenSecret()) {
+            $postBody['oauth_token_secret'] = $oauthTokenSecret;
         }
 
-        $body = Utils::streamFor(\json_encode(\array_merge(self::prepareBody($action), [
+        if ($rawNonce = $action->rawNonce()) {
+            $postBody['nonce'] = $rawNonce;
+        }
+
+        $rawBody = \array_merge(self::prepareBody($action), [
             'postBody' => \http_build_query($postBody),
             'returnIdpCredential' => true,
             'requestUri' => $action->requestUri(),
-        ])));
+        ]);
+
+        if ($action->linkingIdToken()) {
+            $rawBody['idToken'] = $action->linkingIdToken();
+        }
+
+        $body = Utils::streamFor(JSON::encode($rawBody, JSON_FORCE_OBJECT));
 
         $headers = self::$defaultHeaders;
 

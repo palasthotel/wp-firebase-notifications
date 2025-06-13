@@ -1,10 +1,10 @@
 # README
 
-[![Build Status](https://travis-ci.org/Riverline/multipart-parser.svg?branch=master)](https://travis-ci.org/Riverline/multipart-parser)
+[![PHP](https://github.com/Riverline/multipart-parser/actions/workflows/php.yml/badge.svg)](https://github.com/Riverline/multipart-parser/actions/workflows/php.yml)
 
 ## What is Riverline\MultiPartParser
 
-``Riverline\MultiPartParse`` is a one class library to parse multipart document ( multipart email, multipart form, etc ...) 
+``Riverline\MultiPartParse`` is a one class library to parse multipart documents (multipart email, multipart form, etc ...) 
 and manage each part encoding and charset to extract their content.
 
 ## Requirements
@@ -81,7 +81,7 @@ if ($document->isMultiPart()) {
 
 ## Converters
 
-The libary also provide three converters to quickly parse `PSR-7`, `HttpFoundation` and native requests.
+The library also provides three converters to quickly parse `PSR-7`, `HttpFoundation` and native requests.
 
 ```php
 <?php

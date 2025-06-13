@@ -1,6 +1,102 @@
 # CHANGELOG
 
 ## [Unreleased]
+## [5.26.5]
+### Changed
+* Removed direct dependency to `psr/http-message`
+
+## [5.26.4]
+### Fixed
+* When trying to work with unknown FCM tokens, errors returned from the Messaging REST API were not passed to the
+  `NotFound` exception, which prevented the inspection of further details.
+  (backported from [#760](https://github.com/kreait/firebase-php/pull/760))
+
+## [5.26.3]
+### Fixed
+* Updating a Realtime Database Ruleset converted lists to objects with numeric keys.
+  (backported from [#707](https://github.com/kreait/firebase-php/pull/707))
+
+## [5.26.2]
+### Fixed
+* Nested lists in custom user claims were not correctly encoded.
+  ([#699](https://github.com/kreait/firebase-php/pull/699))
+
+## [5.26.1] - 2022-01-16
+### Fixed
+* When signing in with IdP credentials a user's Firebase UID is retrieved from the returned `localId` field, if present
+
+## [5.26.0] - 2022-01-06
+### Added
+* Ensured compatibility with PHP 8.1
+* Added optional `$locale` parameter to the following methods
+  ([#679](https://github.com/kreait/firebase-php/pull/679))
+  * `Kreait\Firebase\Auth::getEmailActionLink(string $type, $email, $actionCodeSettings = null, ?string $locale = null)` 
+  * `Kreait\Firebase\Auth::getEmailVerificationLink($email, $actionCodeSettings = null, ?string $locale = null)` 
+  * `Kreait\Firebase\Auth::getPasswordResetLink($email, $actionCodeSettings = null, ?string $locale = null)` 
+  * `Kreait\Firebase\Auth::getSignInWithEmailLink($email, $actionCodeSettings = null, ?string $locale = null)`
+
+### Deprecated
+* `Kreait\Firebase\Value\Provider`, use provider strings directly ([supported providers](https://firebase.google.com/docs/projects/provisioning/configure-oauth#add-idp))
+* `Kreait\Firebase\Auth::signInWithTwitterOauthCredential()`, use `signInWithIdpAccessToken('twitter.com')` instead
+* `Kreait\Firebase\Auth::signInWithGoogleIdToken()`, use `signInWithIdpIdToken('google.com')` instead
+* `Kreait\Firebase\Auth::signInWithFacebookAccessToken()`, use `signInWithIdpAccessToken('facebook.com')` instead
+* `Kreait\Firebase\Auth::signInWithAppleIdToken()`, use `signInWithIdpIdToken('apple.com')` instead
+
+## [5.25.0] - 2021-11-01
+### Added
+* Added support for providing a nonce when signing in with IdP credentials
+* Added methods:
+    * `Kreait\Firebase\Auth::signInWithAppleIdToken()`
+### Changed
+* When building the RTDB Url from the service account's project ID, the SDK will not replace
+  colons (`:`) and dots (`.`) with dashes (`-`) anymore.
+  ([#351 (comment)](https://github.com/kreait/firebase-php/issues/351#issuecomment-946536698))
+
+## [5.24.0] - 2021-10-05
+### Added
+* Added `Factory::getDebugInfo()` to display information about the currently configured factory.
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/troubleshooting.html#debugging))
+### Changed
+* Bumped `kreait/firebase-tokens` to `^1.16.1` to ensure a minor security fix in `lcobucci/jwt` 
+  (More info: [GHSA-7322-jrq4-x5hf](https://github.com/lcobucci/jwt/security/advisories/GHSA-7322-jrq4-x5hf))
+### Fixed
+* Fixed a bug that occurs when using Realtime Database Paths without a leading slash with newer
+  releases of `guzzle/psr7`
+
+## [5.23.0] - 2021-08-26
+### Added
+* Added `screenName` property to the provider data of a user record
+  ([#575](https://github.com/kreait/firebase-php/pull/575))
+* Added support for deleting multiple users at once
+  (based on [#650](https://github.com/kreait/firebase-php/pull/650))
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/user-management.html#delete-multiple-users))
+### Changed
+* Bumped `google/auth` dependency `^1.18` in order to ensure support for `guzzle/psr ^2.0`
+  (see [google/auth#357](https://github.com/googleapis/google-auth-library-php/pull/357))
+
+## [5.22.0] - 2021-07-31
+### Added
+* Added support for Realtime Database Auth Variable Overrides
+  ([#625](https://github.com/kreait/firebase-php/pull/625))
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/realtime-database.html#authenticate-with-limited-privileges))
+* Added support for linking IdP credentials to an existing account
+  ([#635](https://github.com/kreait/firebase-php/pull/635))
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/authentication.html#linking-and-unlinking-idp))
+### Changes
+* Database Rules are now uploaded as pretty printed JSON to improve readability when viewing
+  them in the Firebase Console.
+### Notes
+* Remote Config templates now support up to 3000 parameters (instead of up to 2000 parameters)
+
+## [5.21.0] - 2021-07-16
+### Added
+* Added support for Session Cookie Generation
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/authentication.html#session-cookies))
+
+### Changes
+* Bumped `kreait/firebase-tokens` to `^1.16`
+* Updated version constraints of `psr/cache` to allow newer releases
+* Updated version constraints of `psr/log` to allow newer releases
 
 ## [5.20.1] - 2021-05-12
 ### Fixed
@@ -257,7 +353,18 @@ to upgrade from a 4.x release to 5.0 without changes to your code.**
 * Support for PHP `<7.2`
 * Deprecated methods and classes
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/5.20.1...HEAD
+[Unreleased]: https://github.com/kreait/firebase-php/compare/5.26.5...5.x
+[5.26.5]: https://github.com/kreait/firebase-php/compare/5.26.4...5.26.5
+[5.26.4]: https://github.com/kreait/firebase-php/compare/5.26.3...5.26.4
+[5.26.3]: https://github.com/kreait/firebase-php/compare/5.26.2...5.26.3
+[5.26.2]: https://github.com/kreait/firebase-php/compare/5.26.1...5.26.2
+[5.26.1]: https://github.com/kreait/firebase-php/compare/5.26.0...5.26.1
+[5.26.0]: https://github.com/kreait/firebase-php/compare/5.25.0...5.26.0
+[5.25.0]: https://github.com/kreait/firebase-php/compare/5.24.0...5.25.0
+[5.24.0]: https://github.com/kreait/firebase-php/compare/5.23.0...5.24.0
+[5.23.0]: https://github.com/kreait/firebase-php/compare/5.22.0...5.23.0
+[5.22.0]: https://github.com/kreait/firebase-php/compare/5.21.0...5.22.0
+[5.21.0]: https://github.com/kreait/firebase-php/compare/5.20.1...5.21.0
 [5.20.1]: https://github.com/kreait/firebase-php/compare/5.20.0...5.20.1
 [5.20.0]: https://github.com/kreait/firebase-php/compare/5.19.0...5.20.0
 [5.19.0]: https://github.com/kreait/firebase-php/compare/5.18.0...5.19.0

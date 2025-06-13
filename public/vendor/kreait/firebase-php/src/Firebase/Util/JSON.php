@@ -19,24 +19,21 @@ class JSON
      * @see \GuzzleHttp\json_encode()
      *
      * @param mixed $value The value being encoded
-     * @param int|null $options JSON encode option bitmask
-     * @param int|null $depth Set the maximum depth. Must be greater than zero
+     * @param int<0, max>|null $options JSON encode option bitmask
+     * @param int<1, max>|null $depth Set the maximum depth. Must be greater than zero
      *
      * @throws InvalidArgumentException if the JSON cannot be encoded
      */
     public static function encode($value, ?int $options = null, ?int $depth = null): string
     {
-        $options = $options ?? 0;
-        $depth = $depth ?? 512;
+        $options ??= 0;
+        $depth ??= 512;
 
-        $json = \json_encode($value, $options, $depth);
-        if (\json_last_error() !== \JSON_ERROR_NONE) {
-            throw new InvalidArgumentException(
-                'json_encode error: '.\json_last_error_msg()
-            );
+        try {
+            return \json_encode($value, JSON_THROW_ON_ERROR | $options, $depth);
+        } catch (Throwable $e) {
+            throw new InvalidArgumentException('json_encode error: '.$e->getMessage());
         }
-
-        return (string) $json;
     }
 
     /**
@@ -50,8 +47,8 @@ class JSON
      *
      * @param string $json JSON data to parse
      * @param bool|null $assoc When true, returned objects will be converted into associative arrays
-     * @param int|null $depth User specified recursion depth
-     * @param int|null $options Bitmask of JSON decode options
+     * @param int<1, max>|null $depth User specified recursion depth
+     * @param int<0, max>|null $options Bitmask of JSON decode options
      *
      * @throws \InvalidArgumentException if the JSON cannot be decoded
      *
@@ -59,14 +56,15 @@ class JSON
      */
     public static function decode(string $json, ?bool $assoc = null, ?int $depth = null, ?int $options = null)
     {
-        $data = \json_decode($json, $assoc ?? false, $depth ?? 512, $options ?? 0);
-        if (\json_last_error() !== \JSON_ERROR_NONE) {
-            throw new InvalidArgumentException(
-                'json_decode error: '.\json_last_error_msg()
-            );
-        }
+        $assoc ??= false;
+        $depth ??= 512;
+        $options ??= 0;
 
-        return $data;
+        try {
+            return \json_decode($json, $assoc, $depth, JSON_THROW_ON_ERROR | $options);
+        } catch (Throwable $e) {
+            throw new InvalidArgumentException('json_decode error: '.$e->getMessage());
+        }
     }
 
     /**
@@ -94,6 +92,6 @@ class JSON
      */
     public static function prettyPrint($value): string
     {
-        return self::encode($value, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
+        return self::encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }

@@ -53,11 +53,11 @@ final class CloudMessage implements Message
      *     android?: array{
      *         collapse_key?: string,
      *         priority?: 'normal'|'high',
-     *         ttl?: int|double,
+     *         ttl?: string,
      *         restricted_package_name?: string,
      *         data?: array<string, string>,
-     *         notification?: array,
-     *         fcm_options?: array,
+     *         notification?: array<string, string>,
+     *         fcm_options?: array<string, mixed>,
      *         direct_boot_ok?: bool
      *     },
      *     apns?: ApnsConfig|array{
@@ -94,11 +94,11 @@ final class CloudMessage implements Message
         }
 
         if ($targetValue = $data[MessageTarget::CONDITION] ?? null) {
-            $new = $new->withChangedTarget(MessageTarget::CONDITION, (string) $targetValue);
+            $new = $new->withChangedTarget(MessageTarget::CONDITION, $targetValue);
         } elseif ($targetValue = $data[MessageTarget::TOKEN] ?? null) {
-            $new = $new->withChangedTarget(MessageTarget::TOKEN, (string) $targetValue);
+            $new = $new->withChangedTarget(MessageTarget::TOKEN, $targetValue);
         } elseif ($targetValue = $data[MessageTarget::TOPIC] ?? null) {
-            $new = $new->withChangedTarget(MessageTarget::TOPIC, (string) $targetValue);
+            $new = $new->withChangedTarget(MessageTarget::TOPIC, $targetValue);
         }
 
         if ($messageData = ($data['data'] ?? null)) {
@@ -142,7 +142,7 @@ final class CloudMessage implements Message
     }
 
     /**
-     * @param MessageData|array<string, string> $data
+     * @param MessageData|array<array-key, mixed> $data
      *
      * @throws InvalidArgumentException
      */
@@ -175,11 +175,11 @@ final class CloudMessage implements Message
      * @param AndroidConfig|array{
      *     collapse_key?: string,
      *     priority?: 'normal'|'high',
-     *     ttl?: int|double,
+     *     ttl?: string,
      *     restricted_package_name?: string,
      *     data?: array<string, string>,
-     *     notification?: array,
-     *     fcm_options?: array,
+     *     notification?: array<string, string>,
+     *     fcm_options?: array<string, mixed>,
      *     direct_boot_ok?: bool
      * } $config
      *
@@ -296,13 +296,13 @@ final class CloudMessage implements Message
             'fcm_options' => $this->fcmOptions,
         ];
 
-        if ($this->target) {
+        if ($this->target !== null) {
             $data[$this->target->type()] = $this->target->value();
         }
 
-        return \array_filter($data, static function ($value) {
-            return $value !== null
-                && !($value instanceof MessageData && $value->jsonSerialize() === []);
-        });
+        return \array_filter(
+            $data,
+            static fn ($value) => $value !== null && !($value instanceof MessageData && $value->jsonSerialize() === [])
+        );
     }
 }

@@ -13,7 +13,14 @@ use Throwable;
  */
 class ServiceAccount
 {
-    /** @var array<string, string> */
+    /**
+     * @var array{
+     *     project_id: string|null,
+     *     client_email: string|null,
+     *     private_key: string|null,
+     *     type?: string|null
+     * }|array<string, string|null> $data
+     */
     private array $data = [];
 
     public function getProjectId(): string
@@ -32,12 +39,17 @@ class ServiceAccount
     }
 
     /**
-     * @return array<string, string>
+     * @return array{
+     *     project_id: string|null,
+     *     client_email: string|null,
+     *     private_key: string|null,
+     *     type: string|null
+     * }|array<string, string|null>
      */
     public function asArray(): array
     {
         $array = $this->data;
-        $array['type'] = $array['type'] ?? 'service_account';
+        $array['type'] ??= 'service_account';
 
         return $array;
     }
@@ -46,8 +58,6 @@ class ServiceAccount
      * @param self|string|array|mixed $value
      *
      * @throws InvalidArgumentException
-     *
-     * @return ServiceAccount
      */
     public static function fromValue($value): self
     {

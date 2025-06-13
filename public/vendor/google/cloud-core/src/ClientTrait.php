@@ -19,10 +19,8 @@ namespace Google\Cloud\Core;
 
 use Google\Auth\CredentialsLoader;
 use Google\Auth\Credentials\GCECredentials;
-use Google\Auth\HttpHandler\HttpHandlerFactory;
 use Google\Cloud\Core\Compute\Metadata;
 use Google\Cloud\Core\Exception\GoogleException;
-use GuzzleHttp\Psr7;
 
 /**
  * Provides functionality common to each service client.
@@ -48,9 +46,7 @@ trait ClientTrait
     {
         $isGrpcExtensionLoaded = $this->isGrpcLoaded();
         $defaultTransport = $isGrpcExtensionLoaded ? 'grpc' : 'rest';
-        $transport = isset($config['transport'])
-            ? strtolower($config['transport'])
-            : $defaultTransport;
+        $transport = strtolower($config['transport'] ?? $defaultTransport);
 
         if ($transport === 'grpc') {
             if (!$isGrpcExtensionLoaded) {
@@ -93,6 +89,7 @@ trait ClientTrait
      *
      * @param  array $config
      * @return array
+     * @throws GoogleException
      */
     private function configureAuthentication(array $config)
     {
@@ -236,6 +233,8 @@ trait ClientTrait
                 'and we were unable to detect a default project ID.'
             );
         }
+
+        return '';
     }
 
     /**
