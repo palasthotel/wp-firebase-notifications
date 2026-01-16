@@ -18,28 +18,29 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+use Palasthotel\FirebaseNotifications\Component\TextdomainConfig;
+
 require_once dirname( __FILE__ ) . "/vendor/autoload.php";
 
-/**
- * @property NotificationsSettingsThemeTemplate $notificationsSettingsThemeTemplate
- * @property MetaBox metaBox
- * @property Topics topics
- * @property Ajax ajax
- * @property CloudMessagingApi cloudMessagingApi
- * @property Database database
- * @property ToolsPage toolsPage
- * @property Settings settings
- * @property DatabaseUpdates databaseUpdates
- * @property Permissions permissions
- * @property Schedule schedule
- * @property DesktopMessaging desktopMessaging
- * @property Assets assets
- * @property REST $rest
- * @property Component\TextdomainConfig $textdomainConfig
- */
 class Plugin extends Component\Plugin {
 
-	const DOMAIN = "firebase-notifications";
+    public NotificationsSettingsThemeTemplate $notificationsSettingsThemeTemplate;
+    public MetaBox $metaBox;
+    public Topics $topics;
+    public Ajax $ajax;
+    public CloudMessagingApi $cloudMessagingApi;
+    public Database $database;
+    public ToolsPage $toolsPage;
+    public Settings $settings;
+    public DatabaseUpdates $databaseUpdates;
+    public Permissions $permissions;
+    public Schedule $schedule;
+    public DesktopMessaging $desktopMessaging;
+    public Assets $assets;
+    public REST $rest;
+    public TextdomainConfig $textdomainConfig;
+
+    const DOMAIN = "firebase-notifications";
 
 	const TEMPLATE = "firebase-notifications-settings.php";
 	const HANDLE_ADMIN_API_JS = "firebase-notifications-admin-api-script";

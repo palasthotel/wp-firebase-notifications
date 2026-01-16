@@ -2,10 +2,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
-/**
- * @property Plugin plugin
- */
 class Schedule {
+    
+    public Plugin $plugin;
+
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;
 		add_action( 'admin_init', array( $this, 'start' ) );

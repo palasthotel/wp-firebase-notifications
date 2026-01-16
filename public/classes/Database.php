@@ -9,12 +9,13 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
-/**
- * @property \wpdb wpdb
- * @property string $tablename
- * @property string tablename_posts
- */
 class Database extends Component\Database {
+    
+
+    /** @var wpdb */
+    public $wpdb;
+    public string $tablename;
+    public string $tablename_posts;
 
 	/**
 	 * Database constructor.

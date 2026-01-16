@@ -7,10 +7,9 @@
  */
 namespace Palasthotel\FirebaseNotifications;
 
-/**
- * @property Database database
- */
 class DatabaseUpdates {
+    
+    public Database $database;
 
 	public function __construct(Database $db) {
 		$this->database = $db;

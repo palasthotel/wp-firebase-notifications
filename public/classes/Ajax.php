@@ -14,15 +14,13 @@ use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\TopicSubscription;
 use Palasthotel\FirebaseNotifications\Component\Component;
 
-/**
- * @property string action_send
- * @property Plugin plugin
- * @property string action_delete
- * @property string action_subscribe
- * @property string action_unsubscribe
- * @property string action_topics
- */
 class Ajax extends Component {
+    
+    public string $action_send;
+    public string $action_delete;
+    public string $action_subscribe;
+    public string $action_unsubscribe;
+    public string $action_topics;
 
 	public function onCreate() {
 		$this->action_send = Plugin::DOMAIN."_send";

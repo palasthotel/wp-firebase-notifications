@@ -6,8 +6,6 @@ namespace Palasthotel\FirebaseNotifications\Component;
 /**
  * Class Component
  *
- * @property \Palasthotel\FirebaseNotifications\Plugin plugin
- *
  * @package Palasthotel\WordPress
  * @version 0.1.1
  */
@@ -15,8 +13,8 @@ abstract class Component {
 	/**
 	 * _Component constructor.
 	 *
-	 * @param \Palasthotel\FirebaseNotifications\Plugin $plugin
 	 */
+    public Plugin $plugin;
 	public function __construct( \Palasthotel\FirebaseNotifications\Plugin $plugin) {
 		$this->plugin = $plugin;
 		$this->onCreate();

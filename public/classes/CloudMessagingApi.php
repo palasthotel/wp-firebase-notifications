@@ -16,9 +16,6 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging;
 use Kreait\Firebase\ServiceAccount;
 
-/**
- * @property Plugin plugin
- */
 class CloudMessagingApi {
 
 	/**
@@ -29,12 +26,8 @@ class CloudMessagingApi {
      * @var Messaging
      */
 	private $messaging;
+    public Plugin $plugin;
 
-	/**
-	 * CloudMessagingApi constructor.
-	 *
-	 * @param Plugin $plugin
-	 */
 	public function __construct( Plugin $plugin ) {
 		$this->plugin = $plugin;
 	}

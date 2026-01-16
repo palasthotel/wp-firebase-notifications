@@ -8,10 +8,6 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
-
-/**
- * @property Plugin plugin
- */
 class NotificationsSettingsThemeTemplate {
 
 	const URL = "__app/notifications";
@@ -34,12 +30,9 @@ class NotificationsSettingsThemeTemplate {
 	public static function urlRelative(){
 		return ltrim(rtrim((apply_filters(Plugin::FILTER_SETTINGS_URL, self::URL )),'/\\'), '/\\');
 	}
-
-	/**
-	 * FrontendNotificationSettings constructor.
-	 *
-	 * @param Plugin $plugin
-	 */
+    
+    public Plugin $plugin;
+    
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
 

@@ -4,12 +4,10 @@
 namespace Palasthotel\FirebaseNotifications\Component;
 
 
-/**
- * @property string domain
- * @property string languages
- * @version 0.1.1
- */
 class TextdomainConfig {
+
+    public string $domain;
+    public string $languages;
 
 	public function __construct(string $domain, string $relativeLanguagesPath) {
 		$this->domain = $domain;

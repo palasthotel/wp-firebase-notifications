@@ -5,10 +5,10 @@ namespace Palasthotel\FirebaseNotifications\Component;
 
 use wpdb;
 
-/**
- * @property wpdb wpdb
- */
 abstract class Database {
+    
+    /** @var wpdb */
+    public $wpdb;
 
 	public function __construct() {
 		global $wpdb;

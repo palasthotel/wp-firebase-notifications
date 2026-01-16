@@ -6,21 +6,15 @@ namespace Palasthotel\FirebaseNotifications;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 
-/**
- * @property Plugin plugin
- */
 class MetaBox {
 
 	/**
 	 * @var bool
 	 */
 	private $wasPublished = false;
-
-	/**
-	 * MetaBox constructor.
-	 *
-	 * @param Plugin $plugin
-	 */
+    
+    public Plugin $plugin;
+    
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
