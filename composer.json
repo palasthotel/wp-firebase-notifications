@@ -1,6 +1,7 @@
 {
     "name": "palasthotel/plugin-firebase-notifications",
     "description": "Plugin that can send firebase notifications",
+    "type": "wordpress-plugin",
     "autoload": {
         "psr-4": {
             "Palasthotel\\FirebaseNotifications\\": "classes"
