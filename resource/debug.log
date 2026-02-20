@@ -1,3 +1,0 @@
-[16-Jan-2026 10:11:37 UTC] PHP Deprecated:  Creation of dynamic property Palasthotel\FirebaseNotifications\NotificationsSettingsThemeTemplate::$plugin is deprecated in /var/www/html/wp-content/plugins/wp-firebase-notifications/public/classes/NotificationsSettingsThemeTemplate.php on line 44
-[16-Jan-2026 10:11:37 UTC] PHP Deprecated:  Creation of dynamic property Palasthotel\FirebaseNotifications\MetaBox::$plugin is deprecated in /var/www/html/wp-content/plugins/wp-firebase-notifications/public/classes/MetaBox.php on line 25
-[16-Jan-2026 10:11:37 UTC] PHP Deprecated:  Creation of dynamic property Palasthotel\FirebaseNotifications\Schedule::$plugin is deprecated in /var/www/html/wp-content/plugins/wp-firebase-notifications/public/classes/Schedule.php on line 10
