@@ -93,7 +93,7 @@ class ToolsPage extends Component {
 	    $this->plugin->assets->enqueueToolsPageStyle();
 		$date_format = get_option( 'date_format' );
 		$time_format = get_option( 'time_format' );
-		$timezone = new \DateTimeZone(get_option("timezone_string", "UTC"));
+		$timezone = wp_timezone();
 		$format = "$date_format $time_format";
 		$post_id = $this->getPostId();
 		$paged = $this->getPaged();
@@ -145,8 +145,8 @@ class ToolsPage extends Component {
 						_e("Answer from Firebase Cloud Messaging", Plugin::DOMAIN);
 						echo "</label>";
 						echo "<ul class='firebase-notifications__item--result'>";
-						foreach ($item->result as $key => $value){
-							echo "<li><strong>$key:</strong> $value</li>";
+						foreach ((array) $item->result as $key => $value){
+							echo "<li><strong>" . esc_html( $key ) . ":</strong> " . esc_html( is_scalar( $value ) ? (string) $value : wp_json_encode( $value ) ) . "</li>";
 						}
 						echo "</ul>";
 					}

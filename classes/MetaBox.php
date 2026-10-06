@@ -370,8 +370,7 @@ class MetaBox {
 		$messages = $this->plugin->database->getPostMessages( $post->ID );
 		$count    = count( $messages );
 		if ( $count > 0 ) {
-			$tz       = get_option( "timezone_string", "UTC" );
-			$timezone = new \DateTimeZone( $tz );
+			$timezone = wp_timezone();
 			echo "<h3>" . __( "History", Plugin::DOMAIN ) . "</h3>";
 			echo "<ul class='firebase-notifications__history'>";
 			foreach ( $messages as $index => $msg ) {
@@ -395,7 +394,7 @@ class MetaBox {
 							);
 						} ?>
                         <div class="history-item_more description">
-                            <a href="<?php echo $this->plugin->toolsPage->getUrl( $post->ID ); ?>"><?php _e( "More info", Plugin::DOMAIN ); ?></a>
+                            <a href="<?php echo esc_url( $this->plugin->toolsPage->getUrl( $post->ID ) ); ?>"><?php _e( "More info", Plugin::DOMAIN ); ?></a>
 							<?php if ( $msg->publish != null && $msg->sent == null ) {
 								echo " | ";
 								?><a href='#'
@@ -411,7 +410,7 @@ class MetaBox {
 							$created = date_i18n( get_option( 'date_format' ) . " " . get_option( 'time_format' ), $created->getTimestamp() + $created->getOffset() );
 							$sent    = "";
 							if ( $msg->sent ) {
-								$sent = new \DateTime( $msg->created );
+								$sent = new \DateTime( $msg->sent );
 								$sent->setTimezone( $timezone );
 								$sent = date_i18n( get_option( 'date_format' ) . " " . get_option( 'time_format' ), $sent->getTimestamp() + $sent->getOffset() );
 							}
