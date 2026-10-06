@@ -66,18 +66,21 @@ class Ajax extends Component {
 
 		$title = sanitize_text_field(stripslashes($_REQUEST["title"]));
 		$body = sanitize_textarea_field(stripslashes($_REQUEST["body"]));
-		$payload = $_REQUEST["payload"];
+		$payload = isset( $_REQUEST["payload"] ) ? wp_unslash( $_REQUEST["payload"] ) : null;
 
-		if(empty($payload)) wp_send_json_error("missing payloads");
+		if(empty($payload) || !is_array($payload)) wp_send_json_error("missing payloads");
 
 		$sanitizedPayload = array();
 		foreach ($payload as $key => $value){
-			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field($value);
+			if ( ! is_scalar( $value ) ) {
+				continue;
+			}
+			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field( (string) $value );
 		}
 
 		if( empty($platforms) || empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
 
-		$message = Message::build($platforms,$conditions, $title, $body, $payload);
+		$message = Message::build($platforms,$conditions, $title, $body, $sanitizedPayload);
 		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
 		$message_id = $this->plugin->database->add($message);
 		if(!$message_id) wp_send_json_error("Could not save notification message");

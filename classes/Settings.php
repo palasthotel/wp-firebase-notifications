@@ -210,7 +210,7 @@ class Settings extends Component {
 			rows="13"
 			id="<?php echo Plugin::OPTION_CONFIG; ?>"
 			name="<?php echo Plugin::OPTION_CONFIG; ?>"
-		><?php echo $config ?></textarea>
+		><?php echo esc_textarea( $config ); ?></textarea>
 		<?php
 		echo '<p class="description">';
 		if($this->isConfigValid()){
@@ -235,7 +235,7 @@ class Settings extends Component {
 		foreach ( $post_types as $key => $post_type ) {
 			$name = Plugin::OPTION_POST_TYPES."[]";
 			$checked = (in_array($key, $activated))? "checked='checked'":"";
-			echo "<label><input name='$name' type='checkbox' value='$key' $checked /> ".$post_type->labels->name."</label><br/>";
+			echo "<label><input name='" . esc_attr( $name ) . "' type='checkbox' value='" . esc_attr( $key ) . "' $checked /> " . esc_html( $post_type->labels->name ) . "</label><br/>";
 		}
 		echo "</p>";
 		echo "<p class='description'>Activate post types for firebase push notifications.</p>";
@@ -266,7 +266,7 @@ class Settings extends Component {
 				rows="13"
 				id="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
 				name="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
-		><?php echo $config ?></textarea>
+		><?php echo esc_textarea( $config ); ?></textarea>
 		<script>
 			jQuery(function($){
 				const variableDefRegex = /^( *(const|let|var) firebaseConfig = *{)/gm;
