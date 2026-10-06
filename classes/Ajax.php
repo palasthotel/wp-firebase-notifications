@@ -144,8 +144,13 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
-		$token = $_GET["token"];
-		$topic = sanitize_text_field($_GET["topic"]);
+		$token = sanitize_text_field( wp_unslash( $_GET["token"] ) );
+		$topic = sanitize_text_field( wp_unslash( $_GET["topic"] ) );
+		// subscribe only to the topics the site offers (FILTER_TOPICS), not to hidden or
+		// internal ones; unsubscribing stays possible from any topic
+		if ( $isActive && ! in_array( $topic, $this->plugin->topics->getTopicIds(), true ) ) {
+			wp_send_json_error( "Unknown topic.", 400 );
+		}
 		if($isActive){
 			$result = $this->plugin->cloudMessagingApi->subscribe($topic, $token);
 		} else {
@@ -172,7 +177,7 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
-		$response = $this->plugin->cloudMessagingApi->getSubscriptions($_GET["token"]);
+		$response = $this->plugin->cloudMessagingApi->getSubscriptions( sanitize_text_field( wp_unslash( $_GET["token"] ) ) );
 		if(!is_countable($response)){
 			wp_send_json_error("Response is not countable");
 		}
