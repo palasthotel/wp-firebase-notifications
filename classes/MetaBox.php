@@ -12,6 +12,9 @@ class MetaBox {
 	 * @var bool
 	 */
 	private $wasPublished = false;
+
+	const NONCE_ACTION = "firebase_notifications_meta_box";
+	const NONCE_NAME = "firebase_notifications_meta_box_nonce";
     
     public Plugin $plugin;
     
@@ -121,6 +124,7 @@ class MetaBox {
 		    $draftPlatforms = ["android", "ios", "web"];
         }
 		?>
+        <?php wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME ); ?>
         <div class="fn__wrapper">
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"
@@ -443,7 +447,12 @@ class MetaBox {
 		    Plugin::POST_META_DRAFT_SCHEDULE,
             Plugin::POST_META_DRAFT_PLATFORMS,
         ];
-	    foreach ($saveFields as $field){
+	    // only from this meta box, and only by someone who may send messages
+	    $fromMetaBox = isset( $_POST[ self::NONCE_NAME ] )
+	        && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ self::NONCE_NAME ] ) ), self::NONCE_ACTION )
+	        && current_user_can( 'edit_post', $post_id )
+	        && $this->plugin->permissions->canSendMessages();
+	    foreach ( $fromMetaBox ? $saveFields : [] as $field){
 		    if(isset($_POST[$field])){
 		        if(is_string($_POST[$field])){
 			        update_post_meta(
