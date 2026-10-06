@@ -22,6 +22,8 @@ class Ajax extends Component {
     public string $action_unsubscribe;
     public string $action_topics;
 
+	const NONCE_ACTION = "firebase_notifications_admin";
+
 	public function onCreate() {
 		$this->action_send = Plugin::DOMAIN."_send";
 		$this->action_delete = Plugin::DOMAIN."_delete";
@@ -43,8 +45,8 @@ class Ajax extends Component {
 	 */
 	public function send(){
 
-		// TODO: make it configurable
-		if(!current_user_can('publish_posts')) wp_send_json_error(__("No access", Plugin::DOMAIN));
+		check_ajax_referer( self::NONCE_ACTION );
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
 
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
@@ -115,7 +117,8 @@ class Ajax extends Component {
 	 * delete a single message
 	 */
 	public function delete(){
-		if(!current_user_can('publish_posts')) wp_send_json_error(__("No access", Plugin::DOMAIN));
+		check_ajax_referer( self::NONCE_ACTION );
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
 		$message_id = intval($_REQUEST["message_id"]);
 
 		$this->plugin->database->delete($message_id);

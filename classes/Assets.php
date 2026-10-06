@@ -93,6 +93,7 @@ class Assets extends Component {
 			"FirebaseNotificationsApi",
 			array(
 				"ajax_url" => admin_url( 'admin-ajax.php' ),
+				"nonce" => wp_create_nonce( Ajax::NONCE_ACTION ),
 				"actions" => array(
 					"send" => $this->plugin->ajax->action_send,
 					"delete" => $this->plugin->ajax->action_delete,
