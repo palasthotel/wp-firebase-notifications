@@ -1,0 +1,27 @@
+name: Build and release to WordPress.org
+
+on:
+  push:
+    tags:
+      - "v*"
+  # Re-run a failed deploy from a branch that has the fix - see
+  # https://github.com/palasthotel/github-workflows/blob/main/docs/wp-plugin.md
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy, without the leading v (e.g. 2.0.1)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    uses: palasthotel/github-workflows/.github/workflows/wp-plugin-svn-deploy.yml@v1
+    with:
+      # placeholder until the wordpress.org name is decided - see .github/WORKFLOWS.md
+      slug: firebase-notifications
+      version: ${{ github.event.inputs.version }}
+      build-command: bash bin/prefix-dependencies.sh
+    secrets: inherit

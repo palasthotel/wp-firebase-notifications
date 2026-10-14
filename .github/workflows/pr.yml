@@ -1,0 +1,44 @@
+name: PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    uses: palasthotel/github-workflows/.github/workflows/wp-plugin-pr.yml@v1
+    with:
+      # placeholder until the wordpress.org name is decided - see .github/WORKFLOWS.md
+      slug: firebase-notifications
+      dev-plugin-name: Firebase Notifications - DEV
+      # off until the Plugin Check PR: the existing code still has 159 errors and 83
+      # warnings (escaping, i18n, prepared SQL), none from this PR's changes
+      plugin-check: false
+      # Requires PHP: 8.1
+      php-versions: '["8.1", "8.2", "8.3", "8.4", "8.5"]'
+      # public/vendor is not in the repository: this installs the Firebase SDK and
+      # writes its prefixed copy to public/vendor/prefixed/; the pack's
+      # composer install --no-dev then drops the unprefixed one again
+      build-command: bash bin/prefix-dependencies.sh
+      # what the plugin loads, so a missing build output fails here instead of
+      # fataling or 404ing on the site
+      required-files: |
+        vendor/autoload.php
+        vendor/prefixed/autoload.php
+        vendor/prefixed/kreait/firebase-php/src/Firebase/Factory.php
+        js/firebase-app.8.4.3.js
+        js/firebase-messaging.8.4.3.js
+        js/firebase-messaging-sw.js
+        js/desktop-messaging.js
+        js/api-frontend.js
+        js/api-admin.js
+        js/frontend-firebase-notifications-settings.js
+        js/meta-box.js
+        js/tools-page.js
+        css/meta-box.css
+        css/tools-page.css
+        templates/firebase-notifications-settings.php

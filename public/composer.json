@@ -1,0 +1,37 @@
+{
+    "name": "palasthotel/plugin-firebase-notifications",
+    "description": "Send push notifications with Firebase Cloud Messaging from WordPress.",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Palasthotel\\FirebaseNotifications\\": "classes"
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "kreait/firebase-php": "^7.24"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "strauss": {
+            "target_directory": "vendor/prefixed",
+            "namespace_prefix": "Palasthotel\\FirebaseNotifications\\Vendor\\",
+            "classmap_prefix": "Palasthotel_FirebaseNotifications_Vendor_",
+            "constant_prefix": "PALASTHOTEL_FIREBASE_NOTIFICATIONS_VENDOR_",
+            "packages": [
+                "kreait/firebase-php"
+            ],
+            "update_call_sites": false,
+            "delete_vendor_packages": false,
+            "delete_vendor_files": false
+        }
+    }
+}
