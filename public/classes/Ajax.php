@@ -144,6 +144,9 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
+		if ( ! $this->plugin->cloudMessagingApi->hasConfiguration() ) {
+			wp_send_json_error( "Push notifications are not configured.", 503 );
+		}
 		$token = sanitize_text_field( wp_unslash( $_GET["token"] ) );
 		$topic = sanitize_text_field( wp_unslash( $_GET["topic"] ) );
 		// subscribe only to the topics the site offers (FILTER_TOPICS), not to hidden or
@@ -177,7 +180,14 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
-		$response = $this->plugin->cloudMessagingApi->getSubscriptions( sanitize_text_field( wp_unslash( $_GET["token"] ) ) );
+		if ( ! $this->plugin->cloudMessagingApi->hasConfiguration() ) {
+			wp_send_json_error( "Push notifications are not configured.", 503 );
+		}
+		try {
+			$response = $this->plugin->cloudMessagingApi->getSubscriptions( sanitize_text_field( wp_unslash( $_GET["token"] ) ) );
+		} catch ( \Throwable $e ) {
+			wp_send_json_error( "Could not load the subscriptions." );
+		}
 		if(!is_countable($response)){
 			wp_send_json_error("Response is not countable");
 		}
