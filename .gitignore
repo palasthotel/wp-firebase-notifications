@@ -1,8 +1,11 @@
 *google-services.json
 *.DS_Store
 .idea
-# composer dependencies - never committed
+# composer dependencies and the prefixed SDK - bin/prefix-dependencies.sh and the
+# pack write them, never committed
 /public/vendor
+# Strauss phar, downloaded by bin/prefix-dependencies.sh
+/bin/.cache
 # pack staging directory
 /build
 *.zip

@@ -9,9 +9,9 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
-use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Exception\MessagingException;
-use Kreait\Firebase\Messaging\TopicSubscription;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\FirebaseException;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\MessagingException;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Messaging\TopicSubscription;
 use Palasthotel\FirebaseNotifications\Component\Component;
 
 class Ajax extends Component {

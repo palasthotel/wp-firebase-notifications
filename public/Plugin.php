@@ -6,8 +6,9 @@
  * Version: 1.1.2
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
  * Author URI: http://www.palasthotel.de
- * Requires at least: 5.0
- * Tested up to: 5.9.2
+ * Requires at least: 5.3
+ * Tested up to: 7.1
+ * Requires PHP: 8.1
  * License: GPL-3.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       firebase-notifications
@@ -21,51 +22,33 @@ namespace Palasthotel\FirebaseNotifications;
 
 use Palasthotel\FirebaseNotifications\Component\TextdomainConfig;
 
-// is it okay that I only call this after the use statement?
-
-if (! defined('ABSPATH')) {
-    die;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-// composer package name is defined in plugins composer.json
-const COMPOSER_PACKAGE = 'palasthotel/plugin-firebase-notifications';
-
-$centralAutoloader = (defined('PALASTHOTEL_COMPOSER_CENTRAL') && constant('PALASTHOTEL_COMPOSER_CENTRAL'))
-    || did_action('palasthotel/central_autoloader_loaded') > 0;
-
-$managedByCentralAutoloader = false;
-if ($centralAutoloader && class_exists('\Composer\InstalledVersions', true)) { //checks if autoloader exists
-    try {
-        if (\Composer\InstalledVersions::isInstalled(COMPOSER_PACKAGE)) { // this only checks for some version not the directory 
-            $installPath = \Composer\InstalledVersions::getInstallPath(COMPOSER_PACKAGE);
-            $managedByCentralAutoloader = $installPath && realpath($installPath) && realpath($installPath) === realpath(__DIR__); // check if the it is acutally THIS version and dir installed
-        }
-    } catch (\Throwable $e) {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[FirebaseNotifications] InstalledVersions exception: ' . $e->getMessage());
-        }
-    }
+// The Firebase SDK and its dependencies are bundled with prefixed namespaces
+// (Palasthotel\FirebaseNotifications\Vendor\...) in vendor/prefixed/, so they never
+// collide with another copy of guzzle, google/auth or kreait/firebase-php on the site.
+// vendor/autoload.php only loads the plugin's own classes. Both are written by the
+// build (bin/prefix-dependencies.sh) and the release pack, they are not in git.
+$firebase_notifications_autoloaders = array(
+	__DIR__ . '/vendor/prefixed/autoload.php',
+	__DIR__ . '/vendor/autoload.php',
+);
+foreach ( $firebase_notifications_autoloaders as $firebase_notifications_autoloader ) {
+	if ( ! is_readable( $firebase_notifications_autoloader ) ) {
+		add_action( 'admin_notices', function () {
+			echo '<div class="notice notice-error"><p>'
+				. esc_html__( 'Firebase Notifications is incomplete: its bundled dependencies are missing. Please install the release ZIP or run bin/prefix-dependencies.sh.', 'firebase-notifications' )
+				. '</p></div>';
+		} );
+		return;
+	}
 }
-
-if (!$centralAutoloader || !$managedByCentralAutoloader) {
-    $local = __DIR__ . '/vendor/autoload.php';
-    if (is_readable($local)) {
-        require_once $local;
-    } else {
-        add_action('admin_notices', function () {
-            echo '<div class="notice notice-error"><p>Bitte "composer install" im ' . COMPOSER_PACKAGE .  ' Plugin-Ordner ausführen.</p></div>';
-        });
-        return;
-    }
+foreach ( $firebase_notifications_autoloaders as $firebase_notifications_autoloader ) {
+	require_once $firebase_notifications_autoloader;
 }
-if (defined('PH_CENTRAL_AUTOLOADER_DEBUG') && PH_CENTRAL_AUTOLOADER_DEBUG) {
-    error_log('[FirebaseNotifications] centralAutoloader=' . ($centralAutoloader ? '1' : '0')
-        . ' classExists=' . (class_exists('\Composer\InstalledVersions', false) ? '1' : '0')
-        . ' installPath=' . ($installPath ?? '(none)')
-        . ' managed=' . ($managedByCentralAutoloader ? '1' : '0'));
-}
-
-require_once dirname( __FILE__ ) . "/vendor/autoload.php";
+unset( $firebase_notifications_autoloaders, $firebase_notifications_autoloader );
 
 class Plugin extends Component\Plugin {
 

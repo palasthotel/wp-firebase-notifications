@@ -10,16 +10,19 @@ namespace Palasthotel\FirebaseNotifications;
 
 
 use Exception;
-use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Exception\MessagingException;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging;
-use Kreait\Firebase\ServiceAccount;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Contract\Messaging;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\FirebaseException;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\MessagingException;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Factory;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Messaging\CloudMessage;
+use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Messaging\TopicSubscriptions;
 
 class CloudMessagingApi {
 
 	/**
-	 * @var ServiceAccount
+	 * the decoded service account JSON from the settings
+	 *
+	 * @var array|null
 	 */
 	private $serviceAccount;
     /**
@@ -40,14 +43,17 @@ class CloudMessagingApi {
 	}
 
 	/**
-	 * @return ServiceAccount
+	 * The service account as configured in the settings. Firebase SDK 7 has no
+	 * ServiceAccount::fromValue() anymore, the factory takes the decoded array.
+	 *
+	 * @return array|null
 	 */
 	public function getServiceAccount(){
 		if($this->serviceAccount == null){
 
 			$config = $this->plugin->settings->getConfig(true);
-			if($config == null) return null;
-			$this->serviceAccount = ServiceAccount::fromValue($config);
+			if(!is_array($config) || empty($config)) return null;
+			$this->serviceAccount = $config;
 		}
 		return $this->serviceAccount;
 	}
@@ -66,6 +72,19 @@ class CloudMessagingApi {
     }
 
 	/**
+	 * Firebase SDK 7 sends a plain array as it is. Building the CloudMessage keeps the
+	 * validation SDK 5 did for arrays, e.g. that data values are strings.
+	 *
+	 * @param Message $msg
+	 *
+	 * @return CloudMessage
+	 * @throws Exception
+	 */
+	public function getCloudMessage( $msg ) {
+		return CloudMessage::fromArray( $msg->getCloudMessageArray() );
+	}
+
+	/**
 	 * send message via firebase cloud messaging
 	 *
 	 * @param Message $msg
@@ -76,7 +95,7 @@ class CloudMessagingApi {
 	 * @throws Exception
 	 */
 	function send( $msg ) {
-		$arr = $msg->getCloudMessageArray();
+		$cloudMessage = $this->getCloudMessage( $msg );
 		if(WP_DEBUG){
 			return array(
 				"WP_DEBUG" => true,
@@ -84,13 +103,13 @@ class CloudMessagingApi {
 				"msg" => $msg
 			);
 		}
-		return $this->getMessaging()->send($arr);
+		return $this->getMessaging()->send($cloudMessage);
 	}
 
 	/**
 	 * @param string $token
 	 *
-	 * @return Messaging\TopicSubscriptions
+	 * @return TopicSubscriptions
 	 * @throws FirebaseException
 	 */
 	public function getSubscriptions($token){
