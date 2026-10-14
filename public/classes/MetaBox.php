@@ -2,6 +2,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 
 class MetaBox {
@@ -48,7 +52,7 @@ class MetaBox {
 
 		// post needs to be published first
 		if ( "auto-draft" === $post->post_status ) {
-			printf( "<p>%s</p>", __( "Post needs to be saved.", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<p>%s</p>", esc_html__( "Post needs to be saved.", 'palasthotel-push-notifications-for-firebase' ) );
 
 			return;
 		}
@@ -56,7 +60,7 @@ class MetaBox {
 		$this->plugin->assets->enqueueMetaBoxStyle();
 		$this->plugin->assets->enqueueMetaBoxScript( array(
 			"restrictions" => apply_filters(
-				Plugin::FILTER_META_BOX_RESTRICTIONS,
+				Plugin::FILTER_META_BOX_RESTRICTIONS, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 				array(
 					"title" => array(
 						"short"    => 8,
@@ -74,6 +78,7 @@ class MetaBox {
 			"i18n"      => array(
 
 				"countable" => array(
+					/* translators: %d: number of characters */
 					"text"     => __( "%d chars. ", 'palasthotel-push-notifications-for-firebase' ),
 					"short"    => __( "Could be too short 🤔", 'palasthotel-push-notifications-for-firebase' ),
 					"good"     => __( "Seems to be a good length 👍", 'palasthotel-push-notifications-for-firebase' ),
@@ -106,12 +111,12 @@ class MetaBox {
 				),
 			),
 			"topic_ids" => $this->plugin->topics->getTopicIds(),
-			"payload"   => apply_filters(PLUGIN::FILTER_MESSAGE_PAYLOAD, array(
+			"payload"   => apply_filters(Plugin::FILTER_MESSAGE_PAYLOAD, array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 				"post_id"   => $post->ID,
 				"permalink" => get_permalink( $post ),
 			)),
 		) );
-		do_action( Plugin::ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT, Plugin::HANDLE_META_BOX_SCRIPT );
+		do_action( Plugin::ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT, Plugin::HANDLE_META_BOX_SCRIPT ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 		$draftTitle = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TITLE, true);
 		$draftBody = get_post_meta($post->ID, Plugin::POST_META_DRAFT_BODY, true);
 		$draftPlatforms = get_post_meta($post->ID, Plugin::POST_META_DRAFT_PLATFORMS, true);
@@ -127,7 +132,7 @@ class MetaBox {
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"
                        for="firebase-notifications__title"
-                ><?php _e( "Title", 'palasthotel-push-notifications-for-firebase' ); ?></label>
+                ><?php esc_html_e( "Title", 'palasthotel-push-notifications-for-firebase' ); ?></label>
                 <input class="fn__base-control--input"
                        type="text"
                        id="firebase-notifications__title"
@@ -138,7 +143,7 @@ class MetaBox {
             </div>
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"
-                       for="firebase-notifications__body"><?php _e( "Body", 'palasthotel-push-notifications-for-firebase' ); ?></label>
+                       for="firebase-notifications__body"><?php esc_html_e( "Body", 'palasthotel-push-notifications-for-firebase' ); ?></label>
                 <textarea class="fn__base-control--input"
                           id="firebase-notifications__body"
                           rows="4"
@@ -146,7 +151,7 @@ class MetaBox {
                 ><?php echo esc_textarea( !empty($draftBody) ? $draftBody : $post->post_excerpt ); ?></textarea>
             </div>
             <div class="fn__base-control--field">
-                <label class="fn__base-control--label"><?php _e( "To devices of platform", 'palasthotel-push-notifications-for-firebase' ); ?></label>
+                <label class="fn__base-control--label"><?php esc_html_e( "To devices of platform", 'palasthotel-push-notifications-for-firebase' ); ?></label>
                 <p class="firebase--notifications__plafforms">
                     <?php
                     $platforms = [
@@ -167,9 +172,8 @@ class MetaBox {
                         $label = $platform["label"];
                         $id = $platform["id"];
                         $name = Plugin::POST_META_DRAFT_PLATFORMS."[]";
-                        $checked = in_array($id, $draftPlatforms) ? "checked='checked'" : "";
                         echo "<label>";
-                        echo "<input type='checkbox' name='" . esc_attr( $name ) . "' {$checked} value='" . esc_attr( $id ) . "' data-platform />";
+                        echo "<input type='checkbox' name='" . esc_attr( $name ) . "' " . checked( in_array( $id, $draftPlatforms, true ), true, false ) . " value='" . esc_attr( $id ) . "' data-platform />";
                         echo " " . esc_html( $label ) . "</label>";
                     }
                     ?>
@@ -189,27 +193,35 @@ class MetaBox {
 					$topic1 = $topics[1]->id;
 
 					$examples[]     = $topics[0]->id . " AND " . $topics[1]->id;
-					$descriptions[] = sprintf( __(
-						"Send a message to all devices that are subscribed to '%s' and are also subscribed to the topic '%s'.",
+					$descriptions[] = sprintf(
+						/* translators: 1: topic id, 2: another topic id */
+						__(
+						'Send a message to all devices that are subscribed to \'%1$s\' and are also subscribed to the topic \'%2$s\'.',
 						'palasthotel-push-notifications-for-firebase'
 					), $topic0, $topic1 );
 
 					$examples[]     = $topics[0]->id . " OR " . $topics[1]->id;
-					$descriptions[] = sprintf( __(
-						"Send a message to all devices that are subscribed to '%s' or to '%s' or to both topics.",
+					$descriptions[] = sprintf(
+						/* translators: 1: topic id, 2: another topic id */
+						__(
+						'Send a message to all devices that are subscribed to \'%1$s\' or to \'%2$s\' or to both topics.',
 						'palasthotel-push-notifications-for-firebase'
 					), $topic0, $topic1 );
 
 					if ( $tcount > 2 ) {
 						$topic2         = $topics[2]->id;
 						$examples[]     = "$topic0 AND ( $topic1 OR $topic2 )";
-						$descriptions[] = sprintf( __(
-							"Send a message to all devices that are subscribed to '%s' and are also subscribed to '%s' or to '%s' or to both topics.",
+						$descriptions[] = sprintf(
+							/* translators: 1: topic id, 2: and 3: other topic ids */
+							__(
+							'Send a message to all devices that are subscribed to \'%1$s\' and are also subscribed to \'%2$s\' or to \'%3$s\' or to both topics.',
 							'palasthotel-push-notifications-for-firebase'
 						), $topic0, $topic1, $topic2 );
 						$examples[]     = "$topic0 OR ( $topic1 AND $topic2 )";
-						$descriptions[] = sprintf( __(
-							"Send a message to all devices that are subscribed to '%s' or are subscribed to both topics '%s' and '%s'.",
+						$descriptions[] = sprintf(
+							/* translators: 1: topic id, 2: and 3: other topic ids */
+							__(
+							'Send a message to all devices that are subscribed to \'%1$s\' or are subscribed to both topics \'%2$s\' and \'%3$s\'.',
 							'palasthotel-push-notifications-for-firebase'
 						), $topic0, $topic1, $topic2 );
 					}
@@ -219,21 +231,21 @@ class MetaBox {
                 <div class="fn__base-control--field">
                     <label class="fn__base-control--label"
                            for="firebase-notifications__conditions">
-						<?php _e( "To devices subscribed to topics condition", 'palasthotel-push-notifications-for-firebase' ); ?>
+						<?php esc_html_e( "To devices subscribed to topics condition", 'palasthotel-push-notifications-for-firebase' ); ?>
                         <span id="firebase-notifications_conditions--valid">...</span>
                     </label>
 					<?php
 					$value    = !empty($draftTopics)? $draftTopics : "";
-					$readonly = "";
+					$readonly = false;
 					if ( $tcount == 1 ) {
 						$value    = $topics[0]->id;
-						$readonly = "readonly";
+						$readonly = true;
 					}
 					?>
                     <input class="fn__base-control--input"
                            type="text"
                            id="firebase-notifications__conditions"
-						<?php echo $readonly; ?>
+						<?php echo $readonly ? 'readonly' : ''; ?>
                            value="<?php echo esc_attr( $value ); ?>"
                            name="<?php echo esc_attr( Plugin::POST_META_DRAFT_TOPICS ); ?>"
 
@@ -246,20 +258,22 @@ class MetaBox {
 					if ( $tcount > 1 ) {
 						?>
                         <p class="description">
-							<?php echo implode( ", ", array_map( function ( $item ) {
-								return "<span class='firebase-notifications__topic--copy'>" . esc_html( $item->id ) . "</span>";
-							}, $topics ) ); ?>
+							<?php
+							foreach ( $topics as $i => $item ) {
+								echo ( $i > 0 ? ", " : "" ) . "<span class='firebase-notifications__topic--copy'>" . esc_html( $item->id ) . "</span>";
+							}
+							?>
                         </p>
                         <div class="firebase-notifications__examples">
-                            <div class="examples__header"><?php _e( "Show more examples", 'palasthotel-push-notifications-for-firebase' ); ?></div>
+                            <div class="examples__header"><?php esc_html_e( "Show more examples", 'palasthotel-push-notifications-for-firebase' ); ?></div>
                             <div class="examples__content">
 								<?php
 								foreach ( $examples as $i => $example ) {
 									echo "<p>";
-									echo __( "Example", 'palasthotel-push-notifications-for-firebase' ) . ( $i + 1 ) . ": ";
+									echo esc_html__( "Example", 'palasthotel-push-notifications-for-firebase' ) . (int) ( $i + 1 ) . ": ";
 									echo "<span class='examples__code--wrapper'>";
 									echo "<span class='examples__code'>" . esc_html( $example ) . "</span>";
-									echo "<span class='examples__copy'>" . _x( "Use", "post meta box condition examples", 'palasthotel-push-notifications-for-firebase' ) . "</span>";
+									echo "<span class='examples__copy'>" . esc_html_x( "Use", "post meta box condition examples", 'palasthotel-push-notifications-for-firebase' ) . "</span>";
 									echo "</span>";
 									echo "<br/>";
 									$description = $descriptions[ $i ];
@@ -279,7 +293,7 @@ class MetaBox {
 
         </div>
         <div class="fn__base-control--field">
-            <label class="fn__base-control--label"><?php _e( "Schedule", 'palasthotel-push-notifications-for-firebase' ); ?></label>
+            <label class="fn__base-control--label"><?php esc_html_e( "Schedule", 'palasthotel-push-notifications-for-firebase' ); ?></label>
             <div class="firebase--notifications__schedule">
 	            <?php
                 $options = ("publish" === $post->post_status) ?
@@ -317,21 +331,20 @@ class MetaBox {
                 foreach ($options as $option){
                     $label = $option["label"];
                     $value = $option["value"];
-                    $checked = $checkedValue === $value ? "checked='checked'": "";
                     ?>
                     <label><input type="radio"
                                   name="<?php echo esc_attr( Plugin::POST_META_DRAFT_SCHEDULE ); ?>"
-                                  <?php echo $checked; ?>
+                                  <?php checked( $checkedValue, $value ); ?>
                                   data-schedule
                                   value="<?php echo esc_attr( $value ); ?>"/> <?php echo esc_html( $label ); ?></label>
                         <?php
                     if($value === "plan") {
-	                    $futureDateExample = date( "Y-m-d H:i", time() + 60 * 60 * 24 );
+	                    $futureDateExample = wp_date( "Y-m-d H:i", time() + DAY_IN_SECONDS );
 	                    ?>
-                        <label title="yyyy-mm-dd hh:ii for example <?php echo $futureDateExample; ?>">
+                        <label title="yyyy-mm-dd hh:ii for example <?php echo esc_attr( $futureDateExample ); ?>">
                             <input type="datetime-local" data-firebase-schedule-datetime value=""
                                    placeholder="yyyy-mm-dd hh:ii"/><br/>
-                            <span class="description">yyyy-mm-dd hh:ii for example "<?php echo $futureDateExample; ?>"</span>
+                            <span class="description">yyyy-mm-dd hh:ii for example "<?php echo esc_html( $futureDateExample ); ?>"</span>
                         </label>
 	                    <?php
                     }
@@ -341,20 +354,20 @@ class MetaBox {
         </div>
 		<?php
 
-		do_action( Plugin::ACTION_META_BOX_CUSTOM, $this );
+		do_action( Plugin::ACTION_META_BOX_CUSTOM, $this ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 
 		if( count( $topics ) <= 0 ) {
 
-			echo "<p> 🚨" . __( 'Configuration missing. There are no topics defined', 'palasthotel-push-notifications-for-firebase' ) . "</p>";
+			echo "<p> 🚨" . esc_html__( 'Configuration missing. There are no topics defined', 'palasthotel-push-notifications-for-firebase' ) . "</p>";
 
 		} else if ( "publish" === $post->post_status ) {
 
 			echo "<p>";
 			submit_button( __( "Send", 'palasthotel-push-notifications-for-firebase' ), "primary", "firebase-notifications-submit", false );
-			printf( "<span class='is-loading'>%s</span>", __( "Sending message", 'palasthotel-push-notifications-for-firebase' ) );
-			printf( "<span class='result-display-sent'> ✅ %s</span>", __( "Message has been sent!", 'palasthotel-push-notifications-for-firebase' ) );
-			printf( "<span class='result-display-scheduled'> ✅ %s</span>", __( "Message has been scheduled!", 'palasthotel-push-notifications-for-firebase' ) );
-			printf( "<span class='error-display'> 🚨 %s</span>", _x( "Error.", "Send message post meta box response", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='is-loading'>%s</span>", esc_html__( "Sending message", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='result-display-sent'> ✅ %s</span>", esc_html__( "Message has been sent!", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='result-display-scheduled'> ✅ %s</span>", esc_html__( "Message has been scheduled!", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='error-display'> 🚨 %s</span>", esc_html_x( "Error.", "Send message post meta box response", 'palasthotel-push-notifications-for-firebase' ) );
 			echo "</p>";
 
 		}
@@ -369,7 +382,7 @@ class MetaBox {
 		$count    = count( $messages );
 		if ( $count > 0 ) {
 			$timezone = wp_timezone();
-			echo "<h3>" . __( "History", 'palasthotel-push-notifications-for-firebase' ) . "</h3>";
+			echo "<h3>" . esc_html__( "History", 'palasthotel-push-notifications-for-firebase' ) . "</h3>";
 			echo "<ul class='firebase-notifications__history'>";
 			foreach ( $messages as $index => $msg ) {
 				if ( $index >= 3 ) {
@@ -392,11 +405,11 @@ class MetaBox {
 							);
 						} ?>
                         <div class="history-item_more description">
-                            <a href="<?php echo esc_url( $this->plugin->toolsPage->getUrl( $post->ID ) ); ?>"><?php _e( "More info", 'palasthotel-push-notifications-for-firebase' ); ?></a>
+                            <a href="<?php echo esc_url( $this->plugin->toolsPage->getUrl( $post->ID ) ); ?>"><?php esc_html_e( "More info", 'palasthotel-push-notifications-for-firebase' ); ?></a>
 							<?php if ( $msg->publish != null && $msg->sent == null ) {
 								echo " | ";
 								?><a href='#'
-                                     class='delete'><?php _e( "Delete scheduled message", 'palasthotel-push-notifications-for-firebase' ); ?></a><?php
+                                     class='delete'><?php esc_html_e( "Delete scheduled message", 'palasthotel-push-notifications-for-firebase' ); ?></a><?php
 							}
 							?>
                         </div>
@@ -427,9 +440,12 @@ class MetaBox {
 		if ( $count > 1 ) {
 			$url = $this->plugin->toolsPage->getUrl( $post->ID );
 			echo "<p><a href='" . esc_url( $url ) . "'>";
-			printf(
-				__( "Show complete history of %d items.", 'palasthotel-push-notifications-for-firebase' ),
-				$count
+			echo esc_html(
+				sprintf(
+					/* translators: %d: number of sent and scheduled messages */
+					__( "Show complete history of %d items.", 'palasthotel-push-notifications-for-firebase' ),
+					$count
+				)
 			);
 			echo "</a></p>";
 		}
@@ -455,10 +471,10 @@ class MetaBox {
 			        update_post_meta(
 				        $post_id,
 				        $field,
-				        sanitize_text_field($_POST[$field])
+				        wp_slash( sanitize_text_field( wp_unslash( $_POST[$field] ) ) )
 			        );
 		        } else if(is_array($_POST[$field])){
-			        $values = array_map('sanitize_text_field', $_POST[$field]);
+			        $values = wp_slash( array_map( 'sanitize_text_field', wp_unslash( $_POST[$field] ) ) );
 			        update_post_meta(
 				        $post_id,
 				        $field,
@@ -510,13 +526,13 @@ class MetaBox {
 		);
 
 		$message = Message::build($platforms,$conditionsArr, $title, $body, $payload);
-		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
+		do_action(Plugin::ACTION_SAVE_MESSAGE, $message); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 		$message_id = $this->plugin->database->add($message);
 		if(!$message_id) {
 			Log::error("Could not save the notification for post {$post->ID}.");
 			return;
 		}
-		do_action(Plugin::ACTION_SAVED_MESSAGE, $message);
+		do_action(Plugin::ACTION_SAVED_MESSAGE, $message); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 
 		// This runs while the post is saved, in the editor's REST request or a form
 		// submit: a failure must not replace that response. The message stays in

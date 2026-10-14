@@ -31,15 +31,14 @@ get_header();
 		<hr />
 
 		<?php
-		$topics = firebase_notifications_get_topics();
-		foreach ($topics as $topic){
+		foreach ( firebase_notifications_get_topics() as $firebase_notifications_topic ) {
 			?>
-			<label data-firebase-notifications-wrapper-of="<?php echo $topic->id; ?>">
+			<label data-firebase-notifications-wrapper-of="<?php echo esc_attr( $firebase_notifications_topic->id ); ?>">
 				<input type="checkbox"
 				       checked
-				       data-firebase-notifications-topic="<?php echo $topic->id; ?>"
+				       data-firebase-notifications-topic="<?php echo esc_attr( $firebase_notifications_topic->id ); ?>"
 				>
-				<?php echo $topic->name; ?>
+				<?php echo esc_html( $firebase_notifications_topic->name ); ?>
 			</label>
 			<?php
 		}

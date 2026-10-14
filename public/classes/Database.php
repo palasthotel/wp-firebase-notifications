@@ -8,6 +8,15 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+
+// The plugin's own tables have no WordPress API, so the queries are direct ones. The
+// message history is read in the admin only and changes with every send, so it is
+// not cached.
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 class Database extends Component\Database {
     
@@ -25,11 +34,20 @@ class Database extends Component\Database {
 		$this->tablename_posts = $this->wpdb->prefix . "firebase_notification_messages_from_posts";
 	}
 
+	/**
+	 * Number of messages sent since a timestamp.
+	 *
+	 * @param int|float $since unix timestamp
+	 *
+	 * @return string|null
+	 */
 	function count($since){
-		$current_date = date("Y-m-d H:i:s",$since);
-		return $this->wpdb->get_var(
-			$this->wpdb->prepare(
-				"SELECT COUNT(*) FROM " . $this->tablename . " WHERE sent > %s",
+		$wpdb = $this->wpdb;
+		$current_date = gmdate( "Y-m-d H:i:s", (int) $since );
+		return $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+				"SELECT COUNT(*) FROM {$this->tablename} WHERE sent > %s",
 				$current_date
 			)
 		);
@@ -47,11 +65,11 @@ class Database extends Component\Database {
 		$numberInserted =  $this->wpdb->insert(
 			$this->tablename,
 			array(
-				"conditions" => json_encode($message->conditions),
+				"conditions" => wp_json_encode($message->conditions),
 				"plattforms" => implode(",",$message->plattforms),
 				"title" => $message->title,
 				"body" => $message->body,
-				"payload" => json_encode($message->payload),
+				"payload" => wp_json_encode($message->payload),
 				"created" => $message->created,
 			),
 			array( "%s","%s","%s","%s","%s", "%s")
@@ -81,12 +99,14 @@ class Database extends Component\Database {
 	 * @return bool|int
 	 */
 	function setSent($message_id, $result){
-		do_action(Plugin::ACTION_MESSAGE_SENT, $message_id, $result);
-		return $this->wpdb->query(
-			$this->wpdb->prepare(
-				"UPDATE $this->tablename SET sent = %s, result = %s WHERE id = %d ",
+		do_action(Plugin::ACTION_MESSAGE_SENT, $message_id, $result); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
+		$wpdb = $this->wpdb;
+		return $wpdb->query(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+				"UPDATE {$this->tablename} SET sent = %s, result = %s WHERE id = %d",
 				$this->nowUTC(),
-				json_encode($result),
+				wp_json_encode($result),
 				$message_id
 			)
 		);
@@ -102,14 +122,15 @@ class Database extends Component\Database {
 		$datetime = new \DateTime();
 		$datetime->setTimezone(new \DateTimeZone("UTC"));
 		$datetime->setTimestamp($schedule_timestamp);
-		$result = $this->wpdb->query(
-			$this->wpdb->prepare(
-				"UPDATE $this->tablename SET publish = %s WHERE id = %d",
+		$wpdb = $this->wpdb;
+		return $wpdb->query(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+				"UPDATE {$this->tablename} SET publish = %s WHERE id = %d",
 				$datetime->format("Y-m-d H:i:s"),
 				$message_id
 			)
 		);
-		return $result;
 	}
 
 	/**
@@ -135,9 +156,12 @@ class Database extends Component\Database {
 	 * @return bool|Message
 	 */
 	function getMessage($message_id){
-		$result = $this->wpdb->get_row(
-			$this->wpdb->prepare(
-				"SELECT * FROM $this->tablename WHERE id = %d", $message_id
+		$wpdb = $this->wpdb;
+		$result = $wpdb->get_row(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+				"SELECT * FROM {$this->tablename} WHERE id = %d",
+				$message_id
 			)
 		);
 		if(!$result) return false;
@@ -151,11 +175,14 @@ class Database extends Component\Database {
 	 * @return Message[]
 	 */
 	function getPostMessages($post_id){
+		$wpdb = $this->wpdb;
 		return array_map(
 			array($this, "mapMessage"),
-			$this->wpdb->get_results(
-				$this->wpdb->prepare(
-					"SELECT * FROM $this->tablename_posts as p LEFT JOIN $this->tablename as m ON (p.message_id = m.id) WHERE p.post_id = %d ORDER BY created DESC", $post_id
+			$wpdb->get_results(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+					"SELECT * FROM {$this->tablename_posts} as p LEFT JOIN {$this->tablename} as m ON (p.message_id = m.id) WHERE p.post_id = %d ORDER BY created DESC",
+					$post_id
 				)
 			)
 		);
@@ -168,11 +195,16 @@ class Database extends Component\Database {
 	 * @return Message[]
 	 */
 	function getAll($page = 0, $count = 10){
-		$offset = $count * $page;
+		$wpdb = $this->wpdb;
 		return array_map(
 			array($this, "mapMessage"),
-			$this->wpdb->get_results(
-				"SELECT * FROM $this->tablename ORDER BY created DESC LIMIT $offset, $count"
+			$wpdb->get_results(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+					"SELECT * FROM {$this->tablename} ORDER BY created DESC LIMIT %d, %d",
+					absint( $count ) * absint( $page ),
+					absint( $count )
+				)
 			)
 		);
 	}
@@ -181,10 +213,12 @@ class Database extends Component\Database {
 	 * @return Message[]
 	 */
 	function getNextScheduledMessages() {
+		$wpdb = $this->wpdb;
 		return array_map(
 			array( $this, "mapMessage" ),
-			$this->wpdb->get_results(
-				"SELECT * FROM $this->tablename WHERE sent IS NULL AND publish IS NOT NULL AND publish <= UTC_TIMESTAMP()"
+			$wpdb->get_results(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no other variables
+				"SELECT * FROM {$this->tablename} WHERE sent IS NULL AND publish IS NOT NULL AND publish <= UTC_TIMESTAMP()"
 			)
 		);
 	}
@@ -197,14 +231,25 @@ class Database extends Component\Database {
 	 * @return Message[]
 	 */
 	function getScheduledMessages( $include_sent = false, $page = 0, $count = 10){
-		$offset = $count * $page;
-		$where_sent = ($include_sent)? "": " AND sent NOT NULL ";
-		return array_map(
-			array($this, "mapMessage"),
-			$this->wpdb->get_results(
-				"SELECT * FROM $this->tablename WHERE publish IS NOT NULL $where_sent ORDER BY publish ASC LIMIT $offset, $count"
+		$wpdb = $this->wpdb;
+		$messages = $include_sent
+			? $wpdb->get_results(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+					"SELECT * FROM {$this->tablename} WHERE publish IS NOT NULL ORDER BY publish ASC LIMIT %d, %d",
+					absint( $count ) * absint( $page ),
+					absint( $count )
+				)
 			)
-		);
+			: $wpdb->get_results(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+					"SELECT * FROM {$this->tablename} WHERE publish IS NOT NULL AND sent IS NULL ORDER BY publish ASC LIMIT %d, %d",
+					absint( $count ) * absint( $page ),
+					absint( $count )
+				)
+			);
+		return array_map( array( $this, "mapMessage" ), $messages );
 	}
 
 	/**
@@ -215,12 +260,17 @@ class Database extends Component\Database {
 	 * @return Message[]
 	 */
 	function getByPostId($post_id, $page = 0, $count = 10){
-		$offset = $count*$page;
-		$sub = "SELECT message_id FROM $this->tablename_posts WHERE post_id = $post_id";
+		$wpdb = $this->wpdb;
 		return array_map(
 			array($this, "mapMessage"),
-			$this->wpdb->get_results(
-				"SELECT * FROM $this->tablename WHERE id IN ($sub) ORDER BY created DESC LIMIT $offset, $count"
+			$wpdb->get_results(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix, no user input
+					"SELECT * FROM {$this->tablename} WHERE id IN (SELECT message_id FROM {$this->tablename_posts} WHERE post_id = %d) ORDER BY created DESC LIMIT %d, %d",
+					absint( $post_id ),
+					absint( $count ) * absint( $page ),
+					absint( $count )
+				)
 			)
 		);
 	}
@@ -284,3 +334,5 @@ class Database extends Component\Database {
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching

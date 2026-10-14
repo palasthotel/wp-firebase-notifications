@@ -8,6 +8,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 use Exception;
 use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Contract\Messaging;
@@ -128,10 +132,10 @@ class CloudMessagingApi {
 		try{
 			return $this->getMessaging()->subscribeToTopic($topic, $token);
 		} catch ( MessagingException $e ) {
-			error_log($e->getMessage());
+			Log::error($e->getMessage());
 			return false;
 		} catch ( FirebaseException $e ) {
-			error_log($e->getMessage());
+			Log::error($e->getMessage());
 			return false;
 		}
 	}
@@ -146,10 +150,10 @@ class CloudMessagingApi {
 		try {
 			return $this->getMessaging()->unsubscribeFromTopic( $topic, $token );
 		} catch ( MessagingException $e ) {
-			error_log($e->getMessage());
+			Log::error($e->getMessage());
 			return false;
 		} catch ( FirebaseException $e ) {
-			error_log($e->getMessage());
+			Log::error($e->getMessage());
 			return false;
 		}
 	}

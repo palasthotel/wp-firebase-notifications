@@ -19,8 +19,6 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
-use Palasthotel\FirebaseNotifications\Component\TextdomainConfig;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -37,6 +35,11 @@ $firebase_notifications_autoloaders = array(
 foreach ( $firebase_notifications_autoloaders as $firebase_notifications_autoloader ) {
 	if ( ! is_readable( $firebase_notifications_autoloader ) ) {
 		add_action( 'admin_notices', function () {
+			// for those who can fix it, where plugins are managed
+			$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+			if ( ! current_user_can( 'activate_plugins' ) || ! $screen || ! in_array( $screen->id, array( 'plugins', 'plugins-network', 'dashboard' ), true ) ) {
+				return;
+			}
 			echo '<div class="notice notice-error"><p>'
 				. esc_html__( 'Palasthotel Push Notifications for Firebase is incomplete: its bundled dependencies are missing. Please install the release ZIP or run bin/prefix-dependencies.sh.', 'palasthotel-push-notifications-for-firebase' )
 				. '</p></div>';
@@ -65,7 +68,6 @@ class Plugin extends Component\Plugin {
     public DesktopMessaging $desktopMessaging;
     public Assets $assets;
     public REST $rest;
-    public TextdomainConfig $textdomainConfig;
 
 	/**
 	 * Internal prefix of the AJAX actions, the meta box id and the settings anchor.
@@ -119,14 +121,6 @@ class Plugin extends Component\Plugin {
 	 * Plugin constructor.
 	 */
 	function onCreate() {
-
-		/**
-		 * load translations
-		 */
-		$this->textdomainConfig = new Component\TextdomainConfig(
-			Plugin::DOMAIN,
-			"languages"
-		);
 
 		$this->assets                             = new Assets( $this );
 		$this->cloudMessagingApi                  = new CloudMessagingApi( $this );

@@ -1,11 +1,10 @@
 <?php
-/**
- * @author Palasthotel <rezeption@palasthotel.de>
- * @copyright Copyright (c) 2014, Palasthotel
- * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2
- * @package Palasthotel\Grid-Wordpress
- */
+
 namespace Palasthotel\FirebaseNotifications;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class DatabaseUpdates {
     
@@ -76,23 +75,27 @@ class DatabaseUpdates {
 
 
 
+	// Schema changes with the plugin's own table name only, no user input.
+	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
 	public function update_1()
 	{
+		$wpdb = $this->database->wpdb;
 		$tablename = $this->database->tablename;
-		$this->database->wpdb->query("ALTER TABLE $tablename ADD plattforms VARCHAR(100) AFTER id");
-		$this->database->wpdb->query("UPDATE $tablename SET plattforms = 'android,ios,web'");
-		$this->database->wpdb->query("ALTER TABLE $tablename DROP INDEX topic");
-		$this->database->wpdb->query("ALTER TABLE $tablename CHANGE topic conditions text");
-		$this->database->wpdb->query("UPDATE $tablename SET conditions = concat('[\"',conditions,'\"]')");
+		$wpdb->query("ALTER TABLE $tablename ADD plattforms VARCHAR(100) AFTER id");
+		$wpdb->query("UPDATE $tablename SET plattforms = 'android,ios,web'");
+		$wpdb->query("ALTER TABLE $tablename DROP INDEX topic");
+		$wpdb->query("ALTER TABLE $tablename CHANGE topic conditions text");
+		$wpdb->query("UPDATE $tablename SET conditions = concat('[\"',conditions,'\"]')");
 	}
 
 	public function update_2()
 	{
+		$wpdb = $this->database->wpdb;
 		$tablename = $this->database->tablename;
-		$this->database->wpdb->query("ALTER TABLE $tablename ADD publish DATETIME DEFAULT null AFTER created");
+		$wpdb->query("ALTER TABLE $tablename ADD publish DATETIME DEFAULT null AFTER created");
 	}
 
+	// phpcs:enable
+
 }
-
-
-?>

@@ -3,6 +3,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 use Palasthotel\FirebaseNotifications\Component\Component;
 
@@ -57,14 +61,15 @@ class DesktopMessaging extends Component {
 
 		global $wp;
 		if ( isset( $wp->query_vars[ self::PARAM_KEY ] ) && $wp->query_vars[ self::PARAM_KEY ] == self::PARAM_VALUE ) {
-			header( 'Content-Type: application/javascript' );
-			ob_start();
-			$version = Assets::FB_VERSION;
-			echo "const fbVersion = '$version';\n";
-			echo "const messagingConfig = " . json_encode( $this->plugin->settings->getWebappConfig() ) . ";\n";
-			$iconUrl = $this->plugin->settings->getNotificationIconURL();
-			echo "const notificationIconUrl = '$iconUrl';\n";
-			echo file_get_contents( $this->plugin->path . "/js/firebase-messaging-sw.js" );
+			header( 'Content-Type: application/javascript; charset=utf-8' );
+			// A JavaScript response, not HTML: the values are JSON-encoded into it,
+			// HTML escaping would break them.
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo "const fbVersion = " . wp_json_encode( Assets::FB_VERSION ) . ";\n";
+			echo "const messagingConfig = " . wp_json_encode( $this->plugin->settings->getWebappConfig() ) . ";\n";
+			echo "const notificationIconUrl = " . wp_json_encode( $this->plugin->settings->getNotificationIconURL() ) . ";\n";
+			echo file_get_contents( $this->plugin->path . "js/firebase-messaging-sw.js" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a file of the plugin itself
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 			exit;
 		}
 	}

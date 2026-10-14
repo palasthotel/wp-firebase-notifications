@@ -8,6 +8,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 class Message {
 
@@ -302,7 +306,7 @@ class Message {
 		}
 
 
-		return apply_filters(Plugin::FILTER_MESSAGE, $msg);
+		return apply_filters(Plugin::FILTER_MESSAGE, $msg); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 
 	}
 

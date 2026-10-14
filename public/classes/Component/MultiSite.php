@@ -3,6 +3,10 @@
 
 namespace Palasthotel\FirebaseNotifications\Component;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 class MultiSite {
 	public static function foreach(callable $onSite){
