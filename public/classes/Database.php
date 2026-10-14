@@ -295,7 +295,7 @@ class Database extends Component\Database {
 			json_decode($item->payload, true)
 		);
 		$msg->id = $item->id;
-		$msg->result = json_decode($item->result);
+		$msg->result = null === $item->result ? null : json_decode( $item->result );
 		$msg->created = $item->created;
 		$msg->sent = $item->sent;
 		$msg->publish = $item->publish;
