@@ -114,15 +114,6 @@ class Assets extends Component {
 			true
 		);
 	}
-	public function enqueueFrontendTestScript(){
-		wp_enqueue_script(
-			Plugin::HANDLE_FRONTEND_JS."_test",
-			$this->plugin->url . "/js/test.frontend-firebase-notifications-settings.js",
-			array( "jquery", Plugin::HANDLE_FRONTEND_API_JS ),
-			filemtime( $this->plugin->path . "/js/test.frontend-firebase-notifications-settings.js"),
-			true
-		);
-	}
 
 	//------------------------------------------------------------
 	// meta box

@@ -79,9 +79,6 @@ class NotificationsSettingsThemeTemplate {
 		global $wp;
 		if ( isset( $wp->query_vars[ self::PARAM_KEY ] ) && $wp->query_vars[ self::PARAM_KEY ] == self::PARAM_VALUE ) {
 
-			if(isset($_GET["IS-APP-TEST"]) && $_GET["IS-APP-TEST"] == "true"){
-				$this->plugin->assets->enqueueFrontendTestScript();
-			}
 			$this->plugin->assets->enqueueFrontendScript();
 
 			//Check theme directory first
