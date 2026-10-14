@@ -99,7 +99,7 @@ class CloudMessagingApi {
 		if(WP_DEBUG){
 			return array(
 				"WP_DEBUG" => true,
-				"info" => __("No message was sent", "CloudMessagingApi class", Plugin::DOMAIN),
+				"info" => __("No message was sent", Plugin::DOMAIN),
 				"msg" => $msg
 			);
 		}
