@@ -12,6 +12,9 @@ class MetaBox {
 	 * @var bool
 	 */
 	private $wasPublished = false;
+
+	const NONCE_ACTION = "firebase_notifications_meta_box";
+	const NONCE_NAME = "firebase_notifications_meta_box_nonce";
     
     public Plugin $plugin;
     
@@ -121,6 +124,7 @@ class MetaBox {
 		    $draftPlatforms = ["android", "ios", "web"];
         }
 		?>
+        <?php wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME ); ?>
         <div class="fn__wrapper">
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"
@@ -130,8 +134,8 @@ class MetaBox {
                        type="text"
                        id="firebase-notifications__title"
                        maxlength="190"
-                       value="<?= !empty($draftTitle) ? $draftTitle : get_the_title(); ?>"
-                       name="<?= Plugin::POST_META_DRAFT_TITLE; ?>"
+                       value="<?php echo esc_attr( !empty($draftTitle) ? $draftTitle : get_the_title() ); ?>"
+                       name="<?php echo esc_attr( Plugin::POST_META_DRAFT_TITLE ); ?>"
                 />
             </div>
             <div class="fn__base-control--field">
@@ -140,8 +144,8 @@ class MetaBox {
                 <textarea class="fn__base-control--input"
                           id="firebase-notifications__body"
                           rows="4"
-                          name="<?= Plugin::POST_META_DRAFT_BODY; ?>"
-                ><?= !empty($draftBody) ? $draftBody : $post->post_excerpt; ?></textarea>
+                          name="<?php echo esc_attr( Plugin::POST_META_DRAFT_BODY ); ?>"
+                ><?php echo esc_textarea( !empty($draftBody) ? $draftBody : $post->post_excerpt ); ?></textarea>
             </div>
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"><?php _e( "To devices of platform", Plugin::DOMAIN ); ?></label>
@@ -167,8 +171,8 @@ class MetaBox {
                         $name = Plugin::POST_META_DRAFT_PLATFORMS."[]";
                         $checked = in_array($id, $draftPlatforms) ? "checked='checked'" : "";
                         echo "<label>";
-                        echo "<input type='checkbox' name='{$name}' {$checked} value='{$id}' data-platform />";
-                        echo " $label</label>";
+                        echo "<input type='checkbox' name='" . esc_attr( $name ) . "' {$checked} value='" . esc_attr( $id ) . "' data-platform />";
+                        echo " " . esc_html( $label ) . "</label>";
                     }
                     ?>
                 </p>
@@ -232,20 +236,20 @@ class MetaBox {
                            type="text"
                            id="firebase-notifications__conditions"
 						<?php echo $readonly; ?>
-                           value="<?= $value; ?>"
-                           name="<?= Plugin::POST_META_DRAFT_TOPICS; ?>"
+                           value="<?php echo esc_attr( $value ); ?>"
+                           name="<?php echo esc_attr( Plugin::POST_META_DRAFT_TOPICS ); ?>"
 
                     />
                     <input type="text" id="firebase-notifications__conditions-parsed"
                            value=""
-                           name="<?= Plugin::POST_META_DRAFT_TOPICS_PARSED; ?>"
+                           name="<?php echo esc_attr( Plugin::POST_META_DRAFT_TOPICS_PARSED ); ?>"
                            />
 					<?php
 					if ( $tcount > 1 ) {
 						?>
                         <p class="description">
 							<?php echo implode( ", ", array_map( function ( $item ) {
-								return "<span class='firebase-notifications__topic--copy'>" . $item->id . "</span>";
+								return "<span class='firebase-notifications__topic--copy'>" . esc_html( $item->id ) . "</span>";
 							}, $topics ) ); ?>
                         </p>
                         <div class="firebase-notifications__examples">
@@ -256,12 +260,12 @@ class MetaBox {
 									echo "<p>";
 									echo __( "Example", Plugin::DOMAIN ) . ( $i + 1 ) . ": ";
 									echo "<span class='examples__code--wrapper'>";
-									echo "<span class='examples__code'>$example</span>";
+									echo "<span class='examples__code'>" . esc_html( $example ) . "</span>";
 									echo "<span class='examples__copy'>" . _x( "Use", "post meta box condition examples", Plugin::DOMAIN ) . "</span>";
 									echo "</span>";
 									echo "<br/>";
 									$description = $descriptions[ $i ];
-									echo "<span class='description'>$description</span>";
+									echo "<span class='description'>" . esc_html( $description ) . "</span>";
 									echo "</p>";
 								}
 								?>
@@ -318,10 +322,10 @@ class MetaBox {
                     $checked = $checkedValue === $value ? "checked='checked'": "";
                     ?>
                     <label><input type="radio"
-                                  name="<?= Plugin::POST_META_DRAFT_SCHEDULE; ?>"
-                                  <?= $checked ?>
+                                  name="<?php echo esc_attr( Plugin::POST_META_DRAFT_SCHEDULE ); ?>"
+                                  <?php echo $checked; ?>
                                   data-schedule
-                                  value="<?= $value ?>"/> <?= $label ?></label>
+                                  value="<?php echo esc_attr( $value ); ?>"/> <?php echo esc_html( $label ); ?></label>
                         <?php
                     if($value === "plan") {
 	                    $futureDateExample = date( "Y-m-d H:i", time() + 60 * 60 * 24 );
@@ -366,8 +370,7 @@ class MetaBox {
 		$messages = $this->plugin->database->getPostMessages( $post->ID );
 		$count    = count( $messages );
 		if ( $count > 0 ) {
-			$tz       = get_option( "timezone_string", "UTC" );
-			$timezone = new \DateTimeZone( $tz );
+			$timezone = wp_timezone();
 			echo "<h3>" . __( "History", Plugin::DOMAIN ) . "</h3>";
 			echo "<ul class='firebase-notifications__history'>";
 			foreach ( $messages as $index => $msg ) {
@@ -375,10 +378,10 @@ class MetaBox {
 					break;
 				}
 				?>
-                <li class="firebase-notifications__history--item" data-message-id="<?php echo $msg->id; ?>">
+                <li class="firebase-notifications__history--item" data-message-id="<?php echo intval( $msg->id ); ?>">
                     <div class="history-item__left">
-                        <div class="history-item__title"><?php echo $msg->title; ?></div>
-                        <div class="history-item__conditions"><span><?php echo $msg->conditionForDisplay(); ?></span>
+                        <div class="history-item__title"><?php echo esc_html( $msg->title ); ?></div>
+                        <div class="history-item__conditions"><span><?php echo esc_html( $msg->conditionForDisplay() ); ?></span>
                         </div>
 						<?php if ( $msg->publish != null && $msg->sent == null ) {
 							$publish = new \DateTime( $msg->publish );
@@ -387,11 +390,11 @@ class MetaBox {
 							$formatted = date_i18n( get_option( 'date_format' ) . " " . get_option( 'time_format' ), $publish->getTimestamp() + $publish->getOffset() );
 							printf(
 								"<div class='history-item__schedule'>⏱ %s</div>",
-								$formatted
+								esc_html( $formatted )
 							);
 						} ?>
                         <div class="history-item_more description">
-                            <a href="<?php echo $this->plugin->toolsPage->getUrl( $post->ID ); ?>"><?php _e( "More info", Plugin::DOMAIN ); ?></a>
+                            <a href="<?php echo esc_url( $this->plugin->toolsPage->getUrl( $post->ID ) ); ?>"><?php _e( "More info", Plugin::DOMAIN ); ?></a>
 							<?php if ( $msg->publish != null && $msg->sent == null ) {
 								echo " | ";
 								?><a href='#'
@@ -407,15 +410,15 @@ class MetaBox {
 							$created = date_i18n( get_option( 'date_format' ) . " " . get_option( 'time_format' ), $created->getTimestamp() + $created->getOffset() );
 							$sent    = "";
 							if ( $msg->sent ) {
-								$sent = new \DateTime( $msg->created );
+								$sent = new \DateTime( $msg->sent );
 								$sent->setTimezone( $timezone );
 								$sent = date_i18n( get_option( 'date_format' ) . " " . get_option( 'time_format' ), $sent->getTimestamp() + $sent->getOffset() );
 							}
-							echo "💾 $created";
+							echo "💾 " . esc_html( $created );
 							if ( ! empty( $sent ) ) {
-								echo "<br>✉️ $sent";
+								echo "<br>✉️ " . esc_html( $sent );
 							}
-							?><br><?php echo implode( ", ", $msg->plattforms ) ?></span>
+							?><br><?php echo esc_html( implode( ", ", $msg->plattforms ) ); ?></span>
                     </div>
 
                 </li>
@@ -425,7 +428,7 @@ class MetaBox {
 		}
 		if ( $count > 1 ) {
 			$url = $this->plugin->toolsPage->getUrl( $post->ID );
-			echo "<p><a href='$url'>";
+			echo "<p><a href='" . esc_url( $url ) . "'>";
 			printf(
 				__( "Show complete history of %d items.", Plugin::DOMAIN ),
 				$count
@@ -443,7 +446,12 @@ class MetaBox {
 		    Plugin::POST_META_DRAFT_SCHEDULE,
             Plugin::POST_META_DRAFT_PLATFORMS,
         ];
-	    foreach ($saveFields as $field){
+	    // only from this meta box, and only by someone who may send messages
+	    $fromMetaBox = isset( $_POST[ self::NONCE_NAME ] )
+	        && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ self::NONCE_NAME ] ) ), self::NONCE_ACTION )
+	        && current_user_can( 'edit_post', $post_id )
+	        && $this->plugin->permissions->canSendMessages();
+	    foreach ( $fromMetaBox ? $saveFields : [] as $field){
 		    if(isset($_POST[$field])){
 		        if(is_string($_POST[$field])){
 			        update_post_meta(

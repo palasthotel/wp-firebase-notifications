@@ -22,6 +22,8 @@ class Ajax extends Component {
     public string $action_unsubscribe;
     public string $action_topics;
 
+	const NONCE_ACTION = "firebase_notifications_admin";
+
 	public function onCreate() {
 		$this->action_send = Plugin::DOMAIN."_send";
 		$this->action_delete = Plugin::DOMAIN."_delete";
@@ -43,8 +45,8 @@ class Ajax extends Component {
 	 */
 	public function send(){
 
-		// TODO: make it configurable
-		if(!current_user_can('publish_posts')) wp_send_json_error(__("No access", Plugin::DOMAIN));
+		check_ajax_referer( self::NONCE_ACTION );
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
 
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
@@ -64,18 +66,21 @@ class Ajax extends Component {
 
 		$title = sanitize_text_field(stripslashes($_REQUEST["title"]));
 		$body = sanitize_textarea_field(stripslashes($_REQUEST["body"]));
-		$payload = $_REQUEST["payload"];
+		$payload = isset( $_REQUEST["payload"] ) ? wp_unslash( $_REQUEST["payload"] ) : null;
 
-		if(empty($payload)) wp_send_json_error("missing payloads");
+		if(empty($payload) || !is_array($payload)) wp_send_json_error("missing payloads");
 
 		$sanitizedPayload = array();
 		foreach ($payload as $key => $value){
-			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field($value);
+			if ( ! is_scalar( $value ) ) {
+				continue;
+			}
+			$sanitizedPayload[sanitize_text_field($key)] = sanitize_text_field( (string) $value );
 		}
 
 		if( empty($platforms) || empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
 
-		$message = Message::build($platforms,$conditions, $title, $body, $payload);
+		$message = Message::build($platforms,$conditions, $title, $body, $sanitizedPayload);
 		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
 		$message_id = $this->plugin->database->add($message);
 		if(!$message_id) wp_send_json_error("Could not save notification message");
@@ -115,7 +120,8 @@ class Ajax extends Component {
 	 * delete a single message
 	 */
 	public function delete(){
-		if(!current_user_can('publish_posts')) wp_send_json_error(__("No access", Plugin::DOMAIN));
+		check_ajax_referer( self::NONCE_ACTION );
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
 		$message_id = intval($_REQUEST["message_id"]);
 
 		$this->plugin->database->delete($message_id);
@@ -138,8 +144,13 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
-		$token = $_GET["token"];
-		$topic = sanitize_text_field($_GET["topic"]);
+		$token = sanitize_text_field( wp_unslash( $_GET["token"] ) );
+		$topic = sanitize_text_field( wp_unslash( $_GET["topic"] ) );
+		// subscribe only to the topics the site offers (FILTER_TOPICS), not to hidden or
+		// internal ones; unsubscribing stays possible from any topic
+		if ( $isActive && ! in_array( $topic, $this->plugin->topics->getTopicIds(), true ) ) {
+			wp_send_json_error( "Unknown topic.", 400 );
+		}
 		if($isActive){
 			$result = $this->plugin->cloudMessagingApi->subscribe($topic, $token);
 		} else {
@@ -166,7 +177,7 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
-		$response = $this->plugin->cloudMessagingApi->getSubscriptions($_GET["token"]);
+		$response = $this->plugin->cloudMessagingApi->getSubscriptions( sanitize_text_field( wp_unslash( $_GET["token"] ) ) );
 		if(!is_countable($response)){
 			wp_send_json_error("Response is not countable");
 		}

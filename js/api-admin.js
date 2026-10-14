@@ -2,7 +2,8 @@
 
 	const {
 		actions,
-		ajax_url
+		ajax_url,
+		nonce
 	} = api;
 
 	api.send = function(platforms, conditions, title, body, payload = {}, schedule_timestamp = null ){
@@ -42,7 +43,7 @@
 				ajax_url + "?action=" + action,
 				{
 					method: 'POST',
-					data: params,
+					data: { ...params, _ajax_nonce: nonce },
 					success: resolve,
 					error: reject,
 				}

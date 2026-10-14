@@ -93,7 +93,7 @@ class ToolsPage extends Component {
 	    $this->plugin->assets->enqueueToolsPageStyle();
 		$date_format = get_option( 'date_format' );
 		$time_format = get_option( 'time_format' );
-		$timezone = new \DateTimeZone(get_option("timezone_string", "UTC"));
+		$timezone = wp_timezone();
 		$format = "$date_format $time_format";
 		$post_id = $this->getPostId();
 		$paged = $this->getPaged();
@@ -118,17 +118,17 @@ class ToolsPage extends Component {
 					:
 					" ✅ ".date_i18n($format, $sent->getTimestamp()+$sent->getOffset());
 				echo "<li class='firebase-notifications__item card'>";
-				echo "<div class='firebase-notifications__item--title'>$item->title</div>";
-				echo "<div class='firebase-notifications__item--body'>$item->body</div>";
+				echo "<div class='firebase-notifications__item--title'>" . esc_html( $item->title ) . "</div>";
+				echo "<div class='firebase-notifications__item--body'>" . esc_html( $item->body ) . "</div>";
 				echo "<div class='firebase-notifications__item--footer'>";
 
-					echo "<div class='firebase-notifications__item--created'>".__( "Created:", Plugin::DOMAIN )." $readableCreated</div>";
-					echo "<div class='firebase-notifications__item--plattform'>".implode(", ",$item->plattforms)."</div>";
+					echo "<div class='firebase-notifications__item--created'>".__( "Created:", Plugin::DOMAIN )." " . esc_html( $readableCreated ) . "</div>";
+					echo "<div class='firebase-notifications__item--plattform'>" . esc_html( implode(", ",$item->plattforms) ) . "</div>";
 					echo "<div class='firebase-notifications__item--conditions'>";
-					echo "<span class='firebase-notifications__item--conditions-wrapper'>".$item->conditionForDisplay() . "</span>";
+					echo "<span class='firebase-notifications__item--conditions-wrapper'>" . esc_html( $item->conditionForDisplay() ) . "</span>";
 					echo "</div>";
 
-					echo "<div class='firebase-notifications__item--sent'>".__("Sent:", Plugin::DOMAIN)." $readableSent</div>";
+					echo "<div class='firebase-notifications__item--sent'>".__("Sent:", Plugin::DOMAIN)." " . esc_html( $readableSent ) . "</div>";
 
 
 
@@ -137,7 +137,7 @@ class ToolsPage extends Component {
 					echo "<label class='firebase-notifications__item--payload-label'>".__("Payload", Plugin::DOMAIN)."</label>";
 					echo "<ul class='firebase-notifications__item--payload'>";
 					foreach ($item->payload as $key => $value){
-						echo "<li><strong>$key:</strong> $value</li>";
+						echo "<li><strong>" . esc_html( $key ) . ":</strong> " . esc_html( is_scalar( $value ) ? (string) $value : wp_json_encode( $value ) ) . "</li>";
 					}
 					echo "</ul>";
 					if($item->sent != null){
@@ -145,8 +145,8 @@ class ToolsPage extends Component {
 						_e("Answer from Firebase Cloud Messaging", Plugin::DOMAIN);
 						echo "</label>";
 						echo "<ul class='firebase-notifications__item--result'>";
-						foreach ($item->result as $key => $value){
-							echo "<li><strong>$key:</strong> $value</li>";
+						foreach ((array) $item->result as $key => $value){
+							echo "<li><strong>" . esc_html( $key ) . ":</strong> " . esc_html( is_scalar( $value ) ? (string) $value : wp_json_encode( $value ) ) . "</li>";
 						}
 						echo "</ul>";
 					}
