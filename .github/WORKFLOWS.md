@@ -9,7 +9,8 @@ What is specific to this plugin:
 
 | | |
 |---|---|
-| wordpress.org slug | `firebase-notifications` - **a placeholder** until the plugin's wordpress.org name is decided. The plugin does not exist on wordpress.org yet, so the SVN steps of `wordpress-svn-release.yml` fail; the zip is attached to the GitHub release before them. Change the slug in `pr.yml`, `wordpress-svn-release.yml` and the `pack` script in `package.json` together. |
+| wordpress.org slug | `palasthotel-push-notifications-for-firebase` (plugin name "Palasthotel Push Notifications for Firebase"). It is also the text domain - every gettext call has it as a literal, Plugin Check requires that - and the npm `name` in `package.json`. It stands in `pr.yml`, `wordpress-svn-release.yml` and the `pack` script in `package.json`; change them together. Until the plugin is approved on wordpress.org the SVN steps of `wordpress-svn-release.yml` fail; the zip is attached to the GitHub release before them |
+| prefixes | The rename changed only the name, the text domain and the slug. Hook names (`firebase_notifications_*`), option names (`_firebase_notifications_*`), post meta keys (`firebase_notification_*`), the AJAX actions (`firebase-notifications_*`), the REST namespace `firebase-notifications/v1`, the database tables and the PHP namespace stay as they were, so existing sites keep their settings, their history and their custom filters |
 | main file | `public/Plugin.php` - kept as it is: WordPress identifies a plugin by directory and main file, and existing installs have it as `plugin-firebase-notifications/Plugin.php`. The zip unpacks to a directory named after the slug, so a site switching to the zip either keeps the directory name or activates the plugin again |
 | version file | `package.json` (`release-type: node`); release-please starts after `1.1.2` (`bootstrap-sha`), the old tags have no `v` |
 | build step | `bash bin/prefix-dependencies.sh` in `pr.yml` and the deploy - see below |

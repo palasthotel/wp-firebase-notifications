@@ -35,7 +35,7 @@ class MetaBox {
 		}
 		add_meta_box(
 			Plugin::DOMAIN . '-meta-box',
-			__( 'Firebase Notifications', Plugin::DOMAIN ),
+			__( 'Firebase Notifications', 'palasthotel-push-notifications-for-firebase' ),
 			array( $this, 'render' ),
 			$this->plugin->settings->getActivatedPostTypes()
 		);
@@ -50,7 +50,7 @@ class MetaBox {
 
 		// post needs to be published first
 		if ( "auto-draft" === $post->post_status ) {
-			printf( "<p>%s</p>", __( "Post needs to be saved.", Plugin::DOMAIN ) );
+			printf( "<p>%s</p>", __( "Post needs to be saved.", 'palasthotel-push-notifications-for-firebase' ) );
 
 			return;
 		}
@@ -76,34 +76,34 @@ class MetaBox {
 			"i18n"      => array(
 
 				"countable" => array(
-					"text"     => __( "%d chars. ", Plugin::DOMAIN ),
-					"short"    => __( "Could be too short 🤔", Plugin::DOMAIN ),
-					"good"     => __( "Seems to be a good length 👍", Plugin::DOMAIN ),
-					"long"     => __( "Could be a little too long ⚠️", Plugin::DOMAIN ),
-					"too_long" => __( "Will probably be too long 🚨️", Plugin::DOMAIN ),
+					"text"     => __( "%d chars. ", 'palasthotel-push-notifications-for-firebase' ),
+					"short"    => __( "Could be too short 🤔", 'palasthotel-push-notifications-for-firebase' ),
+					"good"     => __( "Seems to be a good length 👍", 'palasthotel-push-notifications-for-firebase' ),
+					"long"     => __( "Could be a little too long ⚠️", 'palasthotel-push-notifications-for-firebase' ),
+					"too_long" => __( "Will probably be too long 🚨️", 'palasthotel-push-notifications-for-firebase' ),
 				),
 
-				"empty_conditions"      => __( "You need to choose at least one topic", Plugin::DOMAIN ),
-				"limitation_conditions" => __( "You can use max of 4 logical operations", Plugin::DOMAIN ),
-				"invalid"               => __( "Invalid", Plugin::DOMAIN ),
-				"valid"                 => __( "Valid", Plugin::DOMAIN ),
+				"empty_conditions"      => __( "You need to choose at least one topic", 'palasthotel-push-notifications-for-firebase' ),
+				"limitation_conditions" => __( "You can use max of 4 logical operations", 'palasthotel-push-notifications-for-firebase' ),
+				"invalid"               => __( "Invalid", 'palasthotel-push-notifications-for-firebase' ),
+				"valid"                 => __( "Valid", 'palasthotel-push-notifications-for-firebase' ),
 
 				"submit" => array(
-					"now"  => __( "Send", Plugin::DOMAIN ),
-					"plan" => __( "Plan", Plugin::DOMAIN ),
+					"now"  => __( "Send", 'palasthotel-push-notifications-for-firebase' ),
+					"plan" => __( "Plan", 'palasthotel-push-notifications-for-firebase' ),
 				),
 
 				"confirms" => array(
-					"overwrite_conditions" => __( "This will overwrite your current topics condition. Proceed?", Plugin::DOMAIN ),
+					"overwrite_conditions" => __( "This will overwrite your current topics condition. Proceed?", 'palasthotel-push-notifications-for-firebase' ),
 				),
 				"errors"   => array(
-					"title"      => __( "Give me a message title, please.", Plugin::DOMAIN ),
-					"body"       => __( "Type some body content.", Plugin::DOMAIN ),
-					"conditions" => __( "Please define your topic conditions.", Plugin::DOMAIN ),
-					"platforms" => __( "At least one platform needs to be activated.", Plugin::DOMAIN ),
+					"title"      => __( "Give me a message title, please.", 'palasthotel-push-notifications-for-firebase' ),
+					"body"       => __( "Type some body content.", 'palasthotel-push-notifications-for-firebase' ),
+					"conditions" => __( "Please define your topic conditions.", 'palasthotel-push-notifications-for-firebase' ),
+					"platforms" => __( "At least one platform needs to be activated.", 'palasthotel-push-notifications-for-firebase' ),
 					"schedule"   => array(
-						"invalid"     => __( "Please provide a valid schedule date that is at least a few minutes in the future.", Plugin::DOMAIN ),
-						"in_the_past" => __( "Schedule date must be at least a few minutes in the future.", Plugin::DOMAIN ),
+						"invalid"     => __( "Please provide a valid schedule date that is at least a few minutes in the future.", 'palasthotel-push-notifications-for-firebase' ),
+						"in_the_past" => __( "Schedule date must be at least a few minutes in the future.", 'palasthotel-push-notifications-for-firebase' ),
 					)
 				),
 			),
@@ -129,7 +129,7 @@ class MetaBox {
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"
                        for="firebase-notifications__title"
-                ><?php _e( "Title", Plugin::DOMAIN ); ?></label>
+                ><?php _e( "Title", 'palasthotel-push-notifications-for-firebase' ); ?></label>
                 <input class="fn__base-control--input"
                        type="text"
                        id="firebase-notifications__title"
@@ -140,7 +140,7 @@ class MetaBox {
             </div>
             <div class="fn__base-control--field">
                 <label class="fn__base-control--label"
-                       for="firebase-notifications__body"><?php _e( "Body", Plugin::DOMAIN ); ?></label>
+                       for="firebase-notifications__body"><?php _e( "Body", 'palasthotel-push-notifications-for-firebase' ); ?></label>
                 <textarea class="fn__base-control--input"
                           id="firebase-notifications__body"
                           rows="4"
@@ -148,7 +148,7 @@ class MetaBox {
                 ><?php echo esc_textarea( !empty($draftBody) ? $draftBody : $post->post_excerpt ); ?></textarea>
             </div>
             <div class="fn__base-control--field">
-                <label class="fn__base-control--label"><?php _e( "To devices of platform", Plugin::DOMAIN ); ?></label>
+                <label class="fn__base-control--label"><?php _e( "To devices of platform", 'palasthotel-push-notifications-for-firebase' ); ?></label>
                 <p class="firebase--notifications__plafforms">
                     <?php
                     $platforms = [
@@ -193,13 +193,13 @@ class MetaBox {
 					$examples[]     = $topics[0]->id . " AND " . $topics[1]->id;
 					$descriptions[] = sprintf( __(
 						"Send a message to all devices that are subscribed to '%s' and are also subscribed to the topic '%s'.",
-						Plugin::DOMAIN
+						'palasthotel-push-notifications-for-firebase'
 					), $topic0, $topic1 );
 
 					$examples[]     = $topics[0]->id . " OR " . $topics[1]->id;
 					$descriptions[] = sprintf( __(
 						"Send a message to all devices that are subscribed to '%s' or to '%s' or to both topics.",
-						Plugin::DOMAIN
+						'palasthotel-push-notifications-for-firebase'
 					), $topic0, $topic1 );
 
 					if ( $tcount > 2 ) {
@@ -207,12 +207,12 @@ class MetaBox {
 						$examples[]     = "$topic0 AND ( $topic1 OR $topic2 )";
 						$descriptions[] = sprintf( __(
 							"Send a message to all devices that are subscribed to '%s' and are also subscribed to '%s' or to '%s' or to both topics.",
-							Plugin::DOMAIN
+							'palasthotel-push-notifications-for-firebase'
 						), $topic0, $topic1, $topic2 );
 						$examples[]     = "$topic0 OR ( $topic1 AND $topic2 )";
 						$descriptions[] = sprintf( __(
 							"Send a message to all devices that are subscribed to '%s' or are subscribed to both topics '%s' and '%s'.",
-							Plugin::DOMAIN
+							'palasthotel-push-notifications-for-firebase'
 						), $topic0, $topic1, $topic2 );
 					}
 				}
@@ -221,7 +221,7 @@ class MetaBox {
                 <div class="fn__base-control--field">
                     <label class="fn__base-control--label"
                            for="firebase-notifications__conditions">
-						<?php _e( "To devices subscribed to topics condition", Plugin::DOMAIN ); ?>
+						<?php _e( "To devices subscribed to topics condition", 'palasthotel-push-notifications-for-firebase' ); ?>
                         <span id="firebase-notifications_conditions--valid">...</span>
                     </label>
 					<?php
@@ -253,15 +253,15 @@ class MetaBox {
 							}, $topics ) ); ?>
                         </p>
                         <div class="firebase-notifications__examples">
-                            <div class="examples__header"><?php _e( "Show more examples", Plugin::DOMAIN ); ?></div>
+                            <div class="examples__header"><?php _e( "Show more examples", 'palasthotel-push-notifications-for-firebase' ); ?></div>
                             <div class="examples__content">
 								<?php
 								foreach ( $examples as $i => $example ) {
 									echo "<p>";
-									echo __( "Example", Plugin::DOMAIN ) . ( $i + 1 ) . ": ";
+									echo __( "Example", 'palasthotel-push-notifications-for-firebase' ) . ( $i + 1 ) . ": ";
 									echo "<span class='examples__code--wrapper'>";
 									echo "<span class='examples__code'>" . esc_html( $example ) . "</span>";
-									echo "<span class='examples__copy'>" . _x( "Use", "post meta box condition examples", Plugin::DOMAIN ) . "</span>";
+									echo "<span class='examples__copy'>" . _x( "Use", "post meta box condition examples", 'palasthotel-push-notifications-for-firebase' ) . "</span>";
 									echo "</span>";
 									echo "<br/>";
 									$description = $descriptions[ $i ];
@@ -281,28 +281,28 @@ class MetaBox {
 
         </div>
         <div class="fn__base-control--field">
-            <label class="fn__base-control--label"><?php _e( "Schedule", Plugin::DOMAIN ); ?></label>
+            <label class="fn__base-control--label"><?php _e( "Schedule", 'palasthotel-push-notifications-for-firebase' ); ?></label>
             <div class="firebase--notifications__schedule">
 	            <?php
                 $options = ("publish" === $post->post_status) ?
 	                [
 		                [
-			                "label" => __( "Now", Plugin::DOMAIN ),
+			                "label" => __( "Now", 'palasthotel-push-notifications-for-firebase' ),
 			                "value" => "now",
 		                ],
 		                [
-			                "label" => __( "Plan", Plugin::DOMAIN ),
+			                "label" => __( "Plan", 'palasthotel-push-notifications-for-firebase' ),
 			                "value" => "plan",
 		                ],
 	                ]
 	                :
 	                [
 		                [
-			                "label" => __( "Manually after publication", Plugin::DOMAIN ),
+			                "label" => __( "Manually after publication", 'palasthotel-push-notifications-for-firebase' ),
 			                "value" => "manually",
 		                ],
 		                [
-			                "label" => __( "On publication", Plugin::DOMAIN ),
+			                "label" => __( "On publication", 'palasthotel-push-notifications-for-firebase' ),
 			                "value" => "on_publish",
 		                ],
                     ];
@@ -347,16 +347,16 @@ class MetaBox {
 
 		if( count( $topics ) <= 0 ) {
 
-			echo "<p> 🚨" . __( 'Configuration missing. There are no topics defined', Plugin::DOMAIN ) . "</p>";
+			echo "<p> 🚨" . __( 'Configuration missing. There are no topics defined', 'palasthotel-push-notifications-for-firebase' ) . "</p>";
 
 		} else if ( "publish" === $post->post_status ) {
 
 			echo "<p>";
-			submit_button( __( "Send", Plugin::DOMAIN ), "primary", "firebase-notifications-submit", false );
-			printf( "<span class='is-loading'>%s</span>", __( "Sending message", Plugin::DOMAIN ) );
-			printf( "<span class='result-display-sent'> ✅ %s</span>", __( "Message has been sent!", Plugin::DOMAIN ) );
-			printf( "<span class='result-display-scheduled'> ✅ %s</span>", __( "Message has been scheduled!", Plugin::DOMAIN ) );
-			printf( "<span class='error-display'> 🚨 %s</span>", _x( "Error.", "Send message post meta box response", Plugin::DOMAIN ) );
+			submit_button( __( "Send", 'palasthotel-push-notifications-for-firebase' ), "primary", "firebase-notifications-submit", false );
+			printf( "<span class='is-loading'>%s</span>", __( "Sending message", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='result-display-sent'> ✅ %s</span>", __( "Message has been sent!", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='result-display-scheduled'> ✅ %s</span>", __( "Message has been scheduled!", 'palasthotel-push-notifications-for-firebase' ) );
+			printf( "<span class='error-display'> 🚨 %s</span>", _x( "Error.", "Send message post meta box response", 'palasthotel-push-notifications-for-firebase' ) );
 			echo "</p>";
 
 		}
@@ -371,7 +371,7 @@ class MetaBox {
 		$count    = count( $messages );
 		if ( $count > 0 ) {
 			$timezone = wp_timezone();
-			echo "<h3>" . __( "History", Plugin::DOMAIN ) . "</h3>";
+			echo "<h3>" . __( "History", 'palasthotel-push-notifications-for-firebase' ) . "</h3>";
 			echo "<ul class='firebase-notifications__history'>";
 			foreach ( $messages as $index => $msg ) {
 				if ( $index >= 3 ) {
@@ -394,11 +394,11 @@ class MetaBox {
 							);
 						} ?>
                         <div class="history-item_more description">
-                            <a href="<?php echo esc_url( $this->plugin->toolsPage->getUrl( $post->ID ) ); ?>"><?php _e( "More info", Plugin::DOMAIN ); ?></a>
+                            <a href="<?php echo esc_url( $this->plugin->toolsPage->getUrl( $post->ID ) ); ?>"><?php _e( "More info", 'palasthotel-push-notifications-for-firebase' ); ?></a>
 							<?php if ( $msg->publish != null && $msg->sent == null ) {
 								echo " | ";
 								?><a href='#'
-                                     class='delete'><?php _e( "Delete scheduled message", Plugin::DOMAIN ); ?></a><?php
+                                     class='delete'><?php _e( "Delete scheduled message", 'palasthotel-push-notifications-for-firebase' ); ?></a><?php
 							}
 							?>
                         </div>
@@ -430,7 +430,7 @@ class MetaBox {
 			$url = $this->plugin->toolsPage->getUrl( $post->ID );
 			echo "<p><a href='" . esc_url( $url ) . "'>";
 			printf(
-				__( "Show complete history of %d items.", Plugin::DOMAIN ),
+				__( "Show complete history of %d items.", 'palasthotel-push-notifications-for-firebase' ),
 				$count
 			);
 			echo "</a></p>";

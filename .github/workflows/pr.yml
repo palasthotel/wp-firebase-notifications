@@ -12,9 +12,8 @@ jobs:
   checks:
     uses: palasthotel/github-workflows/.github/workflows/wp-plugin-pr.yml@v1
     with:
-      # placeholder until the wordpress.org name is decided - see .github/WORKFLOWS.md
-      slug: firebase-notifications
-      dev-plugin-name: Firebase Notifications - DEV
+      slug: palasthotel-push-notifications-for-firebase
+      dev-plugin-name: Palasthotel Push Notifications for Firebase - DEV
       # off until the Plugin Check PR: the existing code still has 159 errors and 83
       # warnings (escaping, i18n, prepared SQL), none from this PR's changes
       plugin-check: false
@@ -42,3 +41,4 @@ jobs:
         css/meta-box.css
         css/tools-page.css
         templates/firebase-notifications-settings.php
+        languages/palasthotel-push-notifications-for-firebase-de_DE.mo

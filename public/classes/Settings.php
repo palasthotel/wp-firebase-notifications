@@ -49,7 +49,7 @@ class Settings extends Component {
 
 		add_settings_field(
 			Plugin::OPTION_CONFIG,
-			__('Google Services', Plugin::DOMAIN),
+			__('Google Services', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_services_config_field'),
 			'writing',
 			'firebase-notifications-settings'
@@ -62,7 +62,7 @@ class Settings extends Component {
 
 		add_settings_field(
 			Plugin::OPTION_POST_TYPES,
-			__('Post types', Plugin::DOMAIN),
+			__('Post types', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_post_types'),
 			'writing',
 			'firebase-notifications-settings'
@@ -75,7 +75,7 @@ class Settings extends Component {
 
 		add_settings_field(
 			Plugin::OPTION_WEBAPP_CONFIG,
-			__('Webapp', Plugin::DOMAIN),
+			__('Webapp', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_webapp_config_field'),
 			'writing',
 			'firebase-notifications-settings'
@@ -87,7 +87,7 @@ class Settings extends Component {
 
 		add_settings_field(
 			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON,
-			__('Notification Icon', Plugin::DOMAIN),
+			__('Notification Icon', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_notification_icon_field'),
 			'writing',
 			'firebase-notifications-settings'

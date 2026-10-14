@@ -53,8 +53,8 @@ class ToolsPage extends Component {
 	public function admin_menu() {
 		add_submenu_page(
 			'tools.php',
-			__( 'Tools ‹ Firebase Notifications', Plugin::DOMAIN ),
-			__( 'Firebase Notifications', Plugin::DOMAIN ),
+			__( 'Tools ‹ Firebase Notifications', 'palasthotel-push-notifications-for-firebase' ),
+			__( 'Firebase Notifications', 'palasthotel-push-notifications-for-firebase' ),
 			'publish_posts',
 			'firebase-notifications-tools',
 			array( $this, 'render' )
@@ -67,7 +67,7 @@ class ToolsPage extends Component {
 	public function render() {
 		?>
 		<div class="wrap firebase-notifications__tools-page">
-			<h1><?php _e( 'Firebase Notifications', Plugin::DOMAIN ); ?></h1>
+			<h1><?php _e( 'Firebase Notifications', 'palasthotel-push-notifications-for-firebase' ); ?></h1>
 			<?php
 			$this->renderForm();
 			$this->renderHistory();
@@ -114,7 +114,7 @@ class ToolsPage extends Component {
 				if($sent) $sent->setTimezone($timezone);
 				$readableCreated = date_i18n($format, $created->getTimestamp()+$created->getOffset());
 				$readableSent = (empty($sent))?
-					"🚨 "._x("Not sent", "Tools page", Plugin::DOMAIN)
+					"🚨 "._x("Not sent", "Tools page", 'palasthotel-push-notifications-for-firebase')
 					:
 					" ✅ ".date_i18n($format, $sent->getTimestamp()+$sent->getOffset());
 				echo "<li class='firebase-notifications__item card'>";
@@ -122,19 +122,19 @@ class ToolsPage extends Component {
 				echo "<div class='firebase-notifications__item--body'>" . esc_html( $item->body ) . "</div>";
 				echo "<div class='firebase-notifications__item--footer'>";
 
-					echo "<div class='firebase-notifications__item--created'>".__( "Created:", Plugin::DOMAIN )." " . esc_html( $readableCreated ) . "</div>";
+					echo "<div class='firebase-notifications__item--created'>".__( "Created:", 'palasthotel-push-notifications-for-firebase' )." " . esc_html( $readableCreated ) . "</div>";
 					echo "<div class='firebase-notifications__item--plattform'>" . esc_html( implode(", ",$item->plattforms) ) . "</div>";
 					echo "<div class='firebase-notifications__item--conditions'>";
 					echo "<span class='firebase-notifications__item--conditions-wrapper'>" . esc_html( $item->conditionForDisplay() ) . "</span>";
 					echo "</div>";
 
-					echo "<div class='firebase-notifications__item--sent'>".__("Sent:", Plugin::DOMAIN)." " . esc_html( $readableSent ) . "</div>";
+					echo "<div class='firebase-notifications__item--sent'>".__("Sent:", 'palasthotel-push-notifications-for-firebase')." " . esc_html( $readableSent ) . "</div>";
 
 
 
 				echo "</div>";
 				echo "<div class='firebase-notifications__item--communication'>";
-					echo "<label class='firebase-notifications__item--payload-label'>".__("Payload", Plugin::DOMAIN)."</label>";
+					echo "<label class='firebase-notifications__item--payload-label'>".__("Payload", 'palasthotel-push-notifications-for-firebase')."</label>";
 					echo "<ul class='firebase-notifications__item--payload'>";
 					foreach ($item->payload as $key => $value){
 						echo "<li><strong>" . esc_html( $key ) . ":</strong> " . esc_html( is_scalar( $value ) ? (string) $value : wp_json_encode( $value ) ) . "</li>";
@@ -142,7 +142,7 @@ class ToolsPage extends Component {
 					echo "</ul>";
 					if($item->sent != null){
 						echo "<label class='firebase-notifications__item--result-label'>";
-						_e("Answer from Firebase Cloud Messaging", Plugin::DOMAIN);
+						_e("Answer from Firebase Cloud Messaging", 'palasthotel-push-notifications-for-firebase');
 						echo "</label>";
 						echo "<ul class='firebase-notifications__item--result'>";
 						foreach ((array) $item->result as $key => $value){

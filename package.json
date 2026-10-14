@@ -1,5 +1,5 @@
 {
-  "name": "@palasthotel/firebase-notifications",
+  "name": "@palasthotel/palasthotel-push-notifications-for-firebase",
   "version": "1.1.2",
   "private": true,
   "description": "Send push notifications with Firebase Cloud Messaging from WordPress.",
@@ -15,6 +15,6 @@
   },
   "scripts": {
     "build": "bash bin/prefix-dependencies.sh",
-    "pack": "SLUG=firebase-notifications bash ../github-workflows/wp-plugin/bin/pack.sh"
+    "pack": "SLUG=palasthotel-push-notifications-for-firebase bash ../github-workflows/wp-plugin/bin/pack.sh"
   }
 }

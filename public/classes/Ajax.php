@@ -46,7 +46,7 @@ class Ajax extends Component {
 	public function send(){
 
 		check_ajax_referer( self::NONCE_ACTION );
-		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", 'palasthotel-push-notifications-for-firebase'), 403);
 
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
@@ -121,7 +121,7 @@ class Ajax extends Component {
 	 */
 	public function delete(){
 		check_ajax_referer( self::NONCE_ACTION );
-		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", 'palasthotel-push-notifications-for-firebase'), 403);
 		$message_id = intval($_REQUEST["message_id"]);
 
 		$this->plugin->database->delete($message_id);
