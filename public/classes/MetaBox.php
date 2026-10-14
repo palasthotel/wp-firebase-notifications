@@ -3,8 +3,6 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
-use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\FirebaseException;
-use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\MessagingException;
 
 class MetaBox {
 
@@ -515,11 +513,14 @@ class MetaBox {
 		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
 		$message_id = $this->plugin->database->add($message);
 		if(!$message_id) {
-			error_log("Could not save notification message");
+			Log::error("Could not save the notification for post {$post->ID}.");
 			return;
 		}
 		do_action(Plugin::ACTION_SAVED_MESSAGE, $message);
 
+		// This runs while the post is saved, in the editor's REST request or a form
+		// submit: a failure must not replace that response. The message stays in
+		// the history as not sent.
 		try{
 
 			$result = $this->plugin->cloudMessagingApi->send($message);
@@ -527,14 +528,10 @@ class MetaBox {
 			$success = $this->plugin->database->setSent( $message->id, $result);
 
 			if(!$success){
-				error_log("Firebase Service connection not working. Check the settings.");
+				Log::error("Could not mark notification {$message->id} as sent.");
 			}
-		} catch (\Exception $e){
-			wp_send_json_error($e->getMessage());
-		} catch ( MessagingException $e ) {
-			wp_send_json_error($e->getMessage());
-		} catch ( FirebaseException $e ) {
-			wp_send_json_error($e->getMessage());
+		} catch ( \Throwable $e ) {
+			Log::error("Could not send notification {$message->id} on publication: " . $e->getMessage());
 		}
 	}
 
