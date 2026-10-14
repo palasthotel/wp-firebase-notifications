@@ -69,7 +69,11 @@ class Settings extends Component {
 		);
 		register_setting(
 			'writing',
-			Plugin::OPTION_POST_TYPES
+			Plugin::OPTION_POST_TYPES,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => array( $this, 'sanitize_post_types' ),
+			)
 		);
 
 
@@ -82,7 +86,11 @@ class Settings extends Component {
 		);
 		register_setting(
 			'writing',
-			Plugin::OPTION_WEBAPP_CONFIG
+			Plugin::OPTION_WEBAPP_CONFIG,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( $this, 'sanitize_webapp_config' ),
+			)
 		);
 
 		add_settings_field(
@@ -94,7 +102,11 @@ class Settings extends Component {
 		);
 		register_setting(
 			'writing',
-			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON
+			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( $this, 'sanitize_notification_icon' ),
+			)
 		);
 
 	}
@@ -113,6 +125,63 @@ class Settings extends Component {
 			$option = json_encode($json);
 		}
 		return $option;
+	}
+
+	/**
+	 * Only post types that exist, as their keys.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string[]
+	 */
+	public function sanitize_post_types( $value ) {
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+		$post_types = array();
+		foreach ( $value as $post_type ) {
+			$post_type = sanitize_key( (string) $post_type );
+			if ( post_type_exists( $post_type ) ) {
+				$post_types[] = $post_type;
+			}
+		}
+		return array_values( array_unique( $post_types ) );
+	}
+
+	/**
+	 * The web app config has to be a JSON object; anything else keeps the old value.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string
+	 */
+	public function sanitize_webapp_config( $value ) {
+		$value = is_string( $value ) ? trim( $value ) : '';
+		if ( '' === $value ) {
+			return '';
+		}
+		$config = json_decode( $value );
+		if ( ! is_object( $config ) ) {
+			add_settings_error(
+				Plugin::OPTION_WEBAPP_CONFIG,
+				'invalid-json',
+				__( 'The web app configuration is not valid JSON and was not saved.', 'palasthotel-push-notifications-for-firebase' )
+			);
+			return (string) get_option( Plugin::OPTION_WEBAPP_CONFIG, '' );
+		}
+		return (string) wp_json_encode( $config );
+	}
+
+	/**
+	 * The notification icon is an attachment ID.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string
+	 */
+	public function sanitize_notification_icon( $value ) {
+		$id = absint( $value );
+		return $id > 0 ? (string) $id : '';
 	}
 
 	/**
@@ -152,7 +221,7 @@ class Settings extends Component {
 	 * @return string
 	 */
 	public function getNotificationIconImageId(){
-		return get_option(Plugin::OPTION_WEBAPP_NOTIFICATION_ICON, "");
+		return $this->sanitize_notification_icon( get_option( Plugin::OPTION_WEBAPP_NOTIFICATION_ICON, "" ) );
 	}
 
 	/**
@@ -328,7 +397,7 @@ class Settings extends Component {
 		</div>
 		<input
 				name="<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>"
-				value="<?php echo $this->getNotificationIconImageId(); ?>"
+				value="<?php echo esc_attr( $this->getNotificationIconImageId() ); ?>"
 				type="hidden"
 		/>
 		<p class="description">Square image with 192px x 192px.</p>
@@ -391,8 +460,8 @@ class Settings extends Component {
 
 				// update application state to initial state
 				updateState(
-					"<?php echo $this->getNotificationIconImageId() ?>",
-					"<?php echo wp_get_attachment_image_url($this->getNotificationIconImageId(), 'full'); ?>"
+					<?php echo wp_json_encode( $this->getNotificationIconImageId() ); ?>,
+					<?php echo wp_json_encode( (string) wp_get_attachment_image_url( (int) $this->getNotificationIconImageId(), 'full' ) ); ?>
 				);
 
 			});
