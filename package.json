@@ -1,6 +1,6 @@
 {
   "name": "@palasthotel/firebase-notifications",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "private": true,
   "description": "Send push notifications with Firebase Cloud Messaging from WordPress.",
   "license": "GPL-3.0-or-later",
