@@ -9,39 +9,57 @@
 namespace Palasthotel\FirebaseNotifications;
 
 
-/**
- * @property array $conditions
- * @property string title
- * @property string body
- * @property array payload
- * @property string[] plattforms
- */
 class Message {
+
+	/**
+	 * @var string[] platforms the message is for: android, ios, web
+	 */
+	public $plattforms;
+
+	/**
+	 * @var array topic condition: topic ids alternating with AND/OR, nested arrays for brackets
+	 */
+	public $conditions;
+
+	/**
+	 * @var string
+	 */
+	public $title;
+
+	/**
+	 * @var string
+	 */
+	public $body;
+
+	/**
+	 * @var array data payload, string values
+	 */
+	public $payload;
 
 	/**
 	 * @var null|int
 	 */
-	var $id = NULL;
+	public $id = null;
 
 	/**
-	 * @var null|array
+	 * @var null|array|object
 	 */
-	var $result = NULL;
-
-	/**
-	 * @var null|string
-	 */
-	var $created = NULL;
+	public $result = null;
 
 	/**
 	 * @var null|string
 	 */
-	var $sent = NULL;
+	public $created = null;
 
 	/**
 	 * @var null|string
 	 */
-	var $publish = NULL;
+	public $sent = null;
+
+	/**
+	 * @var null|string
+	 */
+	public $publish = null;
 
 	/**
 	 * Notification constructor.
