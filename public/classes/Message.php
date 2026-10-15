@@ -96,11 +96,18 @@ class Message {
 	}
 
 	/**
+	 * The condition as text, e.g. "news AND ( sport OR culture )". A condition that
+	 * cannot be read - saved by an older version without validation - is shown as
+	 * its JSON instead of breaking the history.
+	 *
 	 * @return string
-	 * @throws \Exception
 	 */
 	public function conditionForDisplay() {
-		return $this->buildConditionForDisplay($this->conditions);
+		try {
+			return $this->buildConditionForDisplay( (array) $this->conditions );
+		} catch ( \Throwable $e ) {
+			return (string) wp_json_encode( $this->conditions );
+		}
 	}
 
 	/**

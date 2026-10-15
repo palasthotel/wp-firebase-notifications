@@ -516,7 +516,8 @@ class MetaBox {
 		}
 
 		$conditionsArr = json_decode($topics);
-		if(!Validation::isValidConditions($conditionsArr)){
+		if ( true !== Validation::isValidConditions( $conditionsArr ) ) {
+			Log::error( "The topic condition of the notification for post {$post->ID} is invalid, it was not sent." );
 			return;
 		}
 		$conditionsArr = Validation::sanitizeConditions($conditionsArr);
