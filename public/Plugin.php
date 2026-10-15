@@ -102,6 +102,7 @@ class Plugin extends Component\Plugin {
     const FILTER_MESSAGE_PAYLOAD = "firebase_notifications_message_payload";
 	const FILTER_META_BOX_RESTRICTIONS = "firebase_notifications_meta_box_restrictions";
 	const FILTER_SETTINGS_URL = "firebase_notifications_settings_url";
+	const FILTER_REST_COUNT_PERMISSION = "firebase_notifications_rest_count_permission";
 
 	const ACTION_META_BOX_CUSTOM = "firebase_notifications_meta_box_custom";
 	const ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT = "firebase_notification_meta_box_enqueue_script";
