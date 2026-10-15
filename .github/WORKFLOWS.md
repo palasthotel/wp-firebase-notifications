@@ -16,7 +16,7 @@ What is specific to this plugin:
 | build step | `bash bin/prefix-dependencies.sh` in `pr.yml` and the deploy - see below |
 | `required-files` | both autoloaders, the prefixed SDK, the JS/CSS the plugin enqueues and the theme template |
 | `php -l` | 8.1 to 8.5 - `Requires PHP: 8.1` |
-| Plugin Check | `plugin-check: false` until the Plugin Check PR - the existing code has errors (escaping, i18n, prepared SQL). Plugin Check ignores `vendor/`, so the bundled SDK in `vendor/prefixed/` is not checked |
+| Plugin Check | on, errors fail the PR. Plugin Check ignores `vendor/`, so the bundled SDK in `vendor/prefixed/` is not checked. Each remaining `phpcs:ignore` gives its reason (table names from `$wpdb->prefix`, hook names from the prefixed constants in `Plugin`, public endpoints without a nonce). A file with a PHP syntax error passes Plugin Check silently - the `php -l` job catches that |
 
 ## Bundled, prefixed Firebase SDK
 

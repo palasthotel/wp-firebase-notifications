@@ -1,9 +1,9 @@
 name: PR
 
 on:
+  # every base branch, so that stacked pull requests are checked too, not only
+  # those against main
   pull_request:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -14,9 +14,6 @@ jobs:
     with:
       slug: palasthotel-push-notifications-for-firebase
       dev-plugin-name: Palasthotel Push Notifications for Firebase - DEV
-      # off until the Plugin Check PR: the existing code still has 159 errors and 83
-      # warnings (escaping, i18n, prepared SQL), none from this PR's changes
-      plugin-check: false
       # Requires PHP: 8.1
       php-versions: '["8.1", "8.2", "8.3", "8.4", "8.5"]'
       # public/vendor is not in the repository: this installs the Firebase SDK and
