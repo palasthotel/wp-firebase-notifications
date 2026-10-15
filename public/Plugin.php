@@ -102,6 +102,7 @@ class Plugin extends Component\Plugin {
     const FILTER_MESSAGE_PAYLOAD = "firebase_notifications_message_payload";
 	const FILTER_META_BOX_RESTRICTIONS = "firebase_notifications_meta_box_restrictions";
 	const FILTER_SETTINGS_URL = "firebase_notifications_settings_url";
+	const FILTER_REST_COUNT_PERMISSION = "firebase_notifications_rest_count_permission";
 
 	const ACTION_META_BOX_CUSTOM = "firebase_notifications_meta_box_custom";
 	const ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT = "firebase_notification_meta_box_enqueue_script";
@@ -114,6 +115,14 @@ class Plugin extends Component\Plugin {
 	const OPTION_WEBAPP_CONFIG = "_firebase_notifications_webapp_config_json";
 	const OPTION_WEBAPP_NOTIFICATION_ICON = "_firebase_notifications_webapp_notification_icon";
 	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
+	const OPTION_TOPICS = "_firebase_notifications_topics";
+
+	/**
+	 * Name of the constant for wp-config.php with the service account: the path to
+	 * its JSON file or the JSON itself. If defined it is used instead of the
+	 * service account in the settings (OPTION_CONFIG).
+	 */
+	const CONSTANT_SERVICE_ACCOUNT = "FIREBASE_NOTIFICATIONS_SERVICE_ACCOUNT";
 
 	const SCHEDULE_SEND_MESSAGED = "firebase_notifications_send_messaged_schedule";
 

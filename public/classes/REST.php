@@ -23,7 +23,7 @@ class REST extends Component {
 			array(
 				'methods'             => "GET",
 				'callback'            => array( $this, 'count' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'count_permission' ),
 				'args'                => [
 					"since" => array(
 						'required'          => false,
@@ -36,6 +36,27 @@ class REST extends Component {
 				]
 			)
 		);
+	}
+
+	/**
+	 * The count is public by default, as it always was: apps read it without
+	 * logging in. Sites can restrict it with the filter
+	 * firebase_notifications_rest_count_permission, e.g.
+	 * add_filter( 'firebase_notifications_rest_count_permission', fn() => current_user_can( 'edit_posts' ) );
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function count_permission( \WP_REST_Request $request ) {
+		/**
+		 * Whether the current request may read the number of sent notifications.
+		 *
+		 * @param bool|\WP_Error   $allowed default true
+		 * @param \WP_REST_Request $request
+		 */
+		$allowed = apply_filters( Plugin::FILTER_REST_COUNT_PERMISSION, true, $request ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
+		return is_wp_error( $allowed ) ? $allowed : (bool) $allowed;
 	}
 
 	public function count( \WP_REST_Request $request ) {

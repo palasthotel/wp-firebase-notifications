@@ -65,6 +65,22 @@ class Settings extends Component {
 		);
 
 		add_settings_field(
+			Plugin::OPTION_TOPICS,
+			__('Topics', 'palasthotel-push-notifications-for-firebase'),
+			array($this, 'render_topics_field'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_TOPICS,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => array( $this, 'sanitize_topics' ),
+			)
+		);
+
+		add_settings_field(
 			Plugin::OPTION_POST_TYPES,
 			__('Post types', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_post_types'),
@@ -116,19 +132,121 @@ class Settings extends Component {
 	}
 
 	/**
-	 * @param $option
+	 * Keeps the private key when it comes back masked ("***"), and the old value if
+	 * the field was not sent (the service account comes from wp-config.php) or the
+	 * JSON is invalid.
 	 *
-	 * @return mixed
+	 * @param mixed $option
+	 *
+	 * @return string
 	 */
 	public function sanitize_config($option){
-		if($option != ""){
-			$json = json_decode($option);
-			$old = json_decode(get_option(Plugin::OPTION_CONFIG));
-			if($json->private_key_id == "***") $json->private_key_id = $old->private_key_id;
-			if($json->private_key == "***") $json->private_key = $old->private_key;
-			$option = json_encode($json);
+		$old = (string) get_option( Plugin::OPTION_CONFIG, "" );
+		if ( null === $option || ! is_string( $option ) ) {
+			return $old;
 		}
-		return $option;
+		$option = trim( $option );
+		if ( "" === $option ) {
+			return "";
+		}
+		$json = json_decode( $option );
+		if ( ! is_object( $json ) ) {
+			add_settings_error(
+				Plugin::OPTION_CONFIG,
+				'invalid-json',
+				__( 'The service account is not valid JSON and was not saved.', 'palasthotel-push-notifications-for-firebase' )
+			);
+			return $old;
+		}
+		$old_json = json_decode( $old );
+		foreach ( array( "private_key_id", "private_key" ) as $key ) {
+			if ( isset( $json->{$key} ) && "***" === $json->{$key} ) {
+				if ( is_object( $old_json ) && isset( $old_json->{$key} ) ) {
+					$json->{$key} = $old_json->{$key};
+				} else {
+					unset( $json->{$key} );
+				}
+			}
+		}
+		return (string) wp_json_encode( $json );
+	}
+
+	/**
+	 * Whether the service account comes from the constant in wp-config.php.
+	 *
+	 * @return bool
+	 */
+	public function isConfigFromConstant(){
+		return defined( Plugin::CONSTANT_SERVICE_ACCOUNT );
+	}
+
+	/**
+	 * The service account JSON: from the constant FIREBASE_NOTIFICATIONS_SERVICE_ACCOUNT
+	 * if it is defined - the JSON itself or the path to the JSON file -, otherwise from
+	 * the settings.
+	 *
+	 * @return string
+	 */
+	private function getConfigJson(){
+		if ( ! $this->isConfigFromConstant() ) {
+			return (string) get_option( Plugin::OPTION_CONFIG, "" );
+		}
+		$value = constant( Plugin::CONSTANT_SERVICE_ACCOUNT );
+		if ( ! is_string( $value ) ) {
+			return "";
+		}
+		$value = trim( $value );
+		if ( "{" === substr( $value, 0, 1 ) ) {
+			return $value;
+		}
+		if ( "" !== $value && is_file( $value ) && is_readable( $value ) ) {
+			return (string) file_get_contents( $value ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a local file the site owner configured, no URL
+		}
+		return "";
+	}
+
+	/**
+	 * Topics as rows of id and name. Rows without an id are dropped, invalid or
+	 * duplicate ids are dropped with an error.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return array[]
+	 */
+	public function sanitize_topics( $value ) {
+		$topics = array();
+		$ids    = array();
+		foreach ( is_array( $value ) ? $value : array() as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$id   = isset( $row["id"] ) && is_string( $row["id"] ) ? trim( $row["id"] ) : "";
+			$name = isset( $row["name"] ) && is_string( $row["name"] ) ? sanitize_text_field( $row["name"] ) : "";
+			if ( "" === $id ) {
+				continue;
+			}
+			if ( ! preg_match( Validation::TOPIC_PATTERN, $id ) ) {
+				add_settings_error(
+					Plugin::OPTION_TOPICS,
+					'invalid-topic-id',
+					sprintf(
+						/* translators: %s: the topic ID as entered */
+						__( 'The topic ID "%s" was not saved: only letters, digits and - _ . ~ %% are allowed, up to 900 characters.', 'palasthotel-push-notifications-for-firebase' ),
+						sanitize_text_field( $id )
+					)
+				);
+				continue;
+			}
+			if ( in_array( $id, $ids, true ) ) {
+				continue;
+			}
+			$ids[]    = $id;
+			$topics[] = array(
+				"id"   => $id,
+				"name" => "" !== $name ? $name : $id,
+			);
+		}
+		return $topics;
 	}
 
 	/**
@@ -194,8 +312,7 @@ class Settings extends Component {
 	 * @return object|array|null
 	 */
 	public function getConfig($assoc = false){
-		$config = get_option(Plugin::OPTION_CONFIG, "");
-		return json_decode($config, $assoc);
+		return json_decode( $this->getConfigJson(), $assoc );
 	}
 
 	/**
@@ -261,13 +378,40 @@ class Settings extends Component {
 	 * render the setting field
 	 */
 	public function render_services_config_field(){
+		if ( $this->isConfigFromConstant() ) {
+			// managed in wp-config.php: never print the service account, not even masked
+			$config = $this->getConfig();
+			echo '<p>';
+			echo esc_html(
+				sprintf(
+					/* translators: %s: name of the PHP constant */
+					__( 'The service account is set in wp-config.php with the constant %s and cannot be changed here.', 'palasthotel-push-notifications-for-firebase' ),
+					Plugin::CONSTANT_SERVICE_ACCOUNT
+				)
+			);
+			echo '</p><p class="description">';
+			if ( $this->isConfigValid() ) {
+				echo '✅ ' . esc_html(
+					sprintf(
+						/* translators: %s: Firebase project ID */
+						__( 'Found a service account for the Firebase project %s.', 'palasthotel-push-notifications-for-firebase' ),
+						is_object( $config ) && isset( $config->project_id ) ? (string) $config->project_id : '?'
+					)
+				);
+			} else {
+				echo '🚨 ' . esc_html__( 'The constant is defined, but it is neither the service account JSON nor the path to a readable JSON file with a private key.', 'palasthotel-push-notifications-for-firebase' );
+			}
+			echo '</p>';
+			return;
+		}
+
 		$config = $this->getConfig();
 		if($config == null){
 			$config = "";
 		} else {
 			if(isset($config->private_key_id)) $config->private_key_id = "***";
 			if(isset($config->private_key)) $config->private_key = "***";
-			$config = json_encode($config, JSON_PRETTY_PRINT);
+			$config = wp_json_encode($config, JSON_PRETTY_PRINT);
 		}
 		?>
 		<ol class="description">
@@ -291,10 +435,64 @@ class Settings extends Component {
 		} else {
 			echo "🚨 There is no Google Services configuration.";
 		}
-		echo '</p>'
-		?>
+		echo '</p><p class="description">';
+		echo esc_html(
+			sprintf(
+				/* translators: %s: name of the PHP constant */
+				__( 'To keep the private key out of the database, define the constant %s in wp-config.php instead, with the path to the JSON file (outside the web root) or the JSON itself.', 'palasthotel-push-notifications-for-firebase' ),
+				Plugin::CONSTANT_SERVICE_ACCOUNT
+			)
+		);
+		echo '</p>';
+	}
 
+	/**
+	 * the topics as rows of id and name, with three empty rows to add more
+	 */
+	public function render_topics_field() {
+		$topics = $this->plugin->topics->getStoredTopics();
+		$name   = Plugin::OPTION_TOPICS;
+		?>
+		<table class="widefat striped" style="max-width: 640px;">
+			<thead>
+				<tr>
+					<th scope="col"><?php esc_html_e( 'ID', 'palasthotel-push-notifications-for-firebase' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Name', 'palasthotel-push-notifications-for-firebase' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php
+			$rows = array_merge( $topics, array_fill( 0, 3, (object) array( "id" => "", "name" => "" ) ) );
+			foreach ( $rows as $i => $topic ) {
+				?>
+				<tr>
+					<td><input type="text" class="regular-text code" pattern="[a-zA-Z0-9\-_.~%]{1,900}"
+						name="<?php echo esc_attr( "{$name}[{$i}][id]" ); ?>"
+						value="<?php echo esc_attr( $topic->id ); ?>"
+						aria-label="<?php esc_attr_e( 'Topic ID', 'palasthotel-push-notifications-for-firebase' ); ?>" /></td>
+					<td><input type="text" class="regular-text"
+						name="<?php echo esc_attr( "{$name}[{$i}][name]" ); ?>"
+						value="<?php echo esc_attr( $topic->name ); ?>"
+						aria-label="<?php esc_attr_e( 'Topic name', 'palasthotel-push-notifications-for-firebase' ); ?>" /></td>
+				</tr>
+				<?php
+			}
+			?>
+			</tbody>
+		</table>
+		<p class="description">
+			<?php esc_html_e( 'The Firebase Cloud Messaging topics editors can send to and visitors can subscribe to. The ID is the topic name in FCM (letters, digits and - _ . ~ %), the name is what people see. Empty the ID to remove a topic. Without topics the plugin offers the topic "default".', 'palasthotel-push-notifications-for-firebase' ); ?>
+		</p>
 		<?php
+		if ( has_filter( Plugin::FILTER_TOPICS ) ) {
+			echo '<p class="description">' . esc_html(
+				sprintf(
+					/* translators: %s: filter name */
+					__( 'Note: code on this site changes the topics with the filter %s, so the topics offered can differ from this list.', 'palasthotel-push-notifications-for-firebase' ),
+					Plugin::FILTER_TOPICS
+				)
+			) . '</p>';
+		}
 	}
 
 	function getActivatedPostTypes(){

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Palasthotel Push Notifications for Firebase\n"
 "Report-Msgid-Bugs-To: https://github.com/palasthotel/wp-firebase-notifications/issues\n"
-"POT-Creation-Date: 2026-10-14T22:31:44+00:00\n"
+"POT-Creation-Date: 2026-10-15T06:44:07+00:00\n"
 "PO-Revision-Date: 2026-10-15 00:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -254,20 +254,82 @@ msgid "Google Services"
 msgstr "Google Dienste"
 
 #: classes/Settings.php:69
+msgid "Topics"
+msgstr "Themen"
+
+#: classes/Settings.php:85
 msgid "Post types"
 msgstr "Inhaltstypen"
 
-#: classes/Settings.php:86
+#: classes/Settings.php:102
 msgid "Webapp"
 msgstr "Webapp"
 
-#: classes/Settings.php:102
+#: classes/Settings.php:118
 msgid "Notification Icon"
 msgstr "Benachrichtigungssymbol"
 
-#: classes/Settings.php:172
+#: classes/Settings.php:157
+msgid "The service account is not valid JSON and was not saved."
+msgstr "Das Dienstkonto ist kein gültiges JSON und wurde nicht gespeichert."
+
+#. translators: %s: the topic ID as entered
+#: classes/Settings.php:234
+#, php-format
+msgid "The topic ID \"%s\" was not saved: only letters, digits and - _ . ~ %% are allowed, up to 900 characters."
+msgstr "Die Themen-ID „%s“ wurde nicht gespeichert: erlaubt sind nur Buchstaben, Ziffern und - _ . ~ %%, höchstens 900 Zeichen."
+
+#: classes/Settings.php:290
 msgid "The web app configuration is not valid JSON and was not saved."
 msgstr "Die Web-App-Konfiguration ist kein gültiges JSON und wurde nicht gespeichert."
+
+#. translators: %s: name of the PHP constant
+#: classes/Settings.php:388
+#, php-format
+msgid "The service account is set in wp-config.php with the constant %s and cannot be changed here."
+msgstr "Das Dienstkonto ist in der wp-config.php mit der Konstante %s festgelegt und kann hier nicht geändert werden."
+
+#. translators: %s: Firebase project ID
+#: classes/Settings.php:397
+#, php-format
+msgid "Found a service account for the Firebase project %s."
+msgstr "Dienstkonto für das Firebase-Projekt %s gefunden."
+
+#: classes/Settings.php:402
+msgid "The constant is defined, but it is neither the service account JSON nor the path to a readable JSON file with a private key."
+msgstr "Die Konstante ist definiert, enthält aber weder das JSON des Dienstkontos noch den Pfad zu einer lesbaren JSON-Datei mit privatem Schlüssel."
+
+#. translators: %s: name of the PHP constant
+#: classes/Settings.php:442
+#, php-format
+msgid "To keep the private key out of the database, define the constant %s in wp-config.php instead, with the path to the JSON file (outside the web root) or the JSON itself."
+msgstr "Damit der private Schlüssel nicht in der Datenbank steht, definiere stattdessen die Konstante %s in der wp-config.php, mit dem Pfad zur JSON-Datei (außerhalb des Web-Roots) oder dem JSON selbst."
+
+#: classes/Settings.php:459
+msgid "ID"
+msgstr "ID"
+
+#: classes/Settings.php:460
+msgid "Name"
+msgstr "Name"
+
+#: classes/Settings.php:472
+msgid "Topic ID"
+msgstr "Themen-ID"
+
+#: classes/Settings.php:476
+msgid "Topic name"
+msgstr "Themenname"
+
+#: classes/Settings.php:484
+msgid "The Firebase Cloud Messaging topics editors can send to and visitors can subscribe to. The ID is the topic name in FCM (letters, digits and - _ . ~ %), the name is what people see. Empty the ID to remove a topic. Without topics the plugin offers the topic \"default\"."
+msgstr "Die Themen von Firebase Cloud Messaging, an die Redakteure senden und die Besucher abonnieren können. Die ID ist der Themenname in FCM (Buchstaben, Ziffern und - _ . ~ %), der Name ist das, was Menschen sehen. Leere die ID, um ein Thema zu entfernen. Ohne Themen bietet das Plugin das Thema „default“ an."
+
+#. translators: %s: filter name
+#: classes/Settings.php:491
+#, php-format
+msgid "Note: code on this site changes the topics with the filter %s, so the topics offered can differ from this list."
+msgstr "Hinweis: Code auf dieser Website ändert die Themen mit dem Filter %s, die angebotenen Themen können also von dieser Liste abweichen."
 
 #: classes/ToolsPage.php:67
 msgid "Tools ‹ Firebase Notifications"
