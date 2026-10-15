@@ -115,6 +115,13 @@ class Plugin extends Component\Plugin {
 	const OPTION_WEBAPP_NOTIFICATION_ICON = "_firebase_notifications_webapp_notification_icon";
 	const OPTION_DB_SCHEMA = "_firebase_notifications_db_schema";
 
+	/**
+	 * Name of the constant for wp-config.php with the service account: the path to
+	 * its JSON file or the JSON itself. If defined it is used instead of the
+	 * service account in the settings (OPTION_CONFIG).
+	 */
+	const CONSTANT_SERVICE_ACCOUNT = "FIREBASE_NOTIFICATIONS_SERVICE_ACCOUNT";
+
 	const SCHEDULE_SEND_MESSAGED = "firebase_notifications_send_messaged_schedule";
 
 	/**

@@ -116,19 +116,77 @@ class Settings extends Component {
 	}
 
 	/**
-	 * @param $option
+	 * Keeps the private key when it comes back masked ("***"), and the old value if
+	 * the field was not sent (the service account comes from wp-config.php) or the
+	 * JSON is invalid.
 	 *
-	 * @return mixed
+	 * @param mixed $option
+	 *
+	 * @return string
 	 */
 	public function sanitize_config($option){
-		if($option != ""){
-			$json = json_decode($option);
-			$old = json_decode(get_option(Plugin::OPTION_CONFIG));
-			if($json->private_key_id == "***") $json->private_key_id = $old->private_key_id;
-			if($json->private_key == "***") $json->private_key = $old->private_key;
-			$option = json_encode($json);
+		$old = (string) get_option( Plugin::OPTION_CONFIG, "" );
+		if ( null === $option || ! is_string( $option ) ) {
+			return $old;
 		}
-		return $option;
+		$option = trim( $option );
+		if ( "" === $option ) {
+			return "";
+		}
+		$json = json_decode( $option );
+		if ( ! is_object( $json ) ) {
+			add_settings_error(
+				Plugin::OPTION_CONFIG,
+				'invalid-json',
+				__( 'The service account is not valid JSON and was not saved.', 'palasthotel-push-notifications-for-firebase' )
+			);
+			return $old;
+		}
+		$old_json = json_decode( $old );
+		foreach ( array( "private_key_id", "private_key" ) as $key ) {
+			if ( isset( $json->{$key} ) && "***" === $json->{$key} ) {
+				if ( is_object( $old_json ) && isset( $old_json->{$key} ) ) {
+					$json->{$key} = $old_json->{$key};
+				} else {
+					unset( $json->{$key} );
+				}
+			}
+		}
+		return (string) wp_json_encode( $json );
+	}
+
+	/**
+	 * Whether the service account comes from the constant in wp-config.php.
+	 *
+	 * @return bool
+	 */
+	public function isConfigFromConstant(){
+		return defined( Plugin::CONSTANT_SERVICE_ACCOUNT );
+	}
+
+	/**
+	 * The service account JSON: from the constant FIREBASE_NOTIFICATIONS_SERVICE_ACCOUNT
+	 * if it is defined - the JSON itself or the path to the JSON file -, otherwise from
+	 * the settings.
+	 *
+	 * @return string
+	 */
+	private function getConfigJson(){
+		if ( ! $this->isConfigFromConstant() ) {
+			return (string) get_option( Plugin::OPTION_CONFIG, "" );
+		}
+		$value = constant( Plugin::CONSTANT_SERVICE_ACCOUNT );
+		if ( ! is_string( $value ) ) {
+			return "";
+		}
+		$value = trim( $value );
+		if ( "{" === substr( $value, 0, 1 ) ) {
+			return $value;
+		}
+		if ( "" !== $value && is_file( $value ) && is_readable( $value ) ) {
+			return (string) file_get_contents( $value ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a local file the site owner configured, no URL
+		}
+		return "";
 	}
 
 	/**
@@ -194,8 +252,7 @@ class Settings extends Component {
 	 * @return object|array|null
 	 */
 	public function getConfig($assoc = false){
-		$config = get_option(Plugin::OPTION_CONFIG, "");
-		return json_decode($config, $assoc);
+		return json_decode( $this->getConfigJson(), $assoc );
 	}
 
 	/**
@@ -261,13 +318,40 @@ class Settings extends Component {
 	 * render the setting field
 	 */
 	public function render_services_config_field(){
+		if ( $this->isConfigFromConstant() ) {
+			// managed in wp-config.php: never print the service account, not even masked
+			$config = $this->getConfig();
+			echo '<p>';
+			echo esc_html(
+				sprintf(
+					/* translators: %s: name of the PHP constant */
+					__( 'The service account is set in wp-config.php with the constant %s and cannot be changed here.', 'palasthotel-push-notifications-for-firebase' ),
+					Plugin::CONSTANT_SERVICE_ACCOUNT
+				)
+			);
+			echo '</p><p class="description">';
+			if ( $this->isConfigValid() ) {
+				echo '✅ ' . esc_html(
+					sprintf(
+						/* translators: %s: Firebase project ID */
+						__( 'Found a service account for the Firebase project %s.', 'palasthotel-push-notifications-for-firebase' ),
+						is_object( $config ) && isset( $config->project_id ) ? (string) $config->project_id : '?'
+					)
+				);
+			} else {
+				echo '🚨 ' . esc_html__( 'The constant is defined, but it is neither the service account JSON nor the path to a readable JSON file with a private key.', 'palasthotel-push-notifications-for-firebase' );
+			}
+			echo '</p>';
+			return;
+		}
+
 		$config = $this->getConfig();
 		if($config == null){
 			$config = "";
 		} else {
 			if(isset($config->private_key_id)) $config->private_key_id = "***";
 			if(isset($config->private_key)) $config->private_key = "***";
-			$config = json_encode($config, JSON_PRETTY_PRINT);
+			$config = wp_json_encode($config, JSON_PRETTY_PRINT);
 		}
 		?>
 		<ol class="description">
@@ -291,10 +375,15 @@ class Settings extends Component {
 		} else {
 			echo "🚨 There is no Google Services configuration.";
 		}
-		echo '</p>'
-		?>
-
-		<?php
+		echo '</p><p class="description">';
+		echo esc_html(
+			sprintf(
+				/* translators: %s: name of the PHP constant */
+				__( 'To keep the private key out of the database, define the constant %s in wp-config.php instead, with the path to the JSON file (outside the web root) or the JSON itself.', 'palasthotel-push-notifications-for-firebase' ),
+				Plugin::CONSTANT_SERVICE_ACCOUNT
+			)
+		);
+		echo '</p>';
 	}
 
 	function getActivatedPostTypes(){
