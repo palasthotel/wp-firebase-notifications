@@ -65,6 +65,22 @@ class Settings extends Component {
 		);
 
 		add_settings_field(
+			Plugin::OPTION_TOPICS,
+			__('Topics', 'palasthotel-push-notifications-for-firebase'),
+			array($this, 'render_topics_field'),
+			'writing',
+			'firebase-notifications-settings'
+		);
+		register_setting(
+			'writing',
+			Plugin::OPTION_TOPICS,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => array( $this, 'sanitize_topics' ),
+			)
+		);
+
+		add_settings_field(
 			Plugin::OPTION_POST_TYPES,
 			__('Post types', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_post_types'),
@@ -187,6 +203,50 @@ class Settings extends Component {
 			return (string) file_get_contents( $value ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a local file the site owner configured, no URL
 		}
 		return "";
+	}
+
+	/**
+	 * Topics as rows of id and name. Rows without an id are dropped, invalid or
+	 * duplicate ids are dropped with an error.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return array[]
+	 */
+	public function sanitize_topics( $value ) {
+		$topics = array();
+		$ids    = array();
+		foreach ( is_array( $value ) ? $value : array() as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$id   = isset( $row["id"] ) && is_string( $row["id"] ) ? trim( $row["id"] ) : "";
+			$name = isset( $row["name"] ) && is_string( $row["name"] ) ? sanitize_text_field( $row["name"] ) : "";
+			if ( "" === $id ) {
+				continue;
+			}
+			if ( ! preg_match( Validation::TOPIC_PATTERN, $id ) ) {
+				add_settings_error(
+					Plugin::OPTION_TOPICS,
+					'invalid-topic-id',
+					sprintf(
+						/* translators: %s: the topic ID as entered */
+						__( 'The topic ID "%s" was not saved: only letters, digits and - _ . ~ %% are allowed, up to 900 characters.', 'palasthotel-push-notifications-for-firebase' ),
+						sanitize_text_field( $id )
+					)
+				);
+				continue;
+			}
+			if ( in_array( $id, $ids, true ) ) {
+				continue;
+			}
+			$ids[]    = $id;
+			$topics[] = array(
+				"id"   => $id,
+				"name" => "" !== $name ? $name : $id,
+			);
+		}
+		return $topics;
 	}
 
 	/**
@@ -384,6 +444,55 @@ class Settings extends Component {
 			)
 		);
 		echo '</p>';
+	}
+
+	/**
+	 * the topics as rows of id and name, with three empty rows to add more
+	 */
+	public function render_topics_field() {
+		$topics = $this->plugin->topics->getStoredTopics();
+		$name   = Plugin::OPTION_TOPICS;
+		?>
+		<table class="widefat striped" style="max-width: 640px;">
+			<thead>
+				<tr>
+					<th scope="col"><?php esc_html_e( 'ID', 'palasthotel-push-notifications-for-firebase' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Name', 'palasthotel-push-notifications-for-firebase' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php
+			$rows = array_merge( $topics, array_fill( 0, 3, (object) array( "id" => "", "name" => "" ) ) );
+			foreach ( $rows as $i => $topic ) {
+				?>
+				<tr>
+					<td><input type="text" class="regular-text code" pattern="[a-zA-Z0-9\-_.~%]{1,900}"
+						name="<?php echo esc_attr( "{$name}[{$i}][id]" ); ?>"
+						value="<?php echo esc_attr( $topic->id ); ?>"
+						aria-label="<?php esc_attr_e( 'Topic ID', 'palasthotel-push-notifications-for-firebase' ); ?>" /></td>
+					<td><input type="text" class="regular-text"
+						name="<?php echo esc_attr( "{$name}[{$i}][name]" ); ?>"
+						value="<?php echo esc_attr( $topic->name ); ?>"
+						aria-label="<?php esc_attr_e( 'Topic name', 'palasthotel-push-notifications-for-firebase' ); ?>" /></td>
+				</tr>
+				<?php
+			}
+			?>
+			</tbody>
+		</table>
+		<p class="description">
+			<?php esc_html_e( 'The Firebase Cloud Messaging topics editors can send to and visitors can subscribe to. The ID is the topic name in FCM (letters, digits and - _ . ~ %), the name is what people see. Empty the ID to remove a topic. Without topics the plugin offers the topic "default".', 'palasthotel-push-notifications-for-firebase' ); ?>
+		</p>
+		<?php
+		if ( has_filter( Plugin::FILTER_TOPICS ) ) {
+			echo '<p class="description">' . esc_html(
+				sprintf(
+					/* translators: %s: filter name */
+					__( 'Note: code on this site changes the topics with the filter %s, so the topics offered can differ from this list.', 'palasthotel-push-notifications-for-firebase' ),
+					Plugin::FILTER_TOPICS
+				)
+			) . '</p>';
+		}
 	}
 
 	function getActivatedPostTypes(){
