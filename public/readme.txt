@@ -111,6 +111,13 @@ Yes, with the constant `FIREBASE_NOTIFICATIONS_SERVICE_ACCOUNT` in `wp-config.ph
 
 No. Options, hooks, post meta and the history keep their names. Without topics in the settings the plugin offers the topic "default" as before, and a `firebase_notifications_topics` filter in your code still applies.
 
+== Screenshots ==
+
+1. Compose a push notification in the post editor: title, text, platforms and a topic condition, checked as you type
+2. Send it now or schedule it; the post's notifications are listed below
+3. The history under Tools, with the payload and the answer from Firebase Cloud Messaging
+4. Settings: the service account from wp-config.php and the topics editors can send to
+
 == Changelog ==
 
 = 1.1.2 =
