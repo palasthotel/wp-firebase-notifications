@@ -8,6 +8,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 use Palasthotel\FirebaseNotifications\Component\Component;
 
@@ -30,7 +34,7 @@ class Settings extends Component {
 	 */
 	public function add_action_links($links){
 		return array_merge($links, array(
-			'<a href="'.admin_url('options-writing.php#'.Plugin::DOMAIN).'">Settings</a>'
+			'<a href="' . esc_url( admin_url( 'options-writing.php#' . Plugin::DOMAIN ) ) . '">' . esc_html__( 'Settings', 'palasthotel-push-notifications-for-firebase' ) . '</a>'
 		));
 	}
 
@@ -42,14 +46,14 @@ class Settings extends Component {
 			'firebase-notifications-settings', // ID
 			'Firebase Notifications', // Section title
 			function(){
-				echo "<span id='".Plugin::DOMAIN."'></span>";
+				echo "<span id='" . esc_attr( Plugin::DOMAIN ) . "'></span>";
 			}, // Callback for your function
 			'writing' // Location (Settings > Permalinks)
 		);
 
 		add_settings_field(
 			Plugin::OPTION_CONFIG,
-			__('Google Services', Plugin::DOMAIN),
+			__('Google Services', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_services_config_field'),
 			'writing',
 			'firebase-notifications-settings'
@@ -62,39 +66,51 @@ class Settings extends Component {
 
 		add_settings_field(
 			Plugin::OPTION_POST_TYPES,
-			__('Post types', Plugin::DOMAIN),
+			__('Post types', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_post_types'),
 			'writing',
 			'firebase-notifications-settings'
 		);
 		register_setting(
 			'writing',
-			Plugin::OPTION_POST_TYPES
+			Plugin::OPTION_POST_TYPES,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => array( $this, 'sanitize_post_types' ),
+			)
 		);
 
 
 		add_settings_field(
 			Plugin::OPTION_WEBAPP_CONFIG,
-			__('Webapp', Plugin::DOMAIN),
+			__('Webapp', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_webapp_config_field'),
 			'writing',
 			'firebase-notifications-settings'
 		);
 		register_setting(
 			'writing',
-			Plugin::OPTION_WEBAPP_CONFIG
+			Plugin::OPTION_WEBAPP_CONFIG,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( $this, 'sanitize_webapp_config' ),
+			)
 		);
 
 		add_settings_field(
 			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON,
-			__('Notification Icon', Plugin::DOMAIN),
+			__('Notification Icon', 'palasthotel-push-notifications-for-firebase'),
 			array($this, 'render_notification_icon_field'),
 			'writing',
 			'firebase-notifications-settings'
 		);
 		register_setting(
 			'writing',
-			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON
+			Plugin::OPTION_WEBAPP_NOTIFICATION_ICON,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( $this, 'sanitize_notification_icon' ),
+			)
 		);
 
 	}
@@ -113,6 +129,63 @@ class Settings extends Component {
 			$option = json_encode($json);
 		}
 		return $option;
+	}
+
+	/**
+	 * Only post types that exist, as their keys.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string[]
+	 */
+	public function sanitize_post_types( $value ) {
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+		$post_types = array();
+		foreach ( $value as $post_type ) {
+			$post_type = sanitize_key( (string) $post_type );
+			if ( post_type_exists( $post_type ) ) {
+				$post_types[] = $post_type;
+			}
+		}
+		return array_values( array_unique( $post_types ) );
+	}
+
+	/**
+	 * The web app config has to be a JSON object; anything else keeps the old value.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string
+	 */
+	public function sanitize_webapp_config( $value ) {
+		$value = is_string( $value ) ? trim( $value ) : '';
+		if ( '' === $value ) {
+			return '';
+		}
+		$config = json_decode( $value );
+		if ( ! is_object( $config ) ) {
+			add_settings_error(
+				Plugin::OPTION_WEBAPP_CONFIG,
+				'invalid-json',
+				__( 'The web app configuration is not valid JSON and was not saved.', 'palasthotel-push-notifications-for-firebase' )
+			);
+			return (string) get_option( Plugin::OPTION_WEBAPP_CONFIG, '' );
+		}
+		return (string) wp_json_encode( $config );
+	}
+
+	/**
+	 * The notification icon is an attachment ID.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string
+	 */
+	public function sanitize_notification_icon( $value ) {
+		$id = absint( $value );
+		return $id > 0 ? (string) $id : '';
 	}
 
 	/**
@@ -152,7 +225,7 @@ class Settings extends Component {
 	 * @return string
 	 */
 	public function getNotificationIconImageId(){
-		return get_option(Plugin::OPTION_WEBAPP_NOTIFICATION_ICON, "");
+		return $this->sanitize_notification_icon( get_option( Plugin::OPTION_WEBAPP_NOTIFICATION_ICON, "" ) );
 	}
 
 	/**
@@ -208,8 +281,8 @@ class Settings extends Component {
 		<textarea
 			style="width: 100%"
 			rows="13"
-			id="<?php echo Plugin::OPTION_CONFIG; ?>"
-			name="<?php echo Plugin::OPTION_CONFIG; ?>"
+			id="<?php echo esc_attr( Plugin::OPTION_CONFIG ); ?>"
+			name="<?php echo esc_attr( Plugin::OPTION_CONFIG ); ?>"
 		><?php echo esc_textarea( $config ); ?></textarea>
 		<?php
 		echo '<p class="description">';
@@ -234,8 +307,7 @@ class Settings extends Component {
 		echo "<p>";
 		foreach ( $post_types as $key => $post_type ) {
 			$name = Plugin::OPTION_POST_TYPES."[]";
-			$checked = (in_array($key, $activated))? "checked='checked'":"";
-			echo "<label><input name='" . esc_attr( $name ) . "' type='checkbox' value='" . esc_attr( $key ) . "' $checked /> " . esc_html( $post_type->labels->name ) . "</label><br/>";
+			echo "<label><input name='" . esc_attr( $name ) . "' type='checkbox' value='" . esc_attr( $key ) . "' " . checked( in_array( $key, (array) $activated, true ), true, false ) . " /> " . esc_html( $post_type->labels->name ) . "</label><br/>";
 		}
 		echo "</p>";
 		echo "<p class='description'>Activate post types for firebase push notifications.</p>";
@@ -264,8 +336,8 @@ class Settings extends Component {
 		<textarea
 				style="width: 100%"
 				rows="13"
-				id="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
-				name="<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>"
+				id="<?php echo esc_attr( Plugin::OPTION_WEBAPP_CONFIG ); ?>"
+				name="<?php echo esc_attr( Plugin::OPTION_WEBAPP_CONFIG ); ?>"
 		><?php echo esc_textarea( $config ); ?></textarea>
 		<script>
 			jQuery(function($){
@@ -273,7 +345,7 @@ class Settings extends Component {
 				const regex = /(\w+):( +|")/gm;
 				const endsWithSemicolonRegex = /(;)$/gm;
 				const subst = `"$1":`;
-				$("#<?php echo Plugin::OPTION_WEBAPP_CONFIG; ?>").on("keyup", function(){
+				$(<?php echo wp_json_encode( "#" . Plugin::OPTION_WEBAPP_CONFIG ); ?>).on("keyup", function(){
 					let val = this.value;
 					val = val.replace(variableDefRegex, "{", val);
 					val = val.replace(endsWithSemicolonRegex, "", val);
@@ -327,8 +399,8 @@ class Settings extends Component {
 		</button>
 		</div>
 		<input
-				name="<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>"
-				value="<?php echo $this->getNotificationIconImageId(); ?>"
+				name="<?php echo esc_attr( Plugin::OPTION_WEBAPP_NOTIFICATION_ICON ); ?>"
+				value="<?php echo esc_attr( $this->getNotificationIconImageId() ); ?>"
 				type="hidden"
 		/>
 		<p class="description">Square image with 192px x 192px.</p>
@@ -337,7 +409,7 @@ class Settings extends Component {
 				const $imagePreview = $("#firebase-notifications-icon-preview");
 				const $buttonAdd = $('#firebase-notifications-icon-add');
 				const $buttonRemove = $('#firebase-notifications-icon-remove');
-				const $input = $("[name=<?php echo Plugin::OPTION_WEBAPP_NOTIFICATION_ICON; ?>]");
+				const $input = $(<?php echo wp_json_encode( "[name=" . Plugin::OPTION_WEBAPP_NOTIFICATION_ICON . "]" ); ?>);
 
 				$buttonRemove.click(function(e){
 					e.preventDefault();
@@ -391,8 +463,8 @@ class Settings extends Component {
 
 				// update application state to initial state
 				updateState(
-					"<?php echo $this->getNotificationIconImageId() ?>",
-					"<?php echo wp_get_attachment_image_url($this->getNotificationIconImageId(), 'full'); ?>"
+					<?php echo wp_json_encode( $this->getNotificationIconImageId() ); ?>,
+					<?php echo wp_json_encode( (string) wp_get_attachment_image_url( (int) $this->getNotificationIconImageId(), 'full' ) ); ?>
 				);
 
 			});

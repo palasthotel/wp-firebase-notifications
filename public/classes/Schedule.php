@@ -2,6 +2,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class Schedule {
     
     public Plugin $plugin;
@@ -41,11 +45,10 @@ class Schedule {
 				$message->result = $result;
 				$success = $this->plugin->database->setSent( $message->id, $result);
 				if(!$success){
-					\error_log("Error: Could not send scheduled message $message->id", 4);
+					Log::error("Could not mark scheduled notification {$message->id} as sent.");
 				}
 			} catch (\Exception $e){
-				\error_log($e->getMessage(), 4);
-				\error_log("Exception: Could not send scheduled message $message->id", 4);
+				Log::error("Could not send scheduled notification {$message->id}: " . $e->getMessage());
 			}
 		}
 	}

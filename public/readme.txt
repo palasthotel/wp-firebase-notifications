@@ -1,4 +1,4 @@
-=== Firebase Notifications ===
+=== Palasthotel Push Notifications for Firebase ===
 Contributors: palasthotel, edwardbock, janaeggebrecht
 Tags: push notifications, firebase, cloud messaging
 Requires at least: 5.3
@@ -12,7 +12,7 @@ Send push notifications to apps and browsers with Firebase Cloud Messaging.
 
 == Description ==
 
-Firebase Notifications sends push messages to topics in Firebase Cloud Messaging (FCM). Editors write a notification in a meta box on the post edit screen, send it right away or schedule it, and see the sent messages on a tools page. Visitors can subscribe to topics in the browser.
+Palasthotel Push Notifications for Firebase sends push messages to topics in Firebase Cloud Messaging (FCM). Editors write a notification in a meta box on the post edit screen, send it right away or schedule it, and see the sent messages on a tools page. Visitors can subscribe to topics in the browser.
 
 You need a Firebase project and its service account JSON, which you paste into the plugin settings.
 

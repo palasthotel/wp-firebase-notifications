@@ -3,6 +3,10 @@
 
 namespace Palasthotel\FirebaseNotifications\Component;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class Component
  *

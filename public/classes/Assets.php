@@ -3,6 +3,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 use Palasthotel\FirebaseNotifications\Component\Component;
 
@@ -50,7 +54,8 @@ class Assets extends Component {
 			Plugin::HANDLE_MESSAGING_JS,
 			$this->plugin->url . "/js/desktop-messaging.js",
 			array( Assets::HANDLE_FIREBASE_MESSAGING ),
-			filemtime( $this->plugin->path . "/js/desktop-messaging.js" )
+			filemtime( $this->plugin->path . "/js/desktop-messaging.js" ),
+			true
 		);
 		wp_localize_script(
 			Plugin::HANDLE_MESSAGING_JS,
@@ -114,15 +119,6 @@ class Assets extends Component {
 			true
 		);
 	}
-	public function enqueueFrontendTestScript(){
-		wp_enqueue_script(
-			Plugin::HANDLE_FRONTEND_JS."_test",
-			$this->plugin->url . "/js/test.frontend-firebase-notifications-settings.js",
-			array( "jquery", Plugin::HANDLE_FRONTEND_API_JS ),
-			filemtime( $this->plugin->path . "/js/test.frontend-firebase-notifications-settings.js"),
-			true
-		);
-	}
 
 	//------------------------------------------------------------
 	// meta box
@@ -158,7 +154,8 @@ class Assets extends Component {
 			Plugin::HANDLE_TOOLS_PAGE_SCRIPT,
 			$this->plugin->url."/js/tools-page.js",
 			["jquery", Plugin::HANDLE_ADMIN_API_JS],
-			filemtime($this->plugin->path."/js/tools-page.js")
+			filemtime($this->plugin->path."/js/tools-page.js"),
+			true
 		);
 	}
 	public function enqueueToolsPageStyle(){

@@ -20,8 +20,7 @@ jobs:
   deploy:
     uses: palasthotel/github-workflows/.github/workflows/wp-plugin-svn-deploy.yml@v1
     with:
-      # placeholder until the wordpress.org name is decided - see .github/WORKFLOWS.md
-      slug: firebase-notifications
+      slug: palasthotel-push-notifications-for-firebase
       version: ${{ github.event.inputs.version }}
       build-command: bash bin/prefix-dependencies.sh
     secrets: inherit

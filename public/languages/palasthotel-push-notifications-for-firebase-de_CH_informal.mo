@@ -1,0 +1,1 @@
+palasthotel-push-notifications-for-firebase-de_DE.mo

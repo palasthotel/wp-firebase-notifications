@@ -8,40 +8,62 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-/**
- * @property array $conditions
- * @property string title
- * @property string body
- * @property array payload
- * @property string[] plattforms
- */
+
 class Message {
+
+	/**
+	 * @var string[] platforms the message is for: android, ios, web
+	 */
+	public $plattforms;
+
+	/**
+	 * @var array topic condition: topic ids alternating with AND/OR, nested arrays for brackets
+	 */
+	public $conditions;
+
+	/**
+	 * @var string
+	 */
+	public $title;
+
+	/**
+	 * @var string
+	 */
+	public $body;
+
+	/**
+	 * @var array data payload, string values
+	 */
+	public $payload;
 
 	/**
 	 * @var null|int
 	 */
-	var $id = NULL;
+	public $id = null;
 
 	/**
-	 * @var null|array
+	 * @var null|array|object
 	 */
-	var $result = NULL;
-
-	/**
-	 * @var null|string
-	 */
-	var $created = NULL;
+	public $result = null;
 
 	/**
 	 * @var null|string
 	 */
-	var $sent = NULL;
+	public $created = null;
 
 	/**
 	 * @var null|string
 	 */
-	var $publish = NULL;
+	public $sent = null;
+
+	/**
+	 * @var null|string
+	 */
+	public $publish = null;
 
 	/**
 	 * Notification constructor.
@@ -74,11 +96,18 @@ class Message {
 	}
 
 	/**
+	 * The condition as text, e.g. "news AND ( sport OR culture )". A condition that
+	 * cannot be read - saved by an older version without validation - is shown as
+	 * its JSON instead of breaking the history.
+	 *
 	 * @return string
-	 * @throws \Exception
 	 */
 	public function conditionForDisplay() {
-		return $this->buildConditionForDisplay($this->conditions);
+		try {
+			return $this->buildConditionForDisplay( (array) $this->conditions );
+		} catch ( \Throwable $e ) {
+			return (string) wp_json_encode( $this->conditions );
+		}
 	}
 
 	/**
@@ -284,7 +313,7 @@ class Message {
 		}
 
 
-		return apply_filters(Plugin::FILTER_MESSAGE, $msg);
+		return apply_filters(Plugin::FILTER_MESSAGE, $msg); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 
 	}
 

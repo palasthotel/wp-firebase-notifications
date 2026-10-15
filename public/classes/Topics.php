@@ -8,12 +8,16 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 class Topics {
 
 	public function getTopics() {
 		return apply_filters(
-			Plugin::FILTER_TOPICS,
+			Plugin::FILTER_TOPICS, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 			array(
 				(object) array(
 					// allowed format for id [a-zA-Z0-9-_.~%]{1,900}

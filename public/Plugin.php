@@ -1,17 +1,16 @@
 <?php
 /**
- * Plugin Name: Firebase Notifications
- * Plugin URI: https://github.com/palasthotel/wp-firebase-notifications
- * Description: send messages with firebase messaging
- * Version: 1.1.2
- * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock)
- * Author URI: http://www.palasthotel.de
+ * Plugin Name:       Palasthotel Push Notifications for Firebase
+ * Plugin URI:        https://github.com/palasthotel/wp-firebase-notifications
+ * Description:       Send push notifications from the post editor to Android, iOS and web apps via Firebase Cloud Messaging topics.
+ * Version:           1.1.2
  * Requires at least: 5.3
- * Tested up to: 7.1
- * Requires PHP: 8.1
- * License: GPL-3.0-or-later
- * License URI: https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       firebase-notifications
+ * Requires PHP:      8.1
+ * Author:            Palasthotel
+ * Author URI:        https://palasthotel.de
+ * License:           GPL-3.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain:       palasthotel-push-notifications-for-firebase
  * Domain Path:       /languages
  *
  * @copyright Copyright (c) 2022, Palasthotel
@@ -19,8 +18,6 @@
  */
 
 namespace Palasthotel\FirebaseNotifications;
-
-use Palasthotel\FirebaseNotifications\Component\TextdomainConfig;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -38,8 +35,13 @@ $firebase_notifications_autoloaders = array(
 foreach ( $firebase_notifications_autoloaders as $firebase_notifications_autoloader ) {
 	if ( ! is_readable( $firebase_notifications_autoloader ) ) {
 		add_action( 'admin_notices', function () {
+			// for those who can fix it, where plugins are managed
+			$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+			if ( ! current_user_can( 'activate_plugins' ) || ! $screen || ! in_array( $screen->id, array( 'plugins', 'plugins-network', 'dashboard' ), true ) ) {
+				return;
+			}
 			echo '<div class="notice notice-error"><p>'
-				. esc_html__( 'Firebase Notifications is incomplete: its bundled dependencies are missing. Please install the release ZIP or run bin/prefix-dependencies.sh.', 'firebase-notifications' )
+				. esc_html__( 'Palasthotel Push Notifications for Firebase is incomplete: its bundled dependencies are missing. Please install the release ZIP or run bin/prefix-dependencies.sh.', 'palasthotel-push-notifications-for-firebase' )
 				. '</p></div>';
 		} );
 		return;
@@ -66,9 +68,16 @@ class Plugin extends Component\Plugin {
     public DesktopMessaging $desktopMessaging;
     public Assets $assets;
     public REST $rest;
-    public TextdomainConfig $textdomainConfig;
 
-    const DOMAIN = "firebase-notifications";
+	/**
+	 * Internal prefix of the AJAX actions, the meta box id and the settings anchor.
+	 * Not the text domain: since the plugin is called "Palasthotel Push Notifications
+	 * for Firebase" its text domain is the wordpress.org slug
+	 * 'palasthotel-push-notifications-for-firebase', written as a literal in every
+	 * gettext call. The value stays so that apps and scripts calling the AJAX actions
+	 * keep working.
+	 */
+	const DOMAIN = "firebase-notifications";
 
 	const TEMPLATE = "firebase-notifications-settings.php";
 	const HANDLE_ADMIN_API_JS = "firebase-notifications-admin-api-script";
@@ -112,14 +121,6 @@ class Plugin extends Component\Plugin {
 	 * Plugin constructor.
 	 */
 	function onCreate() {
-
-		/**
-		 * load translations
-		 */
-		$this->textdomainConfig = new Component\TextdomainConfig(
-			Plugin::DOMAIN,
-			"languages"
-		);
 
 		$this->assets                             = new Assets( $this );
 		$this->cloudMessagingApi                  = new CloudMessagingApi( $this );

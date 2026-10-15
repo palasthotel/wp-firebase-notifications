@@ -8,6 +8,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class NotificationsSettingsThemeTemplate {
 
 	const URL = "__app/notifications";
@@ -28,7 +32,7 @@ class NotificationsSettingsThemeTemplate {
 	 * @return string
 	 */
 	public static function urlRelative(){
-		return ltrim(rtrim((apply_filters(Plugin::FILTER_SETTINGS_URL, self::URL )),'/\\'), '/\\');
+		return ltrim(rtrim((apply_filters(Plugin::FILTER_SETTINGS_URL, self::URL )),'/\\'), '/\\'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 	}
     
     public Plugin $plugin;
@@ -79,9 +83,6 @@ class NotificationsSettingsThemeTemplate {
 		global $wp;
 		if ( isset( $wp->query_vars[ self::PARAM_KEY ] ) && $wp->query_vars[ self::PARAM_KEY ] == self::PARAM_VALUE ) {
 
-			if(isset($_GET["IS-APP-TEST"]) && $_GET["IS-APP-TEST"] == "true"){
-				$this->plugin->assets->enqueueFrontendTestScript();
-			}
 			$this->plugin->assets->enqueueFrontendScript();
 
 			//Check theme directory first

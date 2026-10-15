@@ -2,6 +2,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use Palasthotel\FirebaseNotifications\Component\Component;
 
 class REST extends Component {

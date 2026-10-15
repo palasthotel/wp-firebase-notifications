@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name:       Firebase Notifications - DEV
+ * Plugin Name:       Palasthotel Push Notifications for Firebase - DEV
  * Plugin URI:        https://github.com/palasthotel/wp-firebase-notifications
  * Description:       Development wrapper. Loads the plugin from public/, which is what ships. Do not deploy this file.
  * Version:           0.0.0-dev
@@ -11,7 +11,7 @@
  * Author URI:        https://palasthotel.de
  * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       firebase-notifications
+ * Text Domain:       palasthotel-push-notifications-for-firebase
  */
 
 defined( 'ABSPATH' ) || exit;

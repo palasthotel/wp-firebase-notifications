@@ -8,6 +8,10 @@
 
 namespace Palasthotel\FirebaseNotifications;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\FirebaseException;
 use Palasthotel\FirebaseNotifications\Vendor\Kreait\Firebase\Exception\MessagingException;
@@ -46,27 +50,31 @@ class Ajax extends Component {
 	public function send(){
 
 		check_ajax_referer( self::NONCE_ACTION );
-		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", 'palasthotel-push-notifications-for-firebase'), 403);
 
 		if(!$this->plugin->cloudMessagingApi->hasConfiguration()) wp_send_json_error("Google Services configuration invalid.");
 
-		// topic conditions
-		$conditions = $_REQUEST["conditions"];
+		// topic conditions: nested arrays of strings, checked by Validation and then
+		// sanitized by Validation::sanitizeConditions()
+		$conditions = isset( $_REQUEST["conditions"] ) ? wp_unslash( $_REQUEST["conditions"] ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- validated and sanitized below
 		$topicsError = Validation::isValidConditions($conditions);
 		if($topicsError instanceof \WP_Error){
 			wp_send_json_error($topicsError->get_error_message());
 		}
 		$conditions = Validation::sanitizeConditions($conditions);
 
-		$platforms = $_REQUEST["platforms"];
+		$platforms = isset( $_REQUEST["platforms"] ) && is_array( $_REQUEST["platforms"] )
+			? array_map( 'sanitize_text_field', wp_unslash( $_REQUEST["platforms"] ) )
+			: null;
 		$validPlatformsArray = Validation::isValidPlatformsArray($platforms);
 		if($validPlatformsArray instanceof \WP_Error){
 			wp_send_json_error($validPlatformsArray->get_error_message());
 		}
 
-		$title = sanitize_text_field(stripslashes($_REQUEST["title"]));
-		$body = sanitize_textarea_field(stripslashes($_REQUEST["body"]));
-		$payload = isset( $_REQUEST["payload"] ) ? wp_unslash( $_REQUEST["payload"] ) : null;
+		$title = isset( $_REQUEST["title"] ) ? sanitize_text_field( wp_unslash( $_REQUEST["title"] ) ) : "";
+		$body = isset( $_REQUEST["body"] ) ? sanitize_textarea_field( wp_unslash( $_REQUEST["body"] ) ) : "";
+		// every value is sanitized in the loop below
+		$payload = isset( $_REQUEST["payload"] ) ? wp_unslash( $_REQUEST["payload"] ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized per key and value below
 
 		if(empty($payload) || !is_array($payload)) wp_send_json_error("missing payloads");
 
@@ -81,10 +89,10 @@ class Ajax extends Component {
 		if( empty($platforms) || empty($conditions) || empty($title) || empty($body) || empty($sanitizedPayload)) wp_send_json_error("missing fields");
 
 		$message = Message::build($platforms,$conditions, $title, $body, $sanitizedPayload);
-		do_action(Plugin::ACTION_SAVE_MESSAGE, $message);
+		do_action(Plugin::ACTION_SAVE_MESSAGE, $message); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 		$message_id = $this->plugin->database->add($message);
 		if(!$message_id) wp_send_json_error("Could not save notification message");
-		do_action(Plugin::ACTION_SAVED_MESSAGE, $message);
+		do_action(Plugin::ACTION_SAVED_MESSAGE, $message); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 
 		// schedule
 		if(isset($_REQUEST["schedule"]) && !empty($_REQUEST["schedule"])){
@@ -121,8 +129,8 @@ class Ajax extends Component {
 	 */
 	public function delete(){
 		check_ajax_referer( self::NONCE_ACTION );
-		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", Plugin::DOMAIN), 403);
-		$message_id = intval($_REQUEST["message_id"]);
+		if(!$this->plugin->permissions->canSendMessages()) wp_send_json_error(__("No access", 'palasthotel-push-notifications-for-firebase'), 403);
+		$message_id = isset( $_REQUEST["message_id"] ) ? absint( $_REQUEST["message_id"] ) : 0;
 
 		$this->plugin->database->delete($message_id);
 		wp_send_json_success($message_id);
@@ -136,6 +144,12 @@ class Ajax extends Component {
 		$this->setSubscription(false);
 	}
 
+	// The subscription actions are public: browsers call them for their own FCM
+	// registration token, also on cached pages, so there is no nonce to check. They
+	// change nothing in WordPress, only the token's topic subscriptions at Firebase,
+	// and subscribing is limited to the topics the site offers.
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+
 	/**
 	 * @param $isActive
 	 */
@@ -143,6 +157,9 @@ class Ajax extends Component {
 		if(!isset($_GET) || !isset($_GET["topic"]) || !isset($_GET["token"])){
 			wp_send_json_error("Missing important data.");
 			exit;
+		}
+		if ( ! $this->plugin->cloudMessagingApi->hasConfiguration() ) {
+			wp_send_json_error( "Push notifications are not configured.", 503 );
 		}
 		$token = sanitize_text_field( wp_unslash( $_GET["token"] ) );
 		$topic = sanitize_text_field( wp_unslash( $_GET["topic"] ) );
@@ -177,7 +194,14 @@ class Ajax extends Component {
 			wp_send_json_error("Missing important data.");
 			exit;
 		}
-		$response = $this->plugin->cloudMessagingApi->getSubscriptions( sanitize_text_field( wp_unslash( $_GET["token"] ) ) );
+		if ( ! $this->plugin->cloudMessagingApi->hasConfiguration() ) {
+			wp_send_json_error( "Push notifications are not configured.", 503 );
+		}
+		try {
+			$response = $this->plugin->cloudMessagingApi->getSubscriptions( sanitize_text_field( wp_unslash( $_GET["token"] ) ) );
+		} catch ( \Throwable $e ) {
+			wp_send_json_error( "Could not load the subscriptions." );
+		}
 		if(!is_countable($response)){
 			wp_send_json_error("Response is not countable");
 		}
@@ -192,4 +216,5 @@ class Ajax extends Component {
 		wp_send_json_success($result);
 	}
 
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 }
