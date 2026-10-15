@@ -111,10 +111,7 @@ class MetaBox {
 				),
 			),
 			"topic_ids" => $this->plugin->topics->getTopicIds(),
-			"payload"   => apply_filters(Plugin::FILTER_MESSAGE_PAYLOAD, array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
-				"post_id"   => $post->ID,
-				"permalink" => get_permalink( $post ),
-			)),
+			"payload"   => $this->getPayload( $post ),
 		) );
 		do_action( Plugin::ACTION_ENQUEUE_META_BOX_ENQUEUE_SCRIPT, Plugin::HANDLE_META_BOX_SCRIPT ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
 		$draftTitle = get_post_meta($post->ID, Plugin::POST_META_DRAFT_TITLE, true);
@@ -451,6 +448,25 @@ class MetaBox {
 		}
 	}
 
+	/**
+	 * The data payload of a notification for a post, changed by the filter
+	 * firebase_notifications_message_payload. The same for sending from the meta
+	 * box and on publication.
+	 *
+	 * @param \WP_Post $post
+	 *
+	 * @return array
+	 */
+	public function getPayload( $post ) {
+		return apply_filters(
+			Plugin::FILTER_MESSAGE_PAYLOAD, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
+			array(
+				"post_id"   => $post->ID,
+				"permalink" => get_permalink( $post ),
+			)
+		);
+	}
+
 	public function save_post($post_id){
 	    $saveFields = [
 		    Plugin::POST_META_DRAFT_TITLE,
@@ -521,10 +537,7 @@ class MetaBox {
 			return;
 		}
 		$conditionsArr = Validation::sanitizeConditions($conditionsArr);
-		$payload = array(
-			"post_id"   => $post->ID,
-			"permalink" => get_permalink( $post ),
-		);
+		$payload = $this->getPayload( $post );
 
 		$message = Message::build($platforms,$conditionsArr, $title, $body, $payload);
 		do_action(Plugin::ACTION_SAVE_MESSAGE, $message); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- prefixed hook name from a constant
