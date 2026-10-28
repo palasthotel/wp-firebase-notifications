@@ -3,7 +3,7 @@
  * Plugin Name:       Palasthotel Push Notifications for Firebase
  * Plugin URI:        https://github.com/palasthotel/wp-firebase-notifications
  * Description:       Send push notifications from the post editor to Android, iOS and web apps via Firebase Cloud Messaging topics.
- * Version:           1.1.2
+ * Version:           2.0.0
  * Requires at least: 5.3
  * Requires PHP:      8.1
  * Author:            Palasthotel
