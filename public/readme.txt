@@ -4,7 +4,7 @@ Tags: push notifications, firebase, cloud messaging, fcm, app
 Requires at least: 5.3
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.1.2
+Stable tag: 2.0.0
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -119,6 +119,33 @@ No. Options, hooks, post meta and the history keep their names. Without topics i
 4. Settings: the service account from wp-config.php and the topics editors can send to
 
 == Changelog ==
+
+= 2.0.0 =
+**⚠ BREAKING CHANGES**
+* requires PHP 8.1 or newer; the Firebase SDK is bundled with prefixed namespaces
+
+**Features**
+* let sites restrict the REST count endpoint (d9170ea)
+* manage the topics in the settings (6811020)
+* read the service account from wp-config.php (878b2d6)
+* rename the plugin to Palasthotel Push Notifications for Firebase (b169605)
+* update the Firebase SDK to 7.24 and bundle it with prefixed namespaces (7b65724)
+
+**Bug Fixes**
+* answer the public subscription requests with an error instead of a fatal error (6505bac)
+* apply the payload filter to notifications sent on publication (3345781)
+* avoid a PHP 8.1+ deprecation for messages that were not sent yet (5c59ad1)
+* declare the properties of Message, avoiding PHP 8.2+ dynamic property deprecations (1258fb9)
+* escape notification data in the admin, sanitize the payload (a10500a)
+* keep saving the post when sending its notification on publication fails (96e9c36)
+* pass the text domain to __() correctly and guard two files against direct access (35ea47f)
+* require a nonce and the send permission for sending and deleting messages (7c50845)
+* sanitize the settings when they are saved and escape the notification icon field (14efc16)
+* save push draft fields only from the meta box, by users who may send (1e147cf)
+* show the history with a UTC offset time zone and the real send time (88233a9)
+* stop loading a missing test script on the notification settings page (5feca1d)
+* subscribe visitors only to the topics the site offers (2c4c88f)
+* validate topic conditions on the server, brackets included (3c6ed92)
 
 = 1.1.2 =
 * Last release before the change log was kept here.
